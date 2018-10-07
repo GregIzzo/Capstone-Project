@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">TagSaleNow</string>
     <string name="action_settings">Settings</string>
+    <string name="fake_place">100 Main St.</string>
+    <string name="fake_distance">3.5 m</string>
+    <string name="fake_friendsattending">4</string>
+    <string name="fake_date">Nov 5</string>
+
+    <string name="TAG_FRAGMENT_TAGSALELIST">tagsalelist</string>
 </resources>

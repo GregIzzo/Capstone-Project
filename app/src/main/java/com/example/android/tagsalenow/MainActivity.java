@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mMessagesDatabaseReference;
     private ChildEventListener mChildEventListener;
 
+    TagSaleListFragment tagSaleListFragment;
+
     private String mUsername;
 
     private FirebaseAuth mFirebaseAuth;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+/*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+*/
         ///
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     onSignedInInitialize(user.getDisplayName());
+                    showTagSaleList();
                 } else {
                     // User is signed out
                     onSignedOutCleanup();
@@ -101,6 +105,14 @@ public class MainActivity extends AppCompatActivity {
         };
 
     }
+    private void showTagSaleList() {
+        tagSaleListFragment = new TagSaleListFragment();
+        Log.d(TAG, "showTagSaleList: TTTTT tagSaleListFragment =" + tagSaleListFragment);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.tagsalelist_container, tagSaleListFragment,getString(R.string.TAG_FRAGMENT_TAGSALELIST))
+                .commit();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -141,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
     private void onSignedInInitialize(String username) {
         mUsername = username;
       //TODO  attachDatabaseReadListener();
+
     }
     private void onSignedOutCleanup() {
         mUsername = ANONYMOUS;
