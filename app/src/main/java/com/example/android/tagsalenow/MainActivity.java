@@ -1,21 +1,23 @@
 package com.example.android.tagsalenow;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModelProviders;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.android.tagsalenow.data.TagSaleEventsViewModel;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -31,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessagesDatabaseReference;
-    private ChildEventListener mChildEventListener;
+    private DatabaseReference mTagSaleEventsDatabaseReference;
+    private ChildEventListener mTagSaleEvent_ChildEventListener;
 
     TagSaleListFragment tagSaleListFragment;
 
@@ -48,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
 
+        mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("messages");
+        mTagSaleEventsDatabaseReference = mFirebaseDatabase.getReference().child("tagsaleevents");
+
+//
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,25 +75,24 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
-                    if (user != null) {
-                        // Name, email address, and profile photo Url
-                        String name = user.getDisplayName();
-                        String email = user.getEmail();
-                        Uri photoUrl = user.getPhotoUrl();
+                    // Name, email address, and profile photo Url
+                    String name = user.getDisplayName();
+                    String email = user.getEmail();
+                    Uri photoUrl = user.getPhotoUrl();
 
+                    // Check if user's email is verified
+                    boolean emailVerified = user.isEmailVerified();
 
-                        // Check if user's email is verified
-                        boolean emailVerified = user.isEmailVerified();
+                    // The user's ID, unique to the Firebase project. Do NOT use this value to
+                    // authenticate with your backend server, if you have one. Use
+                    // FirebaseUser.getToken() instead.
+                    String uid = user.getUid();
 
-                        // The user's ID, unique to the Firebase project. Do NOT use this value to
-                        // authenticate with your backend server, if you have one. Use
-                        // FirebaseUser.getToken() instead.
-                        String uid = user.getUid();
+                    Log.d(TAG, "onAuthStateChanged: *** name["+name+"] emailverified["+emailVerified+"] email["+email+"] photourl["+photoUrl+"]");
 
-                        Log.d(TAG, "onAuthStateChanged: *** name["+name+"] email["+email+"] photourl["+photoUrl+"]");
-                    }
 
                     onSignedInInitialize(user.getDisplayName());
+
                     showTagSaleList();
                 } else {
                     // User is signed out
@@ -106,13 +112,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void showTagSaleList() {
+        //connect DB
+        TagSaleEventsViewModel viewModel = ViewModelProviders.of(this).get(TagSaleEventsViewModel.class);
+        LiveData<DataSnapshot> liveData = viewModel.getDataSnapshotLiveData();
+
         tagSaleListFragment = new TagSaleListFragment();
         Log.d(TAG, "showTagSaleList: TTTTT tagSaleListFragment =" + tagSaleListFragment);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.tagsalelist_container, tagSaleListFragment,getString(R.string.TAG_FRAGMENT_TAGSALELIST))
                 .commit();
+/*
+        TagSaleEventObject tobj = new TagSaleEventObject("200 Hill Top Dr.", "Mr. Jones",
+                "Nov 30", "8 am", "3 pm", "family stuff", "" );
+        mTagSaleEventsDatabaseReference.push().setValue(tobj);
+*/
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -123,17 +137,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.sign_out_menu:
+                AuthUI.getInstance().signOut(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -152,18 +162,42 @@ public class MainActivity extends AppCompatActivity {
     }
     private void onSignedInInitialize(String username) {
         mUsername = username;
-      //TODO  attachDatabaseReadListener();
-
+        Log.d(TAG, "onSignedInInitialize: -- username="+username);
+        attachDatabaseReadListener();
     }
     private void onSignedOutCleanup() {
         mUsername = ANONYMOUS;
       //TODO  mMessageAdapter.clear();
         detachDatabaseReadListener();
     }
+    private void attachDatabaseReadListener() {
+        Log.d(TAG, "attachDatabaseReadListener: Start");
+        if (mTagSaleEvent_ChildEventListener == null) {
+            Log.d(TAG, "attachDatabaseReadListener: Setting up  mTagSaleEvent_ChildEventListener");
+            mTagSaleEvent_ChildEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    TagSaleEventObject tagSaleEventObject = dataSnapshot.getValue(TagSaleEventObject.class);
+                    Log.d(TAG, "onChildAdded: !!!!");
+                    //NEED TO SEND THE CHANGE INFO TO fragment
+                    // mMessageAdapter.add(tagSaleEventObject);
+                }
+
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    Log.d(TAG, "onChildChanged: !!!!");
+                }
+                public void onChildRemoved(DataSnapshot dataSnapshot) {}
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+                public void onCancelled(DatabaseError databaseError) {}
+            };
+            mMessagesDatabaseReference.addChildEventListener(mTagSaleEvent_ChildEventListener);
+        }
+    }
+
     private void detachDatabaseReadListener() {
-        if (mChildEventListener != null) {
-            mMessagesDatabaseReference.removeEventListener(mChildEventListener);
-            mChildEventListener = null;
+        if (mTagSaleEvent_ChildEventListener != null) {
+            mMessagesDatabaseReference.removeEventListener(mTagSaleEvent_ChildEventListener);
+            mTagSaleEvent_ChildEventListener = null;
         }
     }
 

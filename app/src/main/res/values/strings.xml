@@ -6,5 +6,6 @@
     <string name="fake_friendsattending">4</string>
     <string name="fake_date">Nov 5</string>
 
+    <string name="sign_out">Sign Out</string>
     <string name="TAG_FRAGMENT_TAGSALELIST">tagsalelist</string>
 </resources>

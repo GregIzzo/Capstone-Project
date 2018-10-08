@@ -12,7 +12,7 @@ Tags
 event_change_counter - increments when owner makes a change
 
  */
-public class TagSaleEvent {
+public class TagSaleEventObject {
     private String locationId;
     private String ownerId;
     private String date;
@@ -22,9 +22,9 @@ public class TagSaleEvent {
     private String tags;
     private int changeCounter =0;
 
-    public TagSaleEvent(){
+    public TagSaleEventObject(){
     }
-    public TagSaleEvent(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags){
+    public TagSaleEventObject(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags){
         this.locationId = locationId;
         this.ownerId = ownerId;
         this.date= date;
