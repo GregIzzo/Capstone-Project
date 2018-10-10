@@ -13,6 +13,8 @@ import android.view.MenuItem;
 
 import com.example.android.tagsalenow.data.TagSaleEventsViewModel;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -24,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
+    private AdView mAdView;//Needed for AdMob Ad
 
     private static final String TAG = "MainActivity";
 
@@ -109,7 +112,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
+    // Create Ad
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
     private void showTagSaleList() {
         //connect DB

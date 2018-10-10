@@ -10,9 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleListRecyclerAdapter.TagSaleListAdapterViewHolder > {
 
     private static final String TAG = "ADDAPTER";
+
+    private List<TagSaleEventObject> TSEObjectList;
 
     private final TagSaleListAdapterOnClickHandler mClickHandler;
     private Context viewGroupContext;
@@ -79,17 +83,23 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
     @Override
     public void onBindViewHolder(@NonNull TagSaleListAdapterViewHolder tagSaleListAdapterViewHolder, int position) {
         Log.d(TAG, "onBindViewHolder: BBBBBB viewholder=" + tagSaleListAdapterViewHolder);
+
        tagSaleListAdapterViewHolder.indicator_iv.setVisibility(View.VISIBLE);
-       tagSaleListAdapterViewHolder.ts_placetv.setText(R.string.fake_place);
-       tagSaleListAdapterViewHolder.ts_distancetv.setText(R.string.fake_distance);
-       tagSaleListAdapterViewHolder.ts_datetv.setText(R.string.fake_date);
+       tagSaleListAdapterViewHolder.ts_placetv.setText(TSEObjectList.get(position).getLocationId());
+       tagSaleListAdapterViewHolder.ts_datetv.setText(TSEObjectList.get(position).getDate());
        tagSaleListAdapterViewHolder.ts_friendsattendingtv.setText(R.string.fake_friendsattending);
+        tagSaleListAdapterViewHolder.ts_distancetv.setText(R.string.fake_distance);
 
     }
-
+    public void addItems(List<TagSaleEventObject> TSEObjectList) {
+        this.TSEObjectList = TSEObjectList;
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
-        return 5;
+        if (TSEObjectList == null) return 0;
+        Log.d(TAG, "getItemCount: XXX ITEM COUNT="+TSEObjectList.size());
+        return TSEObjectList.size();
     }
 
     public void dataChanged(){

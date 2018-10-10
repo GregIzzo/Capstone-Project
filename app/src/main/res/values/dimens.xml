@@ -1,5 +1,5 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="tslist_left_margin">8dp</dimen>
-    <dimen name="tslist_right_margin">8dp</dimen>
+    <dimen name="tslist_left_margin">2dp</dimen>
+    <dimen name="tslist_right_margin">2dp</dimen>
 </resources>

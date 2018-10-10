@@ -20,6 +20,8 @@ public class TagSaleEventObject {
     private String endTime;
     private String description;
     private String tags;
+    //private String friendsAttending;
+
     private int changeCounter =0;
 
     public TagSaleEventObject(){
@@ -61,6 +63,10 @@ public class TagSaleEventObject {
     public String getTags() {   return tags;  }
 
     public void setTags(String tags) {   this.tags = tags;   }
+
+    //public String getFriendsAttending() {   return friendsAttending;  }
+
+    //public void setFriendsAttending(String friendsAttending) {   this.friendsAttending = friendsAttending;   }
 
     public int getChangeCounter() {    return changeCounter;   }
 

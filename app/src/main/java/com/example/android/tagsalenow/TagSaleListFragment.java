@@ -16,12 +16,17 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.android.tagsalenow.data.TagSaleEventsViewModel;
+import com.example.android.tagsalenow.utils.Utilities;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
@@ -47,38 +52,60 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
         assert recyclerView != null;
         Log.d(TAG, "onCreateView: ZZZZ recyclerview=" + recyclerView.getId());
 
+/*
         Query query = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("tagsaleevents")
                 .limitToLast(50);
 
+
         FirebaseRecyclerOptions<TagSaleEventObject> options =
                 new FirebaseRecyclerOptions.Builder<TagSaleEventObject>()
-                .setQuery(query, TagSaleEventObject.class)
-                .build();
-
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        if (mLayoutManager == null) Log.d(TAG, "onCreate: LAYOUTMANAGER IS NULL");
+                        .setQuery(query, TagSaleEventObject.class)
+                        .build();
 
 
-        recyclerView.setLayoutManager(mLayoutManager);
+        TagSaleEventViewAdapter tsAdapter = new TagSaleEventViewAdapter(options);
+        recyclerView.setAdapter(tsAdapter);
+*/
+
         tagSaleListRecyclerAdapter = new TagSaleListRecyclerAdapter(this);
+        Log.d(TAG, "onCreateView: TEST** 2ND ** Step");
         recyclerView.setAdapter(tagSaleListRecyclerAdapter);
-        tagSaleListRecyclerAdapter.dataChanged();
+        Log.d(TAG, "onCreateView: TEST** 3RD ** Step");
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        Log.d(TAG, "onCreateView: TEST** 4TH ** Step");
+        if (mLayoutManager == null) Log.d(TAG, "onCreate: LAYOUTMANAGER IS NULL");
+        recyclerView.setLayoutManager(mLayoutManager);
+        Log.d(TAG, "onCreateView: TEST** 5TH ** Step");
+
+        // tsAdapter.dataChanged();
 
         //Listen to data source
         // Obtain a new or prior instance of HotStockViewModel from the
         // ViewModelProviders utility class.
         TagSaleEventsViewModel viewModel = ViewModelProviders.of(this).get(TagSaleEventsViewModel.class);
+        Log.d(TAG, "onCreateView: TEST** 6TH ** Step");
         LiveData<DataSnapshot> liveData = viewModel.getDataSnapshotLiveData();
-
+        Log.d(TAG, "onCreateView: TEST** 7TH ** Step");
         liveData.observe(this, new Observer<DataSnapshot>() {
             @Override
             public void onChanged(@Nullable DataSnapshot dataSnapshot) {
                 if (dataSnapshot != null) {
                     // update the UI here with values in the snapshot
-                    Toast toast = Toast.makeText(mContext, "Data Changed", Toast.LENGTH_SHORT);//, "Data Changed");
+                    String place =  dataSnapshot.toString();
+                    Log.d(TAG, "onChanged: dataSnapshot::::" + place);
+                    Toast toast = Toast.makeText(mContext, place, Toast.LENGTH_SHORT);//, "Data Changed");
                     toast.show();
+
+                    Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
+                    try {
+                        Log.d(TAG, "onChanged: TRYING td.values="+td.values());
+                        List<TagSaleEventObject> values = Utilities.MapToTSEO(td);
+                        tagSaleListRecyclerAdapter.addItems(values);
+                    } catch (Exception ex){
+                        Log.d(TAG, "onChanged: TRY CATCH FAIL:" + ex.getMessage());
+                    }
                     /*
                     String ticker = dataSnapshot.child("ticker").getValue(String.class);
                     tvTicker.setText(ticker);
