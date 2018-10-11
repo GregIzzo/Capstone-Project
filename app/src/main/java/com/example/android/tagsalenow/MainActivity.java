@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.android.tagsalenow.data.TagSaleEventsViewModel;
+import com.example.android.tagsalenow.sync.SunshineSyncUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -72,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
         });
 */
         ///
+
+        Log.d(TAG, "onCreate: ***** CHECK API KEYS: ["+BuildConfig.MY_OPENWEATHERMAPORG_API_KEY+"]");
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -116,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
+        SunshineSyncUtils.initialize(this);
     }
     private void showTagSaleList() {
         //connect DB

@@ -23,6 +23,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildTypes.each {
+        it.buildConfigField 'String', 'MY_OPENWEATHERMAPORG_API_KEY', MyOpenWeathermapAPIKey
+        it.buildConfigField 'String', 'MY_ADMOB_API_KEY', MyAdMobAppID
+    }
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE-FIREBASE.txt'
@@ -54,6 +58,9 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:4.2.0'
     // Firebase Ads
     implementation 'com.google.firebase:firebase-ads:17.0.0'
+    // Firebase Job Dispatcher - to run Weather Update
+    implementation 'com.firebase:firebase-jobdispatcher:0.5.0'
+
     //glide
     implementation 'com.github.bumptech.glide:glide:4.8.0'
 
