@@ -16,6 +16,9 @@
 
     <string name="sign_out">Sign Out</string>
     <string name="TAG_FRAGMENT_TAGSALELIST">tagsalelist</string>
+    <string name="TAG_FRAGMENT_WEATHERPANEL">weatherpanel</string>
+
+    <string name="cd_weather_icon">Weather Icon</string>
 
     <!-- - - - - - - - - - - - - - -
   - Used by SunshineDateUtils  -

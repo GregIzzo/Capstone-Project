@@ -5,8 +5,10 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.example.android.tagsalenow.R;
-
-public final class SunshinePreferences {
+/*
+THIS CLASS (ORIGINALLY NAMED WeatherPreferences IS FROM THE SUNSHINE APP FROM UDACITY ANDROID NANO DEGREE
+ */
+public final class TagSalePreferences {
 
     /*
      * In order to uniquely pinpoint the location on the map when we launch the map intent, we
@@ -178,7 +180,7 @@ public final class SunshinePreferences {
      */
     public static long getEllapsedTimeSinceLastNotification(Context context) {
         long lastNotificationTimeMillis =
-                SunshinePreferences.getLastNotificationTimeInMillis(context);
+                TagSalePreferences.getLastNotificationTimeInMillis(context);
         long timeSinceLastNotification = System.currentTimeMillis() - lastNotificationTimeMillis;
         return timeSinceLastNotification;
     }

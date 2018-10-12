@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.android.tagsalenow.data.WeatherContract;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.Driver;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -128,9 +129,9 @@ public class SunshineSyncUtils {
         Thread checkForEmpty = new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "initialize: *** SUNSHINESYNCUTILS rUNNING THREAD");
+                Log.d(TAG, "initialize: *** SUNSHINESYNCUTILS rUNNING THREAD content_uri["+WeatherContract.WeatherEntry.CONTENT_URI+"]");
                 /* URI for every row of weather data in our weather table*/
-                ///G_REMOVED              Uri forecastQueryUri = WeatherContract.WeatherEntry.CONTENT_URI;
+                              Uri forecastQueryUri = WeatherContract.WeatherEntry.CONTENT_URI;
 
                 /*
                  * Since this query is going to be used only as a check to see if we have any
@@ -138,17 +139,17 @@ public class SunshineSyncUtils {
                  * row. In our queries where we display data, we need to PROJECT more columns
                  * to determine what weather details need to be displayed.
                  */
-                ///G_REMOVED                String[] projectionColumns = {WeatherContract.WeatherEntry._ID};
-                ///G_REMOVED String selectionStatement = WeatherContract.WeatherEntry
-                ///G_REMOVED         .getSqlSelectForTodayOnwards();
+                String[] projectionColumns = {WeatherContract.WeatherEntry._ID};
+                 String selectionStatement = WeatherContract.WeatherEntry
+                         .getSqlSelectForTodayOnwards();
 
                 /* Here, we perform the query to check to see if we have any weather data */
-                ///G_REMOVED Cursor cursor = context.getContentResolver().query(
-                ///G_REMOVED         forecastQueryUri,
-                ///G_REMOVED         projectionColumns,
-                ///G_REMOVED         selectionStatement,
-                ///G_REMOVED         null,
-                ///G_REMOVED         null);
+                 Cursor cursor = context.getContentResolver().query(
+                         forecastQueryUri,
+                         projectionColumns,
+                         selectionStatement,
+                         null,
+                         null);
                 /*
                  * A Cursor object can be null for various different reasons. A few are
                  * listed below.
@@ -163,12 +164,13 @@ public class SunshineSyncUtils {
                  * If the Cursor was null OR if it was empty, we need to sync immediately to
                  * be able to display data to the user.
                  */
-                ///G_REMOVED if (null == cursor || cursor.getCount() == 0) {
+                 if (null == cursor || cursor.getCount() == 0) {
                 startImmediateSync(context);
-                ///G_REMOVED }
+                 }
 
                 /* Make sure to close the Cursor to avoid memory leaks! */
-                ///G_REMOVED cursor.close();
+                if (cursor != null)
+                     cursor.close();
             }
         });
 

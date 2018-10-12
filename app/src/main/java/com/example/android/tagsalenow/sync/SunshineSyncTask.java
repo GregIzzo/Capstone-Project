@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.android.tagsalenow.data.WeatherContract;
 import com.example.android.tagsalenow.ui.OpenWeatherJsonUtils;
 import com.example.android.tagsalenow.utils.NetworkUtils;
 
@@ -47,18 +48,20 @@ public class SunshineSyncTask {
              */
             if (weatherValues != null ) {
                 /* Get a handle on the ContentResolver to delete and insert data */
-                ///G ContentResolver sunshineContentResolver = context.getContentResolver();
+                 ContentResolver sunshineContentResolver = context.getContentResolver();
 
                 /* Delete old weather data because we don't need to keep multiple days' data */
-                ///G sunshineContentResolver.delete(
-                ///G         WeatherContract.WeatherEntry.CONTENT_URI,
-                ///G         null,
-                ///G         null);
+                 sunshineContentResolver.delete(
+                         WeatherContract.WeatherEntry.CONTENT_URI,
+                         null,
+                         null);
 
                 /* Insert our new weather data into Sunshine's ContentProvider */
-                ///G  sunshineContentResolver.bulkInsert(
-                ///G         WeatherContract.WeatherEntry.CONTENT_URI,
-                ///G         weatherValues);
+                ContentValues[] arrayOfValues = new ContentValues[]{weatherValues};
+
+                  sunshineContentResolver.bulkInsert(
+                         WeatherContract.WeatherEntry.CONTENT_URI,
+                          arrayOfValues);
                 Log.d(TAG, "syncWeather GOT DATA: Description: "+weatherValues.getAsString("description")+" Temp:"+ weatherValues.getAsString("temp"));
             }
 

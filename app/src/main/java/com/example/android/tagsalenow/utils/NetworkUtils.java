@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.android.tagsalenow.BuildConfig;
-import com.example.android.tagsalenow.data.SunshinePreferences;
+import com.example.android.tagsalenow.data.TagSalePreferences;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,13 +90,13 @@ public class NetworkUtils {
      * @return URL to query weather service
      */
     public static URL getUrl(Context context) {
-        if (SunshinePreferences.isLocationLatLonAvailable(context)) {
-            double[] preferredCoordinates = SunshinePreferences.getLocationCoordinates(context);
+        if (TagSalePreferences.isLocationLatLonAvailable(context)) {
+            double[] preferredCoordinates = TagSalePreferences.getLocationCoordinates(context);
             double latitude = preferredCoordinates[0];
             double longitude = preferredCoordinates[1];
             return buildUrlWithLatitudeLongitude(latitude, longitude);
         } else {
-            String locationQuery = SunshinePreferences.getPreferredWeatherLocation(context);
+            String locationQuery = TagSalePreferences.getPreferredWeatherLocation(context);
             return buildUrlWithLocationQuery(locationQuery);
         }
     }

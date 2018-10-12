@@ -2,9 +2,14 @@ package com.example.android.tagsalenow;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -12,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.android.tagsalenow.data.TagSaleEventsViewModel;
+import com.example.android.tagsalenow.data.WeatherContract;
 import com.example.android.tagsalenow.sync.SunshineSyncUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.ads.AdRequest;
@@ -26,9 +32,34 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor> {
     private AdView mAdView;//Needed for AdMob Ad
 
+    //NOTE : WEATHER DB AND LOADING IS FROM SUNSHINE APP, FROM UDACITY ANDROID NANO DEGREE COURSE
+    private static final int ID_FORECAST_LOADER = 47;
+    /*
+     * The columns of data that we are interested in displaying within our MainActivity's list of
+     * weather data.
+     */
+    public static final String[] MAIN_FORECAST_PROJECTION = {
+            WeatherContract.WeatherEntry.COLUMN_DATE,
+            WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
+            WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
+            WeatherContract.WeatherEntry.COLUMN_DESCRIPTION
+    };
+
+    /*
+     * We store the indices of the values in the array of Strings above to more quickly be able to
+     * access the data from our query. If the order of the Strings above changes, these indices
+     * must be adjusted to match the order of the Strings.
+     */
+    public static final int INDEX_WEATHER_DATE = 0;
+    public static final int INDEX_WEATHER_MAX_TEMP = 1;
+    public static final int INDEX_WEATHER_MIN_TEMP = 2;
+    public static final int INDEX_WEATHER_CONDITION_ID = 3;
+    ///////////////////////////////////////////
     private static final String TAG = "MainActivity";
 
     public static final String ANONYMOUS = "anonymous";
@@ -41,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private ChildEventListener mTagSaleEvent_ChildEventListener;
 
     TagSaleListFragment tagSaleListFragment;
+    WeatherFragment weatherFragment;
 
     private String mUsername;
 
@@ -75,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         ///
 
         Log.d(TAG, "onCreate: ***** CHECK API KEYS: ["+BuildConfig.MY_OPENWEATHERMAPORG_API_KEY+"]");
-
+        Context myContext = this;
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -100,7 +132,11 @@ public class MainActivity extends AppCompatActivity {
 
                     onSignedInInitialize(user.getDisplayName());
 
+                 //   getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, myContext);
+
+                    SunshineSyncUtils.initialize(getApplicationContext());
                     showTagSaleList();
+                    showWeatherDataView();
                 } else {
                     // User is signed out
                     onSignedOutCleanup();
@@ -120,8 +156,6 @@ public class MainActivity extends AppCompatActivity {
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-
-        SunshineSyncUtils.initialize(this);
     }
     private void showTagSaleList() {
         //connect DB
@@ -133,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.tagsalelist_container, tagSaleListFragment,getString(R.string.TAG_FRAGMENT_TAGSALELIST))
                 .commit();
+
+
 /*
         TagSaleEventObject tobj = new TagSaleEventObject("200 Hill Top Dr.", "Mr. Jones",
                 "Nov 30", "8 am", "3 pm", "family stuff", "" );
@@ -213,4 +249,83 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
+
+
+        switch (loaderId) {
+
+            case ID_FORECAST_LOADER:
+                /* URI for all rows of weather data in our weather table */
+                Uri forecastQueryUri = WeatherContract.WeatherEntry.CONTENT_URI;
+                /* Sort order: Ascending by date */
+                String sortOrder = WeatherContract.WeatherEntry.COLUMN_DATE + " ASC";
+                /*
+                 * A SELECTION in SQL declares which rows you'd like to return. In our case, we
+                 * want all weather data from today onwards that is stored in our weather table.
+                 * We created a handy method to do that in our WeatherEntry class.
+                 */
+                String selection = WeatherContract.WeatherEntry.getSqlSelectForTodayOnwards();
+
+                return new CursorLoader(this,
+                        forecastQueryUri,
+                        MAIN_FORECAST_PROJECTION,
+                        selection,
+                        null,
+                        sortOrder);
+
+            default:
+                throw new RuntimeException("Loader Not Implemented: " + loaderId);
+        }
+    }
+
+    /**
+     * Called when a Loader has finished loading its data.
+     *
+     * NOTE: There is one small bug in this code. If no data is present in the cursor do to an
+     * initial load being performed with no access to internet, the loading indicator will show
+     * indefinitely, until data is present from the ContentProvider. This will be fixed in a
+     * future version of the course.
+     *
+     * @param loader The Loader that has finished.
+     * @param data   The data generated by the Loader.
+     */
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+       // mForecastAdapter.swapCursor(data);
+       // if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
+      //  mRecyclerView.smoothScrollToPosition(mPosition);
+       // if (data.getCount() != 0)
+            updateWeatherData(data);
+    }
+
+    /**
+     * Called when a previously created loader is being reset, and thus making its data unavailable.
+     * The application should at this point remove any references it has to the Loader's data.
+     *
+     * @param loader The Loader that is being reset.
+     */
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        /*
+         * Since this Loader's data is now invalid, we need to clear the Adapter that is
+         * displaying the data.
+         */
+       // mForecastAdapter.swapCursor(null);
+    }
+    private void showWeatherDataView() {
+        /* First, hide the loading indicator */
+        //mLoadingIndicator.setVisibility(View.INVISIBLE);
+        /* Finally, make sure the weather data is visible */
+        weatherFragment = new WeatherFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.weather_container, weatherFragment,getString(R.string.TAG_FRAGMENT_WEATHERPANEL))
+                .commit();
+
+
+    }
+    private void updateWeatherData(Cursor data){
+        Log.d(TAG, "updateWeatherData: --- WeatherData In MAIN:"+data.toString());
+    }
 }
