@@ -18,6 +18,9 @@
     <string name="TAG_FRAGMENT_TAGSALELIST">tagsalelist</string>
     <string name="TAG_FRAGMENT_WEATHERPANEL">weatherpanel</string>
 
+    <string name="wf_temperature_label">Temperature : </string>
+    <string name="wf_temperature_units"> &#176; F</string>
+
     <string name="cd_weather_icon">Weather Icon</string>
 
     <!-- - - - - - - - - - - - - - -

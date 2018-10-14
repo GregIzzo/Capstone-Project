@@ -29,6 +29,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/weather_description"
         app:layout_constraintLeft_toRightOf="@id/weather_icon"
-        android:background="@color/colorPrimaryDark"/>
+        android:background="@color/colorLightBlue"/>
 
 </android.support.constraint.ConstraintLayout>
