@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    >
+    <Button
+        android:id="@+id/button_addtagsale"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_tagsale"
+        style="@style/Widget.AppCompat.Button.Colored"/>
+    <android.support.v7.widget.RecyclerView
 
-    android:id="@+id/rv_tagsalelist"
-   android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/tslist_left_margin"
-    android:layout_marginEnd="@dimen/tslist_right_margin"
+        android:id="@+id/rv_tagsalelist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/tslist_left_margin"
+        android:layout_marginEnd="@dimen/tslist_right_margin"
 
-    tools:context="com.example.android.tagsalenow.TagSaleListFragment"
+        tools:context="com.example.android.tagsalenow.TagSaleListFragment"
 
-    tools:listitem="@layout/tagsalelistitem" />
+        tools:listitem="@layout/tagsalelistitem" />
+</LinearLayout>

@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.android.tagsalenow.data.TagSaleEventsViewModel;
@@ -35,8 +37,16 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
     private static final String TAG = "GGG";
     private RecyclerView recyclerView;
     private TagSaleListRecyclerAdapter tagSaleListRecyclerAdapter;
+    private Button btn_AddTagSale;
 
     private Context mContext;
+    //Setup Click listener to report the event to anyone listening
+    OnButtonClickListener mCallback;
+
+    public interface OnButtonClickListener {
+        void onAddButtonClicked();
+    }
+
 
     public TagSaleListFragment(){
     }
@@ -51,7 +61,14 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
         recyclerView = rootView.findViewById(R.id.rv_tagsalelist);
         assert recyclerView != null;
         Log.d(TAG, "onCreateView: ZZZZ recyclerview=" + recyclerView.getId());
-
+        btn_AddTagSale = (Button) rootView.findViewById(R.id.button_addtagsale);
+        btn_AddTagSale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //launch add-tag-sale-activity
+                mCallback.onAddButtonClicked();
+            }
+        });
 /*
         Query query = FirebaseDatabase.getInstance()
                 .getReference()
@@ -130,6 +147,12 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+
+        try {
+            mCallback = (OnButtonClickListener) context;
+        } catch (ClassCastException e){
+            throw new ClassCastException(context.toString() + " Must implement OnImageClickListener");
+        }
     }
 
     @Override

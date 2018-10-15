@@ -3,4 +3,5 @@
     <dimen name="tslist_left_margin">2dp</dimen>
     <dimen name="tslist_right_margin">2dp</dimen>
     <dimen name="tslist_fattend_left_margin">4dp</dimen>
+    <dimen name="tslist_addbutton_top_bottom_margin">4dp</dimen>
 </resources>

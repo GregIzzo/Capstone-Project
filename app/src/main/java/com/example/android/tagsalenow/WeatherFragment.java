@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -51,6 +52,9 @@ public class WeatherFragment extends Fragment {
         iv_WeatherIcon = rootView.findViewById(R.id.weather_icon);
         tv_weather_description = rootView.findViewById(R.id.weather_description);
         tv_weather_temp = rootView.findViewById(R.id.weather_temp);
+
+
+
 
         viewModel = ViewModelProviders.of(this).get(WeatherViewModel.class);
 

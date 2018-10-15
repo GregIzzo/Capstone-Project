@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.android.tagsalenow.data.TagSaleEventsViewModel;
 import com.example.android.tagsalenow.data.WeatherContract;
@@ -33,7 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, TagSaleListFragment.OnButtonClickListener {
     private AdView mAdView;//Needed for AdMob Ad
 
     //NOTE : WEATHER DB AND LOADING IS FROM SUNSHINE APP, FROM UDACITY ANDROID NANO DEGREE COURSE
@@ -327,5 +328,12 @@ public class MainActivity extends AppCompatActivity implements
     }
     private void updateWeatherData(Cursor data){
         Log.d(TAG, "updateWeatherData: --- WeatherData In MAIN:"+data.toString());
+    }
+
+    @Override
+    public void onAddButtonClicked() {
+        Toast toast = Toast.makeText(this, "Main heard button click", Toast.LENGTH_SHORT);//, "Data Changed");
+        toast.show();
+
     }
 }
