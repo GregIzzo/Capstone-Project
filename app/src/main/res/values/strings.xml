@@ -8,6 +8,7 @@
 
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">TagSaleNow</string>
+    <string name="act_name_addtagsale">AddTagSale</string>
     <string name="action_settings">Settings</string>
     <string name="fake_place">100 Main St.</string>
     <string name="fake_distance">3.5 m</string>
@@ -34,6 +35,9 @@
     <string name="hint_time_start">Start</string>
     <string name="hint_time_end">End</string>
     <string name="hint_description">Description</string>
+
+    <string name="button_cancel">Cancel</string>
+    <string name="button_add">Add</string>
 
     <!-- - - - - - - - - - - - - - -
   - Used by SunshineDateUtils  -

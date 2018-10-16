@@ -32,6 +32,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".AddTagSaleActivity"
+            android:label="@string/act_name_addtagsale"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.tagsalenow.MainActivity" />
+        </activity>
+
         <!--This is required for immediate syncs -->
         <service
             android:name=".sync.SunshineSyncIntentService"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_weather"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,19 +16,25 @@
     android:background="@color/colorAccent"
     />
     <TextView
-        android:id="@+id/weather_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/weather_icon"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/colorPrimary"
-        />
-    <TextView
+        style="@style/WeatherForecastLarge"
         android:id="@+id/weather_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/weather_description"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/weather_icon"
-        android:background="@color/colorLightBlue"/>
+        app:layout_constraintBottom_toBottomOf="@id/weather_icon"
+        android:background="@color/colorLightBlue"
+        tools:text="19\u00b0"/>
+    <TextView
+        style="@style/WeatherForecastMed"
+        android:id="@+id/weather_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/weather_temp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/weather_icon"
+        android:background="@color/colorPrimary"
+        tools:text="Sunny"
+        />
 
 </android.support.constraint.ConstraintLayout>

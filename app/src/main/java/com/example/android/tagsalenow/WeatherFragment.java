@@ -66,8 +66,7 @@ public class WeatherFragment extends Fragment {
                 if (weatherModels.size() > 0) {
                     WeatherModel weather = weatherModels.get(0);//get first
                     setWeatherDescription(weather.getDescription());
-                    setWeatherTemp( getString(R.string.wf_temperature_label) +
-                            " " +
+                    setWeatherTemp(
                             String.format("%.2f", weather.getTemperature()) +
                             getString(R.string.wf_temperature_units));
                     setWeatherIcon(weather.getIcon());

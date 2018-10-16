@@ -3,6 +3,7 @@ package com.example.android.tagsalenow;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -332,8 +333,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onAddButtonClicked() {
-        Toast toast = Toast.makeText(this, "Main heard button click", Toast.LENGTH_SHORT);//, "Data Changed");
-        toast.show();
-
+        Intent intent = new Intent(this, AddTagSaleActivity.class);
+        startActivity(intent);
     }
 }

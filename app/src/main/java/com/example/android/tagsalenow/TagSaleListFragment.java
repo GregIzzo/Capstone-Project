@@ -113,7 +113,7 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
                     String place =  dataSnapshot.toString();
                     Log.d(TAG, "onChanged: dataSnapshot::::" + place);
                     Toast toast = Toast.makeText(mContext, place, Toast.LENGTH_SHORT);//, "Data Changed");
-                    toast.show();
+                   toast.show();
 
                     Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
                     try {
