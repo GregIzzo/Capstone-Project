@@ -26,7 +26,8 @@ public class TagSaleEventObject {
 
     public TagSaleEventObject(){
     }
-    public TagSaleEventObject(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags){
+    public TagSaleEventObject(String locationId, String ownerId, String date, String startTime,
+                              String endTime, String description, String tags){
         this.locationId = locationId;
         this.ownerId = ownerId;
         this.date= date;

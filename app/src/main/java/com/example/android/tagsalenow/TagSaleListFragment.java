@@ -123,12 +123,6 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
                     } catch (Exception ex){
                         Log.d(TAG, "onChanged: TRY CATCH FAIL:" + ex.getMessage());
                     }
-                    /*
-                    String ticker = dataSnapshot.child("ticker").getValue(String.class);
-                    tvTicker.setText(ticker);
-                    Float price = dataSnapshot.child("price").getValue(Float.class);
-                    tvPrice.setText(String.format(Locale.getDefault(), "%.2f", price));
-                    */
                 }
             }
         });
