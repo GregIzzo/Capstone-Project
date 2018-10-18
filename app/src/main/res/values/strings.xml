@@ -26,6 +26,7 @@
 
     <string name="plus_sign">+</string>
     <string name="add_tagsale">Add Tag Sale</string>
+    <string name="add_friend">Add Friend</string>
     <!-- Tag Sale Entry -->
     <string name="hint_address">Address</string>
     <string name="hint_city">City</string>

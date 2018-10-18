@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -32,7 +33,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, TagSaleListFragment.OnButtonClickListener {
@@ -71,12 +74,16 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessagesDatabaseReference;
     private DatabaseReference mTagSaleEventsDatabaseReference;
+    private DatabaseReference mTagSaleUsersDatabaseReference;
+
     private ChildEventListener mTagSaleEvent_ChildEventListener;
+    private ChildEventListener mTagSaleUser_ChildEventListener;
 
     TagSaleListFragment tagSaleListFragment;
     WeatherFragment weatherFragment;
 
     private String mUsername;
+    private TagSaleUserObject mCurrentUserObject;
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -91,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("messages");
         mTagSaleEventsDatabaseReference = mFirebaseDatabase.getReference().child("tagsaleevents");
-
+        mTagSaleUsersDatabaseReference = mFirebaseDatabase.getReference().child("tagsaleusers");
 //
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -117,9 +124,11 @@ public class MainActivity extends AppCompatActivity implements
                 if (user != null) {
                     // User is signed in
                     // Name, email address, and profile photo Url
+                    String uid = user.getUid();
                     String name = user.getDisplayName();
                     String email = user.getEmail();
                     Uri photoUrl = user.getPhotoUrl();
+
 
                     // Check if user's email is verified
                     boolean emailVerified = user.isEmailVerified();
@@ -127,12 +136,27 @@ public class MainActivity extends AppCompatActivity implements
                     // The user's ID, unique to the Firebase project. Do NOT use this value to
                     // authenticate with your backend server, if you have one. Use
                     // FirebaseUser.getToken() instead.
-                    String uid = user.getUid();
+                   // String uid = user.getUid();
 
                     Log.d(TAG, "onAuthStateChanged: *** name["+name+"] emailverified["+emailVerified+"] email["+email+"] photourl["+photoUrl+"]");
+                    String currentDateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                    String photostring = "";
+                    if (photoUrl != null) photostring =  photoUrl.toString();
+                    mCurrentUserObject = new TagSaleUserObject(uid, currentDateString, name, email, photostring);
+                    onSignedInInitialize(mCurrentUserObject);
+/*
+                    DatabaseReference uref = mFirebaseDatabase.getReference().child("tagsaleusers/"+uid);
+                   // var starCountRef = firebase.database().ref('posts/' + postId + '/starCount');
+                    Log.d(TAG, "onAuthStateChanged: user check ref=" + uref);
 
-
-                    onSignedInInitialize(user.getDisplayName());
+                    if (uref == null){
+                        String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+                        Log.d(TAG, "onAuthStateChanged: GGG Date="+ date);
+                        TagSaleUserObject to = new TagSaleUserObject(uid, date, name, email, photoUrl.toString());
+                        mTagSaleUsersDatabaseReference.child(uid).setValue(to);
+                        Log.d(TAG, "onAuthStateChanged: GGG to="+ to.toString());
+                    }
+*/
 
                  //   getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, myContext);
 
@@ -210,10 +234,18 @@ public class MainActivity extends AppCompatActivity implements
        //TODO mMessageAdapter.clear();
         detachDatabaseReadListener();
     }
-    private void onSignedInInitialize(String username) {
-        mUsername = username;
-        Log.d(TAG, "onSignedInInitialize: -- username="+username);
+    private void onSignedInInitialize(TagSaleUserObject userObject) {
+        mUsername = userObject.getDisplayName();
+        Log.d(TAG, "onSignedInInitialize: -- username="+mUsername);
+        //add record ifit doesn't exist
         attachDatabaseReadListener();
+        if (mCurrentUserObject != null){
+            //add/update current user record
+            String whatId = mCurrentUserObject.getUserId();
+
+            mTagSaleUsersDatabaseReference.child(whatId).setValue(mCurrentUserObject);
+        }
+
     }
     private void onSignedOutCleanup() {
         mUsername = ANONYMOUS;
@@ -221,27 +253,66 @@ public class MainActivity extends AppCompatActivity implements
         detachDatabaseReadListener();
     }
     private void attachDatabaseReadListener() {
-        Log.d(TAG, "attachDatabaseReadListener: Start");
+        //
+        // LISTEN FOR TAGSALEEVENT CHANGES
+        //
         if (mTagSaleEvent_ChildEventListener == null) {
-            Log.d(TAG, "attachDatabaseReadListener: Setting up  mTagSaleEvent_ChildEventListener");
-            mTagSaleEvent_ChildEventListener = new ChildEventListener() {
+             mTagSaleEvent_ChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     TagSaleEventObject tagSaleEventObject = dataSnapshot.getValue(TagSaleEventObject.class);
-                    Log.d(TAG, "onChildAdded: !!!!");
+                    Log.d(TAG, "TAGSALEEVENT ChildAdded:("+s+") !!!!:" + tagSaleEventObject.getLocationId());
                     //NEED TO SEND THE CHANGE INFO TO fragment
                     // mMessageAdapter.add(tagSaleEventObject);
                 }
-
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    Log.d(TAG, "onChildChanged: !!!!");
+                    TagSaleEventObject tagSaleEventObject = dataSnapshot.getValue(TagSaleEventObject.class);
+                    Log.d(TAG, "TAGSALEEVENT ChildChanged: TagSaleEvent !!!!:"+tagSaleEventObject.getLocationId());
                 }
                 public void onChildRemoved(DataSnapshot dataSnapshot) {}
                 public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-                public void onCancelled(DatabaseError databaseError) {}
+                public void onCancelled(DatabaseError databaseError) {
+                    //ERROR - probably a permission problem
+                }
             };
-            mMessagesDatabaseReference.addChildEventListener(mTagSaleEvent_ChildEventListener);
+            mTagSaleEventsDatabaseReference.addChildEventListener(mTagSaleEvent_ChildEventListener);
         }
+        //
+        // LISTEN FOR TAGSALEUSER CHANGES
+        //
+        if (mTagSaleUser_ChildEventListener == null){
+            mTagSaleUser_ChildEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    //When first attached, this method is called for every object in the DB
+                    TagSaleUserObject tagSaleUserObject = dataSnapshot.getValue(TagSaleUserObject.class);
+                    Log.d(TAG, "TAGSALEUSER onChildAdded: added:" + tagSaleUserObject.getDisplayName());
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    TagSaleUserObject tagSaleUserObject = dataSnapshot.getValue(TagSaleUserObject.class);
+                    Log.d(TAG, "TAGSALEUSER ChildChanged: added:" + tagSaleUserObject.getDisplayName());
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+            mTagSaleUsersDatabaseReference.addChildEventListener(mTagSaleUser_ChildEventListener);
+        }
+
     }
 
     private void detachDatabaseReadListener() {
@@ -254,8 +325,6 @@ public class MainActivity extends AppCompatActivity implements
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
-
-
         switch (loaderId) {
 
             case ID_FORECAST_LOADER:
@@ -324,8 +393,6 @@ public class MainActivity extends AppCompatActivity implements
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.weather_container, weatherFragment,getString(R.string.TAG_FRAGMENT_WEATHERPANEL))
                 .commit();
-
-
     }
     private void updateWeatherData(Cursor data){
         Log.d(TAG, "updateWeatherData: --- WeatherData In MAIN:"+data.toString());
