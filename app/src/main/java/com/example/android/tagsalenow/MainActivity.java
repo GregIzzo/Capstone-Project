@@ -75,9 +75,11 @@ public class MainActivity extends AppCompatActivity implements
     private DatabaseReference mMessagesDatabaseReference;
     private DatabaseReference mTagSaleEventsDatabaseReference;
     private DatabaseReference mTagSaleUsersDatabaseReference;
+    private DatabaseReference mFriendsDatabaseReference;
 
     private ChildEventListener mTagSaleEvent_ChildEventListener;
     private ChildEventListener mTagSaleUser_ChildEventListener;
+    private ChildEventListener mFriends_ChildEventListener;
 
     TagSaleListFragment tagSaleListFragment;
     WeatherFragment weatherFragment;
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements
         mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("messages");
         mTagSaleEventsDatabaseReference = mFirebaseDatabase.getReference().child("tagsaleevents");
         mTagSaleUsersDatabaseReference = mFirebaseDatabase.getReference().child("tagsaleusers");
+        mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends");
 //
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -242,7 +245,6 @@ public class MainActivity extends AppCompatActivity implements
         if (mCurrentUserObject != null){
             //add/update current user record
             String whatId = mCurrentUserObject.getUserId();
-
             mTagSaleUsersDatabaseReference.child(whatId).setValue(mCurrentUserObject);
         }
 
@@ -288,31 +290,52 @@ public class MainActivity extends AppCompatActivity implements
                     TagSaleUserObject tagSaleUserObject = dataSnapshot.getValue(TagSaleUserObject.class);
                     Log.d(TAG, "TAGSALEUSER onChildAdded: added:" + tagSaleUserObject.getDisplayName());
                 }
-
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     TagSaleUserObject tagSaleUserObject = dataSnapshot.getValue(TagSaleUserObject.class);
                     Log.d(TAG, "TAGSALEUSER ChildChanged: added:" + tagSaleUserObject.getDisplayName());
                 }
-
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
                 }
-
                 @Override
                 public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
                 }
             };
             mTagSaleUsersDatabaseReference.addChildEventListener(mTagSaleUser_ChildEventListener);
         }
 
+        //
+        // LISTEN FOR FRIENDS CHANGES
+        //
+        if (mFriends_ChildEventListener == null){
+            mFriends_ChildEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    //When first attached, this method is called for every object in the DB
+                    FriendRelationObject friendRelationObject = dataSnapshot.getValue(FriendRelationObject.class);
+                    Log.d(TAG, "FRIENDS onChildAdded: added:" + friendRelationObject.getFriendId1()+" - " + friendRelationObject.getFriendId2());
+                }
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    FriendRelationObject friendRelationObject = dataSnapshot.getValue(FriendRelationObject.class);
+                    Log.d(TAG, "FRIENDS onChildAdded: changed:" + friendRelationObject.getFriendId1()+" - " + friendRelationObject.getFriendId2());
+                }
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                }
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            };
+            mFriendsDatabaseReference.addChildEventListener(mFriends_ChildEventListener);
+        }
     }
 
     private void detachDatabaseReadListener() {
