@@ -103,28 +103,46 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
         // ViewModelProviders utility class.
         TagSaleEventsViewModel viewModel = ViewModelProviders.of(this).get(TagSaleEventsViewModel.class);
         Log.d(TAG, "onCreateView: TEST** 6TH ** Step");
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapshotLiveData();
+        LiveData<List<TagSaleEventObject>> liveData = viewModel.getTagSaleEventObjectLiveData();
         Log.d(TAG, "onCreateView: TEST** 7TH ** Step");
-        liveData.observe(this, new Observer<DataSnapshot>() {
+
+
+        liveData.observe(this, new Observer<List<TagSaleEventObject>>() {
+
             @Override
-            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
+            public void onChanged(@Nullable List<TagSaleEventObject> tagSaleEventObjects) {
+                if (tagSaleEventObjects != null) {
+                    Log.d(TAG, "onChanged: TAGSALELISTFRAGMENT TAGSALEEVENTS Data changed");
+                   try{
+                       tagSaleListRecyclerAdapter.addItems(tagSaleEventObjects);
+                   } catch (Exception ex){
+
+                   }
+
+                }
+            }
+/*
+            @Override
+            public void onChanged(@Nullable TagSaleEventObject tagSaleEventObject) {
+                if (tagSaleEventObject != null) {
                     // update the UI here with values in the snapshot
-                    String place =  dataSnapshot.toString();
-                    Log.d(TAG, "onChanged: dataSnapshot::::" + place);
+                    String place =  tagSaleEventObject.toString();
+                    Log.d(TAG, "onChanged: dataSnapshot::::" + tagSaleEventObject.getLocationId());
                     Toast toast = Toast.makeText(mContext, place, Toast.LENGTH_SHORT);//, "Data Changed");
                    toast.show();
 
-                    Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
+                    //Map<String, Object> td = (HashMap<String,Object>) tagSaleEventObject.getValue();
                     try {
-                        Log.d(TAG, "onChanged: TRYING td.values="+td.values());
-                        List<TagSaleEventObject> values = Utilities.MapToTSEO(td);
-                        tagSaleListRecyclerAdapter.addItems(values);
+                        Log.d(TAG, "onChanged:TTT tagSaleEventObject="+tagSaleEventObject.toString());
+                        ///FIXME List<TagSaleEventObject> values = Utilities.MapToTSEO(td);
+                       ///FIXME tagSaleListRecyclerAdapter.addItems(values);
                     } catch (Exception ex){
                         Log.d(TAG, "onChanged: TRY CATCH FAIL:" + ex.getMessage());
                     }
                 }
             }
+
+            */
         });
 
         //add record

@@ -188,8 +188,8 @@ public class MainActivity extends AppCompatActivity implements
     }
     private void showTagSaleList() {
         //connect DB
-        TagSaleEventsViewModel viewModel = ViewModelProviders.of(this).get(TagSaleEventsViewModel.class);
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapshotLiveData();
+        //TagSaleEventsViewModel viewModel = ViewModelProviders.of(this).get(TagSaleEventsViewModel.class);
+        //LiveData<TagSaleEventObject> liveData = viewModel.getTagSaleEventObjectLiveData();
 
         tagSaleListFragment = new TagSaleListFragment();
         Log.d(TAG, "showTagSaleList: TTTTT tagSaleListFragment =" + tagSaleListFragment);
