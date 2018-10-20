@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.example.android.tagsalenow.ui.DatePickerFragment;
 import com.example.android.tagsalenow.ui.TimePickerFragment;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -18,10 +19,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddTagSaleActivity extends AppCompatActivity implements TimePickerFragment.TimePickedListener {
+public class AddTagSaleActivity extends AppCompatActivity implements TimePickerFragment.TimePickedListener, DatePickerFragment.DatePickerListener {
 
     private static String TIMESTARTTAG = "timeStartTag";
     private static String TIMEENDTAG = "timeEndTag";
+    private static String DATETAG = "date";
     @BindView(R.id.te_address) TextView te_address;
     @BindView(R.id.te_city) TextView te_city;
     @BindView(R.id.te_state) TextView te_state;
@@ -38,6 +40,14 @@ public class AddTagSaleActivity extends AppCompatActivity implements TimePickerF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addtagsale);
         ButterKnife.bind(this);
+        te_date.setOnClickListener(new View.OnClickListener() {
+            //when clicked, launch the picker dialog
+            @Override
+            public void onClick(View view) {
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getSupportFragmentManager(), DATETAG);
+            }
+        });
         te_time_start.setOnClickListener(new View.OnClickListener() {
             //when clicked, launch the picker dialog
             @Override
@@ -75,10 +85,10 @@ public class AddTagSaleActivity extends AppCompatActivity implements TimePickerF
                 String temporaryTags = "";
                 TagSaleEventObject tso = new TagSaleEventObject(location.toString(),
                         "Fred",
-                        te_date.toString(),
-                        te_time_start.toString(),
-                        te_time_end.toString(),
-                        te_description.toString(),
+                        te_date.getText().toString(),
+                        te_time_start.getText().toString(),
+                        te_time_end.getText().toString(),
+                        te_description.getText().toString(),
                         temporaryTags);
                 //mMessagesDatabaseReference.push().setValue(friendlyMessage);
                 mTagSaleEventsDatabaseReference.push().setValue(tso);
@@ -106,5 +116,10 @@ public class AddTagSaleActivity extends AppCompatActivity implements TimePickerF
         {
             te_time_end.setText(time);
         }
+    }
+
+    @Override
+    public void onDatePicked(String dateString) {
+        te_date.setText(dateString);
     }
 }

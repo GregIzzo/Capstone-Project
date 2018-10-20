@@ -6,6 +6,10 @@
     <dimen name="tslist_addbutton_top_bottom_margin">4dp</dimen>
     <dimen name="tsadd_horiz_padd">25dp</dimen>
 
+    <dimen name="frlist_left_margin">2dp</dimen>
+    <dimen name="frlist_right_margin">2dp</dimen>
+
+
     <dimen name="style_weather_large_font">24sp</dimen>
     <dimen name="style_weather_medium_font">14sp</dimen>
 </resources>

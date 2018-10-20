@@ -34,9 +34,9 @@ import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class FriendsListFragment extends Fragment implements FriendsListRecyclerAdapter.FriendsListAdapterOnClickHandler {
 
-    private static final String TAG = "GGG";
+    private static final String TAG = "FRIENDSLISTFRAGMENT";
     private RecyclerView recyclerView;
-    private FriendsListRecyclerAdapter FriendsListRecyclerAdapter;
+    private FriendsListRecyclerAdapter friendsListRecyclerAdapter;
     private Button btn_AddFriend;
 
     private Context mContext;
@@ -44,7 +44,7 @@ public class FriendsListFragment extends Fragment implements FriendsListRecycler
     OnButtonClickListener mCallback;
 
     public interface OnButtonClickListener {
-        void onAddButtonClicked();
+        void onAddButtonClicked(String tag);
     }
 
 
@@ -60,25 +60,21 @@ public class FriendsListFragment extends Fragment implements FriendsListRecycler
         View rootView = inflater.inflate(R.layout.fragment_friendlist, container, false);
         recyclerView = rootView.findViewById(R.id.rv_friendslist);
         assert recyclerView != null;
-        Log.d(TAG, "onCreateView: ZZZZ recyclerview=" + recyclerView.getId());
+        Log.d(TAG, "onCreateView: ZZZZ FriendListFragment.recyclerview=" + recyclerView.getId());
         btn_AddFriend = (Button) rootView.findViewById(R.id.button_addfriend);
         btn_AddFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //launch add-friend-activity
-                mCallback.onAddButtonClicked();
+                mCallback.onAddButtonClicked(getString(R.string.TAG_FRAGMENT_FRIENDLIST));
             }
         });
 
-        FriendsListRecyclerAdapter = new FriendsListRecyclerAdapter(this);
-        Log.d(TAG, "onCreateView: TEST** 2ND ** Step");
-        recyclerView.setAdapter(FriendsListRecyclerAdapter);
-        Log.d(TAG, "onCreateView: TEST** 3RD ** Step");
+        friendsListRecyclerAdapter = new FriendsListRecyclerAdapter(this);
+        recyclerView.setAdapter(friendsListRecyclerAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        Log.d(TAG, "onCreateView: TEST** 4TH ** Step");
         if (mLayoutManager == null) Log.d(TAG, "onCreate: LAYOUTMANAGER IS NULL");
         recyclerView.setLayoutManager(mLayoutManager);
-        Log.d(TAG, "onCreateView: TEST** 5TH ** Step");
 
         // tsAdapter.dataChanged();
 
@@ -86,26 +82,17 @@ public class FriendsListFragment extends Fragment implements FriendsListRecycler
         // Obtain a new or prior instance of HotStockViewModel from the
         // ViewModelProviders utility class.
         FriendsViewModel viewModel = ViewModelProviders.of(this).get(FriendsViewModel.class);
-        Log.d(TAG, "onCreateView: TEST** 6TH ** Step");
-        LiveData<DataSnapshot> liveData = viewModel.getDataSnapshotLiveData();
-        Log.d(TAG, "onCreateView: TEST** 7TH ** Step");
-        liveData.observe(this, new Observer<DataSnapshot>() {
-            @Override
-            public void onChanged(@Nullable DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
-                    // update the UI here with values in the snapshot
-                    String friendname =  dataSnapshot.toString();
-                    Log.d(TAG, "onChanged: dataSnapshot::::" + friendname);
-                    Toast toast = Toast.makeText(mContext, friendname, Toast.LENGTH_SHORT);//, "Data Changed");
-                    toast.show();
+        LiveData<List<FriendRelationObject>> liveData = viewModel.getFriendRelationObjectLiveData();
 
-                    Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
-                    try {
-                        Log.d(TAG, "onChanged: TRYING td.values="+td.values());
-                        List<FriendRelationObject> values = Utilities.MapToFRO(td);
-                        FriendsListRecyclerAdapter.addItems(values);
+        liveData.observe(this, new Observer<List<FriendRelationObject>>() {
+            @Override
+            public void onChanged(@Nullable List<FriendRelationObject> friendRelationObjects) {
+                if (friendRelationObjects != null) {
+                    Log.d(TAG, "onChanged: FRIENDRELATAION  Data changed :"+friendRelationObjects.toString());
+                    try{
+                        friendsListRecyclerAdapter.addItems(friendRelationObjects);
                     } catch (Exception ex){
-                        Log.d(TAG, "onChanged: TRY CATCH FAIL:" + ex.getMessage());
+                        Log.d(TAG, "FriendsListFragment - onChange - Exception: "+ex.getMessage());
                     }
                 }
             }

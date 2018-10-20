@@ -44,7 +44,7 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
     OnButtonClickListener mCallback;
 
     public interface OnButtonClickListener {
-        void onAddButtonClicked();
+        void onAddButtonClicked(String tag);
     }
 
 
@@ -66,7 +66,7 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
             @Override
             public void onClick(View view) {
                 //launch add-tag-sale-activity
-                mCallback.onAddButtonClicked();
+                mCallback.onAddButtonClicked(getString(R.string.TAG_FRAGMENT_TAGSALELIST));
             }
         });
 /*
@@ -87,14 +87,10 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
 */
 
         tagSaleListRecyclerAdapter = new TagSaleListRecyclerAdapter(this);
-        Log.d(TAG, "onCreateView: TEST** 2ND ** Step");
         recyclerView.setAdapter(tagSaleListRecyclerAdapter);
-        Log.d(TAG, "onCreateView: TEST** 3RD ** Step");
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        Log.d(TAG, "onCreateView: TEST** 4TH ** Step");
         if (mLayoutManager == null) Log.d(TAG, "onCreate: LAYOUTMANAGER IS NULL");
         recyclerView.setLayoutManager(mLayoutManager);
-        Log.d(TAG, "onCreateView: TEST** 5TH ** Step");
 
         // tsAdapter.dataChanged();
 
@@ -102,13 +98,9 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
         // Obtain a new or prior instance of HotStockViewModel from the
         // ViewModelProviders utility class.
         TagSaleEventsViewModel viewModel = ViewModelProviders.of(this).get(TagSaleEventsViewModel.class);
-        Log.d(TAG, "onCreateView: TEST** 6TH ** Step");
         LiveData<List<TagSaleEventObject>> liveData = viewModel.getTagSaleEventObjectLiveData();
-        Log.d(TAG, "onCreateView: TEST** 7TH ** Step");
-
 
         liveData.observe(this, new Observer<List<TagSaleEventObject>>() {
-
             @Override
             public void onChanged(@Nullable List<TagSaleEventObject> tagSaleEventObjects) {
                 if (tagSaleEventObjects != null) {
@@ -118,7 +110,6 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
                    } catch (Exception ex){
 
                    }
-
                 }
             }
 /*
@@ -152,7 +143,7 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
 
     @Override
     public void onClick(int listPosition) {
-
+        Log.d(TAG, "onClick: CLICK POSITION:" + listPosition);
     }
 
     @Override

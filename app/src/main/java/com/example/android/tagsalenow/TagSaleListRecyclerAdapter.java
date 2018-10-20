@@ -86,9 +86,9 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
 
        tagSaleListAdapterViewHolder.indicator_iv.setVisibility(View.VISIBLE);
        tagSaleListAdapterViewHolder.ts_placetv.setText(TSEObjectList.get(position).getLocationId());
-       tagSaleListAdapterViewHolder.ts_datetv.setText(TSEObjectList.get(position).getDate());
+       tagSaleListAdapterViewHolder.ts_datetv.setText(TSEObjectList.get(position).getFormattedDate());
        tagSaleListAdapterViewHolder.ts_friendsattendingtv.setText(R.string.fake_friendsattending);
-        tagSaleListAdapterViewHolder.ts_distancetv.setText(R.string.fake_distance);
+       tagSaleListAdapterViewHolder.ts_distancetv.setText(R.string.fake_distance);
 
     }
     public void addItems(List<TagSaleEventObject> TSEObjectList) {

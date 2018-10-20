@@ -18,10 +18,10 @@
         android:id="@+id/rv_friendslist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/tslist_left_margin"
-        android:layout_marginEnd="@dimen/tslist_right_margin"
+        android:layout_marginStart="@dimen/frlist_left_margin"
+        android:layout_marginEnd="@dimen/frlist_right_margin"
 
         tools:context="com.example.android.tagsalenow"
 
-        tools:listitem="@layout/tagsalelistitem" />
+        tools:listitem="@layout/friendslistitem" />
 </LinearLayout>

@@ -38,7 +38,8 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>, TagSaleListFragment.OnButtonClickListener {
+        LoaderManager.LoaderCallbacks<Cursor>, TagSaleListFragment.OnButtonClickListener,
+        FriendsListFragment.OnButtonClickListener{
     private AdView mAdView;//Needed for AdMob Ad
 
     //NOTE : WEATHER DB AND LOADING IS FROM SUNSHINE APP, FROM UDACITY ANDROID NANO DEGREE COURSE
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements
     private ChildEventListener mFriends_ChildEventListener;
 
     TagSaleListFragment tagSaleListFragment;
+    FriendsListFragment friendsListFragment;
     WeatherFragment weatherFragment;
 
     private String mUsername;
@@ -165,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     SunshineSyncUtils.initialize(getApplicationContext());
                     showTagSaleList();
+                    showFriendsList();
                     showWeatherDataView();
                 } else {
                     // User is signed out
@@ -196,13 +199,14 @@ public class MainActivity extends AppCompatActivity implements
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.tagsalelist_container, tagSaleListFragment,getString(R.string.TAG_FRAGMENT_TAGSALELIST))
                 .commit();
+    }
+    private void showFriendsList() {
 
-
-/*
-        TagSaleEventObject tobj = new TagSaleEventObject("200 Hill Top Dr.", "Mr. Jones",
-                "Nov 30", "8 am", "3 pm", "family stuff", "" );
-        mTagSaleEventsDatabaseReference.push().setValue(tobj);
-*/
+        friendsListFragment = new FriendsListFragment();
+        Log.d(TAG, "showFriendsList: TTTTT friendsListFragment =" + friendsListFragment);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.friendlist_container, friendsListFragment,getString(R.string.TAG_FRAGMENT_FRIENDLIST))
+                .commit();
     }
 
     @Override
@@ -288,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     //When first attached, this method is called for every object in the DB
                     TagSaleUserObject tagSaleUserObject = dataSnapshot.getValue(TagSaleUserObject.class);
-                    Log.d(TAG, "TAGSALEUSER onChildAdded: added:" + tagSaleUserObject.getDisplayName());
+                    Log.d(TAG, "TAGSALEUSER onChildAdded: added:" + dataSnapshot.toString());
                 }
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -317,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     //When first attached, this method is called for every object in the DB
                     FriendRelationObject friendRelationObject = dataSnapshot.getValue(FriendRelationObject.class);
-                    Log.d(TAG, "FRIENDS onChildAdded: added:" + friendRelationObject.getFriendId1()+" - " + friendRelationObject.getFriendId2());
+                    Log.d(TAG, "FRIENDS-- onChildAdded: added:" + dataSnapshot.toString());
                 }
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -342,6 +346,14 @@ public class MainActivity extends AppCompatActivity implements
         if (mTagSaleEvent_ChildEventListener != null) {
             mMessagesDatabaseReference.removeEventListener(mTagSaleEvent_ChildEventListener);
             mTagSaleEvent_ChildEventListener = null;
+        }
+        if (mTagSaleUser_ChildEventListener != null) {
+            mTagSaleUsersDatabaseReference.removeEventListener(mTagSaleUser_ChildEventListener);
+            mTagSaleUser_ChildEventListener = null;
+        }
+        if (mFriends_ChildEventListener != null) {
+            mFriendsDatabaseReference.removeEventListener(mFriends_ChildEventListener);
+            mFriends_ChildEventListener = null;
         }
     }
 
@@ -422,8 +434,15 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onAddButtonClicked() {
-        Intent intent = new Intent(this, AddTagSaleActivity.class);
-        startActivity(intent);
+    public void onAddButtonClicked(String fragmentTag) {
+        if( fragmentTag ==  getString(R.string.TAG_FRAGMENT_TAGSALELIST)){
+            Intent intent = new Intent(this, AddTagSaleActivity.class);
+            startActivity(intent);
+        }
+        if( fragmentTag ==  getString(R.string.TAG_FRAGMENT_FRIENDLIST)){
+            //Intent intent = new Intent(this, Add.class);
+           // startActivity(intent);
+        }
+
     }
 }

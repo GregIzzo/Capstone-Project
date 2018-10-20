@@ -1,5 +1,8 @@
 package com.example.android.tagsalenow;
 
+import com.example.android.tagsalenow.utils.DateConverter;
+import com.example.android.tagsalenow.utils.Utilities;
+
 /*
 event_id
 location_id
@@ -46,6 +49,11 @@ public class TagSaleEventObject {
     public void setOwnerId(String ownerId) {  this.ownerId = ownerId; }
 
     public String getDate() { return date;  }
+    public String getFormattedDate(){
+        //expect date to be YYYY-mm-dd
+        // Convert to simpley "MMM dd"
+        return DateConverter.toDisplayFormat(date);
+    }
 
     public void setDate(String date) {  this.date = date;  }
 

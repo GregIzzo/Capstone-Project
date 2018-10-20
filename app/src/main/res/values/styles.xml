@@ -24,5 +24,9 @@
     <style name="WeatherForecastMed" parent="AppTheme">
         <item name="android:textSize">@dimen/style_weather_medium_font</item>
     </style>
+    <style name="MyTimePickerDialogStyle" parent="@android:style/Widget.Material.TimePicker">
+        <item name="android:headerBackground">#ffe082</item>
+        <item name="android:timePickerMode">spinner</item>
+    </style>
 
 </resources>
