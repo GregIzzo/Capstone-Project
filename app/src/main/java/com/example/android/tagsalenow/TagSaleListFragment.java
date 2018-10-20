@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.android.tagsalenow.data.CurrentInfo;
 import com.example.android.tagsalenow.data.TagSaleEventsViewModel;
 import com.example.android.tagsalenow.utils.Utilities;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -34,10 +36,14 @@ import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class TagSaleListFragment extends Fragment implements TagSaleListRecyclerAdapter.TagSaleListAdapterOnClickHandler {
 
-    private static final String TAG = "GGG";
+    private static final String TAG = "TAGSALELISTFRAGMENT";
     private RecyclerView recyclerView;
     private TagSaleListRecyclerAdapter tagSaleListRecyclerAdapter;
     private Button btn_AddTagSale;
+
+    private TagSaleEventsViewModel viewModel ;
+    private LiveData<List<TagSaleEventObject>> liveData;
+
 
     private Context mContext;
     //Setup Click listener to report the event to anyone listening
@@ -97,8 +103,8 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
         //Listen to data source
         // Obtain a new or prior instance of HotStockViewModel from the
         // ViewModelProviders utility class.
-        TagSaleEventsViewModel viewModel = ViewModelProviders.of(this).get(TagSaleEventsViewModel.class);
-        LiveData<List<TagSaleEventObject>> liveData = viewModel.getTagSaleEventObjectLiveData();
+         viewModel = ViewModelProviders.of(this).get(TagSaleEventsViewModel.class);
+         liveData = viewModel.getTagSaleEventObjectLiveData();
 
         liveData.observe(this, new Observer<List<TagSaleEventObject>>() {
             @Override
@@ -143,7 +149,13 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
 
     @Override
     public void onClick(int listPosition) {
-        Log.d(TAG, "onClick: CLICK POSITION:" + listPosition);
+        Log.d(TAG, "onClick: CLICK POSITION:" + listPosition+" ["+liveData.getValue().get(listPosition).getAddress()+"]");
+        //launch TagSaleViewFragment
+
+        CurrentInfo.setCurrentTagSaleEventObject(liveData.getValue().get(listPosition));
+        Intent intent = new Intent(getActivity(), ViewTagSaleActivity.class);
+        startActivity(intent);
+
     }
 
     @Override

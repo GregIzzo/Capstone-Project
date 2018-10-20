@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String TAG = "MainActivity";
 
     public static final String ANONYMOUS = "anonymous";
+    public static final String MAINACTIVITYKEY = "mainactivity";
     public static final int RC_SIGN_IN = 1;
 
 

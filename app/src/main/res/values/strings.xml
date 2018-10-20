@@ -9,6 +9,7 @@
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">TagSaleNow</string>
     <string name="act_name_addtagsale">AddTagSale</string>
+    <string name="act_name_viewtagsale">ViewTagSale</string>
     <string name="action_settings">Settings</string>
     <string name="fake_place">100 Main St.</string>
     <string name="fake_distance">3.5 m</string>
@@ -19,6 +20,7 @@
     <string name="TAG_FRAGMENT_TAGSALELIST">tagsalelist</string>
     <string name="TAG_FRAGMENT_FRIENDLIST">friendlist</string>
     <string name="TAG_FRAGMENT_WEATHERPANEL">weatherpanel</string>
+    <string name="TAG_FRAGMENT_VIEWTAGSALE">viewtagsale</string>
 
     <string name="wf_temperature_label">Temperature : </string>
     <string name="wf_temperature_units"> &#176; F</string>

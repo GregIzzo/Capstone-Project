@@ -84,6 +84,10 @@ public class AddTagSaleActivity extends AppCompatActivity implements TimePickerF
                 location.append(te_zip.getText());
                 String temporaryTags = "";
                 TagSaleEventObject tso = new TagSaleEventObject(location.toString(),
+                        te_address.getText().toString(),
+                        te_city.getText().toString(),
+                        te_state.getText().toString(),
+                        te_zip.getText().toString(),
                         "Fred",
                         te_date.getText().toString(),
                         te_time_start.getText().toString(),

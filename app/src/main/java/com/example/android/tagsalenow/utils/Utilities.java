@@ -35,6 +35,10 @@ public class Utilities {
             //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
             try {
                 TagSaleEventObject to = new TagSaleEventObject(innermap.get("locationId").toString(),
+                        innermap.get("address").toString(),
+                        innermap.get("city").toString(),
+                        innermap.get("state").toString(),
+                        innermap.get("zip").toString(),
                         innermap.get("ownerId").toString(),
                         innermap.get("date").toString(),
                         innermap.get("startTime").toString(),

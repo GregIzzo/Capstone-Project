@@ -47,7 +47,6 @@ public class FriendsListFragment extends Fragment implements FriendsListRecycler
         void onAddButtonClicked(String tag);
     }
 
-
     public FriendsListFragment(){
     }
 

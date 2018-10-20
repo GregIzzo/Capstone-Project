@@ -17,6 +17,10 @@ event_change_counter - increments when owner makes a change
  */
 public class TagSaleEventObject {
     private String locationId;
+    private String address;
+    private String city;
+    private String state;
+    private String zip;
     private String ownerId;
     private String date;
     private String startTime;
@@ -29,9 +33,13 @@ public class TagSaleEventObject {
 
     public TagSaleEventObject(){
     }
-    public TagSaleEventObject(String locationId, String ownerId, String date, String startTime,
+    public TagSaleEventObject(String locationId, String address, String city, String state, String zip, String ownerId, String date, String startTime,
                               String endTime, String description, String tags){
         this.locationId = locationId;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
         this.ownerId = ownerId;
         this.date= date;
         this.startTime = startTime;
@@ -41,11 +49,21 @@ public class TagSaleEventObject {
         changeCounter = 0;
     }
     public String getLocationId() { return locationId;}
-
     public void setLocationId(String locationId) { this.locationId = locationId;  }
 
-    public String getOwnerId() { return ownerId; }
+    public String getAddress() { return address;}
+    public void setAddress(String address) { this.address = address;}
 
+    public String getCity() { return city;}
+    public void setCity(String city) { this.city = city;}
+
+    public String getState() { return state;}
+    public void setState(String state) {this.state = state;}
+
+    public String getZip() { return zip;}
+    public void setZip(String zip) { this.zip = zip;}
+
+    public String getOwnerId() { return ownerId; }
     public void setOwnerId(String ownerId) {  this.ownerId = ownerId; }
 
     public String getDate() { return date;  }
