@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.android.tagsalenow.FriendRelationObject;
 import com.example.android.tagsalenow.TagSaleEventObject;
+import com.example.android.tagsalenow.TagSaleReviewObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -83,4 +84,34 @@ public class Utilities {
         return outlist;
 
     }
+    public static List<TagSaleReviewObject> MapToREVIEWO(Map<String, Object> map){
+        //expect map to be: {"key": {"key":value, "key":value...}}
+       // private String tagSaleID;
+       // private String reviewerID;
+       // private String description;
+       // private int fiveStarRating;
+
+        List<TagSaleReviewObject> outlist =  new ArrayList<>();
+        List<Object> listOfObjects =  new ArrayList(map.values());//Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
+        int count = listOfObjects.size();
+        Log.d("UTILITIES", "MapToREVIEWO: count("+count+") ");
+
+        for (int i =0;i<count ;i++){
+            Map<String, Object> innermap = (Map<String, Object>) listOfObjects.get(i);
+            //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
+            try {
+                TagSaleReviewObject to = new TagSaleReviewObject(innermap.get("tagSaleID").toString(),
+                        innermap.get("reviewerID").toString(),
+                        innermap.get("description").toString(),
+                        (int) innermap.get("fiveStarRating") );
+                outlist.add(to);
+                Log.d("UTILITIES", "MapToREVIEWO: ADDED:"+innermap.get("tagSaleID").toString());
+            } catch (Exception ex){
+                Log.d("UTIL", "MapToREVIEWO: error converting to FriendRelationObject:" + ex.getMessage());
+            }
+        }
+        return outlist;
+
+    }
+
 }

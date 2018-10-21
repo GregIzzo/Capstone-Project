@@ -48,6 +48,14 @@
                 android:value="com.example.android.tagsalenow.MainActivity" />
         </activity>
 
+        <activity android:name=".AddReviewActivity"
+            android:label="@string/act_name_addreview"
+            android:parentActivityName=".ViewTagSaleActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.tagsalenow.ViewTagSaleActivity" />
+        </activity>
+
         <!--This is required for immediate syncs -->
         <service
             android:name=".sync.SunshineSyncIntentService"

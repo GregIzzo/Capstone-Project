@@ -1,13 +1,20 @@
 package com.example.android.tagsalenow;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-public class ViewTagSaleActivity extends AppCompatActivity {
+import com.example.android.tagsalenow.data.CurrentInfo;
 
+public class ViewTagSaleActivity extends AppCompatActivity implements  FriendsListFragment.OnButtonClickListener,
+ReviewListFragment.OnButtonClickListener{
+
+    private static final String TAG = "ViewTagSaleActivity";
     TagSaleViewFragment tagSaleViewFragment;
+    ReviewListFragment reviewListFragment;
+
 
     @Override
     public void onCreate( Bundle savedInstanceState) {
@@ -20,6 +27,21 @@ public class ViewTagSaleActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.tagsaledetail_container, tagSaleViewFragment,getString(R.string.TAG_FRAGMENT_VIEWTAGSALE))
                 .commit();
+
+        reviewListFragment = new ReviewListFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.tagsalereviews_container, reviewListFragment,getString(R.string.TAG_FRAGMENT_REVIEWLIST))
+                .commit();
+    }
+
+    @Override
+    public void onAddButtonClicked(String tag)  {
+        Log.d(TAG, "onAddButtonClicked: TAG=" + tag);
+         if(tag == getString(R.string.TAG_FRAGMENT_REVIEWLIST)){
+             Intent intent = new Intent( this, AddReviewActivity.class);
+             startActivity(intent);
+
+         }
 
     }
 }

@@ -1,6 +1,7 @@
 package com.example.android.tagsalenow.data;
 
 import com.example.android.tagsalenow.TagSaleEventObject;
+import com.example.android.tagsalenow.TagSaleUserObject;
 
 /*
 * Store static (current) information, such as 'currently selected Tag Sale' or 'Currently selected Friend'
@@ -9,6 +10,7 @@ public  class CurrentInfo {
     private static String currentTagSaleID = "";
     private static String currentFriendID = "";
     private static TagSaleEventObject currentTagSaleEventObject;
+    private static TagSaleUserObject currentUser;
 
     public static String getCurrentTagSaleID(){ return currentTagSaleID;}
     public static void setCurrentTagSaleID(String incomingTagSaleID){ currentTagSaleID = incomingTagSaleID;}
@@ -19,4 +21,7 @@ public  class CurrentInfo {
 
     public static TagSaleEventObject getCurrentTagSaleEventObject(){ return currentTagSaleEventObject;}
     public static void setCurrentTagSaleEventObject(TagSaleEventObject tagSaleEventObject) { currentTagSaleEventObject = tagSaleEventObject;}
+
+    public static TagSaleUserObject getCurrentUser(){ return currentUser;}
+    public static void setCurrentUser(TagSaleUserObject tagSaleUserObject) { currentUser = tagSaleUserObject;}
 }

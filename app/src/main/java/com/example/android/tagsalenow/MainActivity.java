@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.android.tagsalenow.data.CurrentInfo;
 import com.example.android.tagsalenow.data.TagSaleEventsViewModel;
 import com.example.android.tagsalenow.data.WeatherContract;
 import com.example.android.tagsalenow.sync.SunshineSyncUtils;
@@ -78,10 +79,12 @@ public class MainActivity extends AppCompatActivity implements
     private DatabaseReference mTagSaleEventsDatabaseReference;
     private DatabaseReference mTagSaleUsersDatabaseReference;
     private DatabaseReference mFriendsDatabaseReference;
+    private DatabaseReference mReviewsDatabaseReference;
 
     private ChildEventListener mTagSaleEvent_ChildEventListener;
     private ChildEventListener mTagSaleUser_ChildEventListener;
     private ChildEventListener mFriends_ChildEventListener;
+    private ChildEventListener mReviews_ChildEventListener;
 
     TagSaleListFragment tagSaleListFragment;
     FriendsListFragment friendsListFragment;
@@ -105,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements
         mTagSaleEventsDatabaseReference = mFirebaseDatabase.getReference().child("tagsaleevents");
         mTagSaleUsersDatabaseReference = mFirebaseDatabase.getReference().child("tagsaleusers");
         mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends");
+        mReviewsDatabaseReference = mFirebaseDatabase.getReference().child("reviews");
 //
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -245,12 +249,14 @@ public class MainActivity extends AppCompatActivity implements
     private void onSignedInInitialize(TagSaleUserObject userObject) {
         mUsername = userObject.getDisplayName();
         Log.d(TAG, "onSignedInInitialize: -- username="+mUsername);
+        CurrentInfo.setCurrentUser(userObject);
         //add record ifit doesn't exist
         attachDatabaseReadListener();
         if (mCurrentUserObject != null){
             //add/update current user record
             String whatId = mCurrentUserObject.getUserId();
             mTagSaleUsersDatabaseReference.child(whatId).setValue(mCurrentUserObject);
+
         }
 
     }
@@ -313,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements
             mTagSaleUsersDatabaseReference.addChildEventListener(mTagSaleUser_ChildEventListener);
         }
 
-        //
+         //
         // LISTEN FOR FRIENDS CHANGES
         //
         if (mFriends_ChildEventListener == null){
@@ -341,6 +347,34 @@ public class MainActivity extends AppCompatActivity implements
             };
             mFriendsDatabaseReference.addChildEventListener(mFriends_ChildEventListener);
         }
+        //
+        // LISTEN FOR REVIEWS CHANGES
+        //
+        if (mReviews_ChildEventListener == null){
+            mReviews_ChildEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    //When first attached, this method is called for every object in the DB
+                    TagSaleReviewObject tagSaleReviewObject = dataSnapshot.getValue(TagSaleReviewObject.class);
+                    Log.d(TAG, "REVIEWS-- onChildAdded: added:" + dataSnapshot.toString());
+                }
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    TagSaleReviewObject tagSaleReviewObject = dataSnapshot.getValue(TagSaleReviewObject.class);
+                    Log.d(TAG, "REVIEWS onChildAdded: changed:" + tagSaleReviewObject.getReviewerID()+" - " + tagSaleReviewObject.getDescription());
+                }
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                }
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            };
+            mReviewsDatabaseReference.addChildEventListener(mReviews_ChildEventListener);
+        }
     }
 
     private void detachDatabaseReadListener() {
@@ -355,6 +389,10 @@ public class MainActivity extends AppCompatActivity implements
         if (mFriends_ChildEventListener != null) {
             mFriendsDatabaseReference.removeEventListener(mFriends_ChildEventListener);
             mFriends_ChildEventListener = null;
+        }
+        if (mReviews_ChildEventListener != null) {
+            mReviewsDatabaseReference.removeEventListener(mReviews_ChildEventListener);
+            mReviews_ChildEventListener = null;
         }
     }
 

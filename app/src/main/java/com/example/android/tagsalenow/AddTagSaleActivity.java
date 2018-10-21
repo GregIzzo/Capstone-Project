@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.example.android.tagsalenow.data.CurrentInfo;
 import com.example.android.tagsalenow.ui.DatePickerFragment;
 import com.example.android.tagsalenow.ui.TimePickerFragment;
 import com.google.firebase.database.DatabaseReference;
@@ -88,7 +89,7 @@ public class AddTagSaleActivity extends AppCompatActivity implements TimePickerF
                         te_city.getText().toString(),
                         te_state.getText().toString(),
                         te_zip.getText().toString(),
-                        "Fred",
+                        CurrentInfo.getCurrentUser().getUserId(),
                         te_date.getText().toString(),
                         te_time_start.getText().toString(),
                         te_time_end.getText().toString(),

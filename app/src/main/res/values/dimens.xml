@@ -9,6 +9,8 @@
     <dimen name="frlist_left_margin">2dp</dimen>
     <dimen name="frlist_right_margin">2dp</dimen>
 
+    <dimen name="revlist_left_margin">2dp</dimen>
+    <dimen name="revlist_right_margin">2dp</dimen>
 
     <dimen name="style_weather_large_font">24sp</dimen>
     <dimen name="style_weather_medium_font">14sp</dimen>

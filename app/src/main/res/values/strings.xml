@@ -10,6 +10,8 @@
     <string name="app_name">TagSaleNow</string>
     <string name="act_name_addtagsale">AddTagSale</string>
     <string name="act_name_viewtagsale">ViewTagSale</string>
+    <string name="act_name_addreview">AddReview</string>
+
     <string name="action_settings">Settings</string>
     <string name="fake_place">100 Main St.</string>
     <string name="fake_distance">3.5 m</string>
@@ -21,6 +23,7 @@
     <string name="TAG_FRAGMENT_FRIENDLIST">friendlist</string>
     <string name="TAG_FRAGMENT_WEATHERPANEL">weatherpanel</string>
     <string name="TAG_FRAGMENT_VIEWTAGSALE">viewtagsale</string>
+    <string name="TAG_FRAGMENT_REVIEWLIST">viewtagsale</string>
 
     <string name="wf_temperature_label">Temperature : </string>
     <string name="wf_temperature_units"> &#176; F</string>
@@ -40,9 +43,14 @@
     <string name="hint_time_end">End</string>
     <string name="hint_description">Description</string>
 
+    <!-- Review Entry -->
+    <string name="hint_review">Enter Review</string>
+
     <string name="button_cancel">Cancel</string>
     <string name="button_add">Add</string>
 
+    <!-- Tag Sale Review -->
+    <string name="add_review">Add Review</string>
     <!-- - - - - - - - - - - - - - -
   - Used by SunshineDateUtils  -
   - - - - - - - - - - - - - - -->
