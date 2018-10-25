@@ -8,6 +8,10 @@ import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.android.tagsalenow.data.CurrentInfo;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -45,11 +49,37 @@ public class AddReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addreview);
         ButterKnife.bind(this);
-
+        ratingBar.setRating(3.0f);
         button_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Log.d(TAG, "onClick: ");
+
+                FirebaseDatabase mFirebaseDatabase;
+                DatabaseReference mTagSaleReviewsDatabaseReference;
+                mFirebaseDatabase = FirebaseDatabase.getInstance();
+                //Step 1: Get Key of new record
+
+
+
+                mTagSaleReviewsDatabaseReference = mFirebaseDatabase.getReference().child("reviews");
+
+                DatabaseReference opRef =  mTagSaleReviewsDatabaseReference.push();
+                String key = opRef.getKey();
+
+                TagSaleReviewObject tsr = new TagSaleReviewObject(
+                        key,
+                        CurrentInfo.getCurrentTagSaleID(),
+                        CurrentInfo.getCurrentUser().getUserId(),
+                        te_review.getText().toString(),
+                        (int)ratingBar.getRating()
+                );
+
+                //Add the record and exit
+                Log.d(TAG, "ADDING:["+tsr.getTagSaleID()+", "+tsr.getReviewerID()+", "+tsr.getDescription()+", "+tsr.getFiveStarRating()+"");
+                opRef.setValue(tsr);
+                finish();
 
             }
         });
@@ -57,6 +87,14 @@ public class AddReviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            public void onRatingChanged(RatingBar ratingBar, float rating,
+                                        boolean fromUser) {
+
+                ratingBar.setRating(rating);
+
             }
         });
 

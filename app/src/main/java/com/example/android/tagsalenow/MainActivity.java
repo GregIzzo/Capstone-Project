@@ -275,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     TagSaleEventObject tagSaleEventObject = dataSnapshot.getValue(TagSaleEventObject.class);
                     Log.d(TAG, "TAGSALEEVENT ChildAdded:("+s+") !!!!:" + tagSaleEventObject.getLocationId());
+                    CurrentInfo.addEvent(tagSaleEventObject);
                     //NEED TO SEND THE CHANGE INFO TO fragment
                     // mMessageAdapter.add(tagSaleEventObject);
                 }
@@ -300,6 +301,7 @@ public class MainActivity extends AppCompatActivity implements
                     //When first attached, this method is called for every object in the DB
                     TagSaleUserObject tagSaleUserObject = dataSnapshot.getValue(TagSaleUserObject.class);
                     Log.d(TAG, "TAGSALEUSER onChildAdded: added:" + dataSnapshot.toString());
+                    CurrentInfo.addUser(tagSaleUserObject);
                 }
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {

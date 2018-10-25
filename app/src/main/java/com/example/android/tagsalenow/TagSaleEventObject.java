@@ -16,6 +16,7 @@ event_change_counter - increments when owner makes a change
 
  */
 public class TagSaleEventObject {
+    private String id;
     private String locationId;
     private String address;
     private String city;
@@ -33,8 +34,9 @@ public class TagSaleEventObject {
 
     public TagSaleEventObject(){
     }
-    public TagSaleEventObject(String locationId, String address, String city, String state, String zip, String ownerId, String date, String startTime,
+    public TagSaleEventObject(String id, String locationId, String address, String city, String state, String zip, String ownerId, String date, String startTime,
                               String endTime, String description, String tags){
+        this.id = id;
         this.locationId = locationId;
         this.address = address;
         this.city = city;
@@ -48,6 +50,9 @@ public class TagSaleEventObject {
         this.tags = tags;
         changeCounter = 0;
     }
+    public String getId(){ return id;}
+    public void setId(String id) { this.id = id;}
+
     public String getLocationId() { return locationId;}
     public void setLocationId(String locationId) { this.locationId = locationId;  }
 

@@ -2,13 +2,20 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:orientation="vertical"
     >
-    <include layout="@layout/fragment_tagsaledetails" />
+    <LinearLayout
+        android:background="@color/colorDarkBlue"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        >
+        <include layout="@layout/fragment_tagsaledetails" />
+    </LinearLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -23,31 +30,39 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_review"/>
     </android.support.design.widget.TextInputLayout>
-
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:background="@color/colorDarkBlue"
+    android:gravity="center">
     <RatingBar
         android:id="@+id/ratingBar"
-        style="@style/Widget.AppCompat.RatingBar.Indicator"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp"
-        android:gravity="center_vertical"
-        android:isIndicator="true"
-        android:numStars="5"
-        android:rating="0.0"
-        android:stepSize="1.0" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorDarkBlue"
+        android:layout_gravity="center_horizontal"
 
+        android:isIndicator="false"
+        android:numStars="5"
+        android:paddingTop="25dp"
+        android:rating="3.0"
+        android:stepSize="1.0"
+        android:theme="@android:style/Widget.Material.Light.RatingBar.Indicator" />
+</LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="horizontal"
+
         >
         <Button
             android:id="@+id/button_cancel"
             android:paddingHorizontal="@dimen/tsadd_horiz_padd"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/button_cancel"
             style="@style/Widget.AppCompat.Button.Colored"/>
         <Button
@@ -55,7 +70,7 @@
             android:paddingHorizontal="@dimen/tsadd_horiz_padd"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/button_add"
             style="@style/Widget.AppCompat.Button.Colored"/>
 

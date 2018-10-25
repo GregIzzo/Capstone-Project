@@ -101,7 +101,7 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
         // tsAdapter.dataChanged();
 
         //Listen to data source
-        // Obtain a new or prior instance of HotStockViewModel from the
+        // Obtain a new or prior instance of TagSaleEventsViewModel from the
         // ViewModelProviders utility class.
          viewModel = ViewModelProviders.of(this).get(TagSaleEventsViewModel.class);
          liveData = viewModel.getTagSaleEventObjectLiveData();

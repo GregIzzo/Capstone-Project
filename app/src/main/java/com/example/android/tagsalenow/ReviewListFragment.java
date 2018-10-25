@@ -65,7 +65,7 @@ public class ReviewListFragment extends Fragment implements ReviewListRecyclerAd
         // tsAdapter.dataChanged();
 
         //Listen to data source
-        // Obtain a new or prior instance of HotStockViewModel from the
+        // Obtain a new or prior instance of ReviewsViewModel from the
         // ViewModelProviders utility class.
         ReviewsViewModel viewModel = ViewModelProviders.of(this).get(ReviewsViewModel.class);
         LiveData<List<TagSaleReviewObject>> liveData = viewModel.getTagSaleReviewObjectLiveData();

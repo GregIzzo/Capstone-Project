@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.android.tagsalenow.data.CurrentInfo;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.List;
 
 public class ReviewListRecyclerAdapter extends RecyclerView.Adapter<ReviewListRecyclerAdapter.ReviewsListAdapterViewHolder > {
@@ -21,11 +25,14 @@ public class ReviewListRecyclerAdapter extends RecyclerView.Adapter<ReviewListRe
     private final ReviewListAdapterOnClickHandler mClickHandler;
     private Context viewGroupContext;
 
+
+
     public interface ReviewListAdapterOnClickHandler {
         void onClick(int listPosition);//
     }
     public ReviewListRecyclerAdapter(ReviewListAdapterOnClickHandler mClick) {
         mClickHandler = mClick;
+
     }
 
     public class ReviewsListAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -78,7 +85,12 @@ public class ReviewListRecyclerAdapter extends RecyclerView.Adapter<ReviewListRe
     public void onBindViewHolder(@NonNull ReviewsListAdapterViewHolder ReviewsListAdapterViewHolder, int position) {
         Log.d(TAG, "onBindViewHolder: BBBBBB viewholder=" + ReviewsListAdapterViewHolder);
 
-        ReviewsListAdapterViewHolder.tv_reviewauthor.setText(RevObjectList.get(position).getReviewerID());
+        //Get Author NAme:
+
+
+        ReviewsListAdapterViewHolder.tv_reviewauthor.setText(CurrentInfo.getUserByKey(RevObjectList.get(position).getReviewerID()).getDisplayName());
+        ReviewsListAdapterViewHolder.tv_reviewdescription.setText(RevObjectList.get(position).getDescription());
+        ReviewsListAdapterViewHolder.ratingBar.setRating(RevObjectList.get(position).getFiveStarRating());
 
     }
     public void addItems(List<TagSaleReviewObject> RevObjectList) {

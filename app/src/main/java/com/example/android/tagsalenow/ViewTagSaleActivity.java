@@ -22,7 +22,7 @@ ReviewListFragment.OnButtonClickListener{
         setContentView(R.layout.activity_viewtagsale);
 
         //EXPECT CurrentInfo.currentTagSaleEventObject to contain info
-
+        Log.d(TAG, "CHOSEN TAGSALEID:"+CurrentInfo.getCurrentTagSaleID());
         tagSaleViewFragment = new TagSaleViewFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.tagsaledetail_container, tagSaleViewFragment,getString(R.string.TAG_FRAGMENT_VIEWTAGSALE))

@@ -84,7 +84,11 @@ public class AddTagSaleActivity extends AppCompatActivity implements TimePickerF
                 location.append(", ");
                 location.append(te_zip.getText());
                 String temporaryTags = "";
-                TagSaleEventObject tso = new TagSaleEventObject(location.toString(),
+                //Step 1: Get Key of new record
+                DatabaseReference opRef =  mTagSaleEventsDatabaseReference.push();
+                String key = opRef.getKey();
+
+                TagSaleEventObject tso = new TagSaleEventObject(key, location.toString(),
                         te_address.getText().toString(),
                         te_city.getText().toString(),
                         te_state.getText().toString(),
@@ -96,7 +100,9 @@ public class AddTagSaleActivity extends AppCompatActivity implements TimePickerF
                         te_description.getText().toString(),
                         temporaryTags);
                 //mMessagesDatabaseReference.push().setValue(friendlyMessage);
-                mTagSaleEventsDatabaseReference.push().setValue(tso);
+                // tso.setLocationId(key);
+               //mTagSaleEventsDatabaseReference.push().setValue(tso);
+                opRef.setValue(tso);
                 finish();
             }
         });

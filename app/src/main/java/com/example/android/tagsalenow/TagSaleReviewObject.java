@@ -1,7 +1,7 @@
 package com.example.android.tagsalenow;
 
 public class TagSaleReviewObject {
-
+    private String id;
     private String tagSaleID;
     private String reviewerID;
     private String description;
@@ -9,13 +9,16 @@ public class TagSaleReviewObject {
 
     public TagSaleReviewObject(){    }
 
-    public TagSaleReviewObject(String tagSaleID, String reviewerID, String description, int fiveStarRating){
+    public TagSaleReviewObject(String id, String tagSaleID, String reviewerID, String description, int fiveStarRating){
+        this.id = id;
         this.tagSaleID = tagSaleID;
         this.reviewerID = reviewerID;
         this.description = description;
         this.fiveStarRating = fiveStarRating;
     }
 
+    public String getId(){ return id;}
+    public void setId(String id){ this.id = id;}
     public String getTagSaleID() {        return tagSaleID;    }
     public void setTagSaleID(String tagSaleID) {        this.tagSaleID = tagSaleID;    }
 

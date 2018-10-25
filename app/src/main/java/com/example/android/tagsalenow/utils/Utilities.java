@@ -22,6 +22,7 @@ public class Utilities {
         Log.d("UTILITIES", "MapToTSEO: INPUT:"+map.toString());
 
         List<TagSaleEventObject> outlist =  new ArrayList<>();
+        Log.d("UTILITIES", "MapToTSEO: listofkeys:"+map.keySet().toString());
         List<Object> listOfObjects =  new ArrayList(map.values());//Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
         Log.d("UTILITIES", "MapToTSEO: listOfObjects:"+listOfObjects.toString());
 
@@ -33,9 +34,12 @@ public class Utilities {
 
         for (int i =0;i<count ;i++){
             Map<String, Object> innermap = (Map<String, Object>) listOfObjects.get(i);
+            //String key = (String) listOfObjects.
             //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
             try {
-                TagSaleEventObject to = new TagSaleEventObject(innermap.get("locationId").toString(),
+                TagSaleEventObject to = new TagSaleEventObject(
+                        innermap.get("id").toString(),
+                        innermap.get("locationId").toString(),
                         innermap.get("address").toString(),
                         innermap.get("city").toString(),
                         innermap.get("state").toString(),
@@ -47,7 +51,7 @@ public class Utilities {
                         innermap.get("description").toString(),
                         innermap.get("tags").toString());
                 outlist.add(to);
-                Log.d("UTILITIES", "MapToTSEO: ADDED:"+innermap.get("locationId").toString());
+
             } catch (Exception ex){
                 Log.d("UTIL", "MapToTSEO: error converting to TagSaleEventObject:" + ex.getMessage());
             }
@@ -98,16 +102,19 @@ public class Utilities {
 
         for (int i =0;i<count ;i++){
             Map<String, Object> innermap = (Map<String, Object>) listOfObjects.get(i);
+            Log.d("UTILITIES", "MapToREVIEWO: DATA IS: "+listOfObjects.get(i).toString());
             //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
             try {
-                TagSaleReviewObject to = new TagSaleReviewObject(innermap.get("tagSaleID").toString(),
+                TagSaleReviewObject to = new TagSaleReviewObject(
+                        innermap.get("id").toString(),
+                        innermap.get("tagSaleID").toString(),
                         innermap.get("reviewerID").toString(),
                         innermap.get("description").toString(),
-                        (int) innermap.get("fiveStarRating") );
+                        ((Long) innermap.get("fiveStarRating")).intValue() );
                 outlist.add(to);
                 Log.d("UTILITIES", "MapToREVIEWO: ADDED:"+innermap.get("tagSaleID").toString());
             } catch (Exception ex){
-                Log.d("UTIL", "MapToREVIEWO: error converting to FriendRelationObject:" + ex.getMessage());
+                Log.d("UTILITIES", "MapToREVIEWO: error converting to FriendRelationObject:" + ex.getMessage());
             }
         }
         return outlist;
