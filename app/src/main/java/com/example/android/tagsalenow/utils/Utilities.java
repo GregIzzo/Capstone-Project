@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.example.android.tagsalenow.AttendingObject;
 import com.example.android.tagsalenow.Friends;
+import com.example.android.tagsalenow.OneFriend;
 import com.example.android.tagsalenow.TagSaleEventObject;
 import com.example.android.tagsalenow.TagSaleReviewObject;
 
@@ -65,20 +66,11 @@ public class Utilities {
         List<Friends> outlist =  new ArrayList<>();
         List<String> listOfKeys = new ArrayList<String>(map.keySet());
         List<Object> listOfObjects =  new ArrayList(map.values());//Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
-        Log.d("UTILITIES", "MapToFRO: listOfObjects:"+listOfObjects.toString());
-
         int count = listOfObjects.size();
-        Log.d("UTILITIES", "MapToFRO: count("+count+") ");
-
 
         for (int i =0;i<count ;i++){
             String userId = listOfKeys.get(i);
-            Log.d("UTILITIES", "MapToFRO: loop, userID="+userId);
-            Log.d("UTILITIES", "MapToFRO: loop, listOfObjects="+listOfObjects.toString());
-            Log.d("UTILITIES", "MapToFRO: loop, listOfObjects("+i+")="+listOfObjects.get(i).toString());
             Map<String, Object> innermap = (Map<String, Object>) listOfObjects.get(i);
-            Log.d("UTILITIES", "MapToFRO: loop,innermap="+innermap+" string:"+innermap.toString());
-            Log.d("UTILITIES", "MapToFRO: loop,innermap.keySet()="+innermap.keySet()+" string:"+innermap.keySet().toString());
             String[] keyArray = null;
             try {
                 keyArray = innermap.keySet().toArray(new String[0]);
@@ -93,7 +85,6 @@ public class Utilities {
                     Log.d("UTILITIES", "MapToFRO: ERROR2 converting to ArrayList:"+ex.getMessage());
                 }
 
-               Log.d("UTILITIES", "MapToFRO: friendIds=" + friendIds.toString());
                //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
                try {
                    Friends fro = new Friends(userId,
@@ -104,6 +95,30 @@ public class Utilities {
                    Log.d("UTIL", "MapToFRO: error converting to Friends:" + ex.getMessage());
                }
            }
+        }
+        return outlist;
+
+    }
+    public static List<OneFriend> MapToONEF(Map<String, Object> map){
+        //expect map to be:  {"userId":{"FriendID":TRUE, "FriendID":TRUE...}}
+        Log.d("UTILITIES", "MapToONEF: INPUT:"+map.toString());
+
+        List<OneFriend> outlist =  new ArrayList<>();
+        List<String> listOfKeys = new ArrayList<String>(map.keySet());
+        int count = listOfKeys.size();
+
+        for (int i =0;i<count ;i++){
+            String userId = listOfKeys.get(i);
+
+                //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
+                try {
+                    OneFriend fro = new OneFriend(userId);
+                    outlist.add(fro);
+                    Log.d("UTILITIES", "MapToONEF: ADDED: userId=" + userId );
+                } catch (Exception ex) {
+                    Log.d("UTIL", "MapToONEF: error converting to OneFriend:" + ex.getMessage());
+                }
+
         }
         return outlist;
 

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.android.tagsalenow.data.FriendsViewModel;
+import com.example.android.tagsalenow.data.OneFriendViewModel;
 
 import java.util.List;
 
@@ -67,16 +68,16 @@ public class FriendsListFragment extends Fragment implements FriendsListRecycler
         //Listen to data source
         // Obtain a new or prior instance of HotStockViewModel from the
         // ViewModelProviders utility class.
-        FriendsViewModel viewModel = ViewModelProviders.of(this).get(FriendsViewModel.class);
-        LiveData<List<Friends>> liveData = viewModel.getFriendsObjectLiveData();
+        OneFriendViewModel viewModel = ViewModelProviders.of(this).get(OneFriendViewModel.class);
+        LiveData<List<OneFriend>> liveData = viewModel.getOneFriendObjectLiveData();
 
-        liveData.observe(this, new Observer<List<Friends>>() {
+        liveData.observe(this, new Observer<List<OneFriend>>() {
             @Override
-            public void onChanged(@Nullable List<Friends> friends) {
-                if (friends != null) {
-                    Log.d(TAG, "onChanged: FRIENDRELATAION  Data changed :"+ friends.toString());
+            public void onChanged(@Nullable List<OneFriend> oneFriends) {
+                if (oneFriends != null) {
+                    Log.d(TAG, "onChanged: FRIENDRELATAION  Data changed :"+ oneFriends.toString());
                     try{
-                        friendsListRecyclerAdapter.addItems(friends);
+                        friendsListRecyclerAdapter.addItems(oneFriends);
                     } catch (Exception ex){
                         Log.d(TAG, "FriendsListFragment - onChange - Exception: "+ex.getMessage());
                     }

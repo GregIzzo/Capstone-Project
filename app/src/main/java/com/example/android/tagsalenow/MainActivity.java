@@ -323,18 +323,18 @@ public class MainActivity extends AppCompatActivity implements
         // NOTE: NEED CURRENT USER ID IN ORDER TO GET FRIEND LIST, SO CREATE FRIENDSDB LINK HERE, AFTER WE
         // KNOW THE USER ID
         //mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends").child(CurrentInfo.getCurrentUser().getUserId());
-        mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends");
+        mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends").child(CurrentInfo.getCurrentUser().getUserId());
         if (mFriends_ChildEventListener == null){
             mFriends_ChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     //When first attached, this method is called for every object in the DB
                     Log.d(TAG, "FRIENDS-- onChildAdded: added:" + dataSnapshot.toString());
-                    Friends friends = dataSnapshot.getValue(Friends.class);
+                    OneFriend friends = new OneFriend(dataSnapshot.getKey());
                 }
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Friends friends = dataSnapshot.getValue(Friends.class);
+                    OneFriend friends = dataSnapshot.getValue(OneFriend.class);
                     Log.d(TAG, "FRIENDS onChildAdded: changed:" + friends.getUserId());
                 }
                 @Override

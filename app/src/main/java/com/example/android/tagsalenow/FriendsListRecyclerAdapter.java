@@ -17,7 +17,7 @@ public class FriendsListRecyclerAdapter extends RecyclerView.Adapter<FriendsList
 
     private static final String TAG = "ADDAPTER";
 
-    private List<Friends> FRObjectList;
+    private List<OneFriend> FRObjectList;
 
     private final FriendsListAdapterOnClickHandler mClickHandler;
     private Context viewGroupContext;
@@ -74,11 +74,11 @@ public class FriendsListRecyclerAdapter extends RecyclerView.Adapter<FriendsList
     @Override
     public void onBindViewHolder(@NonNull FriendsListAdapterViewHolder FriendsListAdapterViewHolder, int position) {
         Log.d(TAG, "onBindViewHolder: BBBBBB viewholder=" + FriendsListAdapterViewHolder);
-
-        FriendsListAdapterViewHolder.fr_name.setText(CurrentInfo.getUserByKey(FRObjectList.get(position).getUserId()).getDisplayName());
-
+        FriendsListAdapterViewHolder.fr_name
+                .setText(CurrentInfo.getUserByKey(FRObjectList.get(position).getUserId()).getDisplayName());
     }
-    public void addItems(List<Friends> FRObjectList) {
+    public void addItems(List<OneFriend> FRObjectList) {
+        Log.d(TAG, "addItems: ADDING LIST OF ONEFRIEND:" + FRObjectList.toString());
         this.FRObjectList = FRObjectList;
         notifyDataSetChanged();
     }
