@@ -7,8 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.tagsalenow.data.CurrentInfo;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class FriendsListRecyclerAdapter extends RecyclerView.Adapter<FriendsList
 
     private static final String TAG = "ADDAPTER";
 
-    private List<FriendRelationObject> FRObjectList;
+    private List<Friends> FRObjectList;
 
     private final FriendsListAdapterOnClickHandler mClickHandler;
     private Context viewGroupContext;
@@ -74,10 +75,10 @@ public class FriendsListRecyclerAdapter extends RecyclerView.Adapter<FriendsList
     public void onBindViewHolder(@NonNull FriendsListAdapterViewHolder FriendsListAdapterViewHolder, int position) {
         Log.d(TAG, "onBindViewHolder: BBBBBB viewholder=" + FriendsListAdapterViewHolder);
 
-        FriendsListAdapterViewHolder.fr_name.setText(FRObjectList.get(position).getFriendId2());
+        FriendsListAdapterViewHolder.fr_name.setText(CurrentInfo.getUserByKey(FRObjectList.get(position).getUserId()).getDisplayName());
 
     }
-    public void addItems(List<FriendRelationObject> FRObjectList) {
+    public void addItems(List<Friends> FRObjectList) {
         this.FRObjectList = FRObjectList;
         notifyDataSetChanged();
     }

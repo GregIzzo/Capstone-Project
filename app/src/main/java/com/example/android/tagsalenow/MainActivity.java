@@ -1,7 +1,5 @@
 package com.example.android.tagsalenow;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,10 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.android.tagsalenow.data.CurrentInfo;
-import com.example.android.tagsalenow.data.TagSaleEventsViewModel;
 import com.example.android.tagsalenow.data.WeatherContract;
 import com.example.android.tagsalenow.sync.SunshineSyncUtils;
 import com.firebase.ui.auth.AuthUI;
@@ -107,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements
         mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("messages");
         mTagSaleEventsDatabaseReference = mFirebaseDatabase.getReference().child("tagsaleevents");
         mTagSaleUsersDatabaseReference = mFirebaseDatabase.getReference().child("tagsaleusers");
-        mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends");
+       // mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends");
         mReviewsDatabaseReference = mFirebaseDatabase.getReference().child("reviews");
 //
 
@@ -299,14 +295,15 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     //When first attached, this method is called for every object in the DB
-                    TagSaleUserObject tagSaleUserObject = dataSnapshot.getValue(TagSaleUserObject.class);
                     Log.d(TAG, "TAGSALEUSER onChildAdded: added:" + dataSnapshot.toString());
+                    TagSaleUserObject tagSaleUserObject = dataSnapshot.getValue(TagSaleUserObject.class);
+
                     CurrentInfo.addUser(tagSaleUserObject);
                 }
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     TagSaleUserObject tagSaleUserObject = dataSnapshot.getValue(TagSaleUserObject.class);
-                    Log.d(TAG, "TAGSALEUSER ChildChanged: added:" + tagSaleUserObject.getDisplayName());
+                    Log.d(TAG, "TAGSALEUSER ChildChanged: updated:" + dataSnapshot.toString());
                 }
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
@@ -323,19 +320,22 @@ public class MainActivity extends AppCompatActivity implements
 
          //
         // LISTEN FOR FRIENDS CHANGES
-        //
+        // NOTE: NEED CURRENT USER ID IN ORDER TO GET FRIEND LIST, SO CREATE FRIENDSDB LINK HERE, AFTER WE
+        // KNOW THE USER ID
+        //mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends").child(CurrentInfo.getCurrentUser().getUserId());
+        mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends");
         if (mFriends_ChildEventListener == null){
             mFriends_ChildEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     //When first attached, this method is called for every object in the DB
-                    FriendRelationObject friendRelationObject = dataSnapshot.getValue(FriendRelationObject.class);
                     Log.d(TAG, "FRIENDS-- onChildAdded: added:" + dataSnapshot.toString());
+                    Friends friends = dataSnapshot.getValue(Friends.class);
                 }
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    FriendRelationObject friendRelationObject = dataSnapshot.getValue(FriendRelationObject.class);
-                    Log.d(TAG, "FRIENDS onChildAdded: changed:" + friendRelationObject.getFriendId1()+" - " + friendRelationObject.getFriendId2());
+                    Friends friends = dataSnapshot.getValue(Friends.class);
+                    Log.d(TAG, "FRIENDS onChildAdded: changed:" + friends.getUserId());
                 }
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
@@ -482,7 +482,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         if( fragmentTag ==  getString(R.string.TAG_FRAGMENT_FRIENDLIST)){
             //Intent intent = new Intent(this, Add.class);
-           // startActivity(intent);
+            startActivity(new Intent(this, AddFriendActivity.class));
         }
 
     }

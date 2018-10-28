@@ -56,6 +56,13 @@
                 android:value="com.example.android.tagsalenow.ViewTagSaleActivity" />
         </activity>
 
+        <activity android:name=".AddFriendActivity"
+            android:label="@string/act_name_addfriend"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.tagsalenow.MainActivity" />
+        </activity>
         <!--This is required for immediate syncs -->
         <service
             android:name=".sync.SunshineSyncIntentService"

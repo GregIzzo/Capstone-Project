@@ -3,6 +3,9 @@ package com.example.android.tagsalenow;
 import com.example.android.tagsalenow.utils.DateConverter;
 import com.example.android.tagsalenow.utils.Utilities;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*
 event_id
 location_id
@@ -28,6 +31,7 @@ public class TagSaleEventObject {
     private String endTime;
     private String description;
     private String tags;
+
     //private String friendsAttending;
 
     private int changeCounter =0;
@@ -77,23 +81,18 @@ public class TagSaleEventObject {
         // Convert to simpley "MMM dd"
         return DateConverter.toDisplayFormat(date);
     }
-
     public void setDate(String date) {  this.date = date;  }
 
     public String getStartTime() {  return startTime; }
-
     public void setStartTime(String startTime) {  this.startTime = startTime; }
 
     public String getEndTime() { return endTime;  }
-
     public void setEndTime(String endTime) {  this.endTime = endTime;  }
 
     public String getDescription() {  return description; }
-
     public void setDescription(String description) {   this.description = description;  }
 
     public String getTags() {   return tags;  }
-
     public void setTags(String tags) {   this.tags = tags;   }
 
     //public String getFriendsAttending() {   return friendsAttending;  }
@@ -101,6 +100,6 @@ public class TagSaleEventObject {
     //public void setFriendsAttending(String friendsAttending) {   this.friendsAttending = friendsAttending;   }
 
     public int getChangeCounter() {    return changeCounter;   }
-
     public void setChangeCounter(int changeCounter) {   this.changeCounter = changeCounter;  }
+
 }

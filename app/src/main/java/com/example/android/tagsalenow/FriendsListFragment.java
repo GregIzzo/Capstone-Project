@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,22 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.android.tagsalenow.data.FriendsViewModel;
-import com.example.android.tagsalenow.utils.Utilities;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class FriendsListFragment extends Fragment implements FriendsListRecyclerAdapter.FriendsListAdapterOnClickHandler {
 
@@ -81,15 +68,15 @@ public class FriendsListFragment extends Fragment implements FriendsListRecycler
         // Obtain a new or prior instance of HotStockViewModel from the
         // ViewModelProviders utility class.
         FriendsViewModel viewModel = ViewModelProviders.of(this).get(FriendsViewModel.class);
-        LiveData<List<FriendRelationObject>> liveData = viewModel.getFriendRelationObjectLiveData();
+        LiveData<List<Friends>> liveData = viewModel.getFriendsObjectLiveData();
 
-        liveData.observe(this, new Observer<List<FriendRelationObject>>() {
+        liveData.observe(this, new Observer<List<Friends>>() {
             @Override
-            public void onChanged(@Nullable List<FriendRelationObject> friendRelationObjects) {
-                if (friendRelationObjects != null) {
-                    Log.d(TAG, "onChanged: FRIENDRELATAION  Data changed :"+friendRelationObjects.toString());
+            public void onChanged(@Nullable List<Friends> friends) {
+                if (friends != null) {
+                    Log.d(TAG, "onChanged: FRIENDRELATAION  Data changed :"+ friends.toString());
                     try{
-                        friendsListRecyclerAdapter.addItems(friendRelationObjects);
+                        friendsListRecyclerAdapter.addItems(friends);
                     } catch (Exception ex){
                         Log.d(TAG, "FriendsListFragment - onChange - Exception: "+ex.getMessage());
                     }

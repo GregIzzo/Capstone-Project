@@ -21,6 +21,7 @@ public  class CurrentInfo {
     private static Map<String,TagSaleUserObject> tsUsersMap;
     private static Map<String,TagSaleEventObject> tsEventsMap;
     private static Map<String,TagSaleReviewObject> tsReviewsMap;
+    //private static Map<String,Friend>
 
     public static String getCurrentTagSaleID(){ return currentTagSaleID;}
     public static void setCurrentTagSaleID(String incomingTagSaleID){ currentTagSaleID = incomingTagSaleID;}

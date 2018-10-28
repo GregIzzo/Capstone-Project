@@ -1,18 +1,17 @@
 package com.example.android.tagsalenow.utils;
 
-import android.nfc.Tag;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.android.tagsalenow.FriendRelationObject;
+import com.example.android.tagsalenow.AttendingObject;
+import com.example.android.tagsalenow.Friends;
 import com.example.android.tagsalenow.TagSaleEventObject;
 import com.example.android.tagsalenow.TagSaleReviewObject;
 
+import org.w3c.dom.Element;
+
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 public class Utilities {
@@ -59,31 +58,52 @@ public class Utilities {
         return outlist;
 
     }
-    public static List<FriendRelationObject> MapToFRO(Map<String, Object> map){
-        //expect map to be: {"key": {"key":value, "key":value...}}
+    public static List<Friends> MapToFRO(Map<String, Object> map){
+        //expect map to be:  {"userId":{"FriendID":TRUE, "FriendID":TRUE...}}
         Log.d("UTILITIES", "MapToFRO: INPUT:"+map.toString());
 
-        List<FriendRelationObject> outlist =  new ArrayList<>();
+        List<Friends> outlist =  new ArrayList<>();
+        List<String> listOfKeys = new ArrayList<String>(map.keySet());
         List<Object> listOfObjects =  new ArrayList(map.values());//Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
         Log.d("UTILITIES", "MapToFRO: listOfObjects:"+listOfObjects.toString());
 
-        //Map<String, Object> interm = (Map<String,Object>)SingleValue;
-        //Log.d("UTILITIES", "MapToFRO: interm:"+interm.toString());
-        //List<Object> mapObjects = (List<Object>) interm.values(); //[ {K:V, K:V,..}, {K:V, ...}]
         int count = listOfObjects.size();
         Log.d("UTILITIES", "MapToFRO: count("+count+") ");
 
+
         for (int i =0;i<count ;i++){
+            String userId = listOfKeys.get(i);
+            Log.d("UTILITIES", "MapToFRO: loop, userID="+userId);
+            Log.d("UTILITIES", "MapToFRO: loop, listOfObjects="+listOfObjects.toString());
+            Log.d("UTILITIES", "MapToFRO: loop, listOfObjects("+i+")="+listOfObjects.get(i).toString());
             Map<String, Object> innermap = (Map<String, Object>) listOfObjects.get(i);
-            //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
+            Log.d("UTILITIES", "MapToFRO: loop,innermap="+innermap+" string:"+innermap.toString());
+            Log.d("UTILITIES", "MapToFRO: loop,innermap.keySet()="+innermap.keySet()+" string:"+innermap.keySet().toString());
+            String[] keyArray = null;
             try {
-                FriendRelationObject to = new FriendRelationObject(innermap.get("friendId1").toString(),
-                        innermap.get("friendId2").toString());
-                outlist.add(to);
-                Log.d("UTILITIES", "MapToFRO: ADDED:"+innermap.get("locationId").toString());
+                keyArray = innermap.keySet().toArray(new String[0]);
             } catch (Exception ex){
-                Log.d("UTIL", "MapToFRO: error converting to FriendRelationObject:" + ex.getMessage());
+                Log.d("UTILITIES", "MapToFRO: ERROR converting to array:"+ex.getMessage());
             }
+           if(innermap != null) {
+               ArrayList<String> friendIds =null;
+                try {
+                     friendIds = new ArrayList<String>(Arrays.asList(keyArray));//all the friend ids
+                } catch (Exception ex){
+                    Log.d("UTILITIES", "MapToFRO: ERROR2 converting to ArrayList:"+ex.getMessage());
+                }
+
+               Log.d("UTILITIES", "MapToFRO: friendIds=" + friendIds.toString());
+               //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
+               try {
+                   Friends fro = new Friends(userId,
+                           friendIds);
+                   outlist.add(fro);
+                   Log.d("UTILITIES", "MapToFRO: ADDED: userId=" + userId + " friends[" + friendIds.toString() + "]");
+               } catch (Exception ex) {
+                   Log.d("UTIL", "MapToFRO: error converting to Friends:" + ex.getMessage());
+               }
+           }
         }
         return outlist;
 
@@ -114,7 +134,33 @@ public class Utilities {
                 outlist.add(to);
                 Log.d("UTILITIES", "MapToREVIEWO: ADDED:"+innermap.get("tagSaleID").toString());
             } catch (Exception ex){
-                Log.d("UTILITIES", "MapToREVIEWO: error converting to FriendRelationObject:" + ex.getMessage());
+                Log.d("UTILITIES", "MapToREVIEWO: error converting to Friends:" + ex.getMessage());
+            }
+        }
+        return outlist;
+
+    }
+    public static List<AttendingObject> MapToATTENDING(Map<String, Object> map){
+        //expect map to be: {"key": {"key":value, "key":value...}}
+
+        List<AttendingObject> outlist =  new ArrayList<>();
+        List<Object> listOfObjects =  new ArrayList(map.values());//Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
+        int count = listOfObjects.size();
+        Log.d("UTILITIES", "MapToATTENDING: count("+count+") ");
+
+        for (int i =0;i<count ;i++){
+            Map<String, Object> innermap = (Map<String, Object>) listOfObjects.get(i);
+            Log.d("UTILITIES", "MapToATTENDING: DATA IS: "+listOfObjects.get(i).toString());
+            //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
+            try {
+                AttendingObject atto = new AttendingObject(
+                        innermap.get("id").toString(),
+                        innermap.get("userId").toString(),
+                        innermap.get("eventId").toString() );
+                outlist.add(atto);
+                Log.d("UTILITIES", "MapToATTENDING: ADDED:"+innermap.get("id").toString());
+            } catch (Exception ex){
+                Log.d("UTILITIES", "MapToATTENDING: error converting to AttendingObject:" + ex.getMessage());
             }
         }
         return outlist;
