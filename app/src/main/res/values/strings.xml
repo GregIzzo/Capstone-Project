@@ -49,6 +49,7 @@
 
     <string name="button_cancel">Cancel</string>
     <string name="button_add">Add</string>
+    <string name="button_test">Test</string>
 
     <!-- Tag Sale Review -->
     <string name="add_review">Add Review</string>

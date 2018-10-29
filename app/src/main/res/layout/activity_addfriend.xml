@@ -38,6 +38,15 @@
             android:text="@string/button_cancel" />
 
         <Button
+            android:id="@+id/button_test"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingHorizontal="@dimen/tsadd_horiz_padd"
+            android:text="@string/button_test" />
+
+        <Button
             android:id="@+id/button_add"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="0dp"
