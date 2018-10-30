@@ -37,6 +37,8 @@ public class AddFriendActivity extends AppCompatActivity {
     Button button_test;
 
     private static String TAG = "AddFriendActivity";
+    private AcceptFriendFragment acceptFriendFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,70 +47,89 @@ public class AddFriendActivity extends AppCompatActivity {
         button_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Log.d(TAG, "onClick: ");
-
-                DatabaseReference mDatabaseReference;
-
-               // FirebaseDatabase mFirebaseDatabase;
-                //DatabaseReference mFriendRequestDatabaseReference;
-               // mFirebaseDatabase = FirebaseDatabase.getInstance();
-                /*
-                //Step 1: Get Key of new record
-
-                mFriendRequestDatabaseReference = mFirebaseDatabase.getReference().child("friendrequest");
-                DatabaseReference opRef =  mFriendRequestDatabaseReference.push();
-                String key = opRef.getKey();
-
-                TagSaleReviewObject tsr = new TagSaleReviewObject(
-                        key,
-                        CurrentInfo.getCurrentTagSaleID(),
-                        CurrentInfo.getCurrentUser().getUserId(),
-                        te_review.getText().toString(),
-                        (int)ratingBar.getRating()
-                );
-
-                //Add the record and exit
-                Log.d(TAG, "ADDING:["+tsr.getTagSaleID()+", "+tsr.getReviewerID()+", "+tsr.getDescription()+", "+tsr.getFiveStarRating()+"");
-                opRef.setValue(tsr);
-                */
-                // Create new post at /user-posts/$userid/$postid and at
-                // /posts/$postid simultaneously
-
                 String friendEmail = te_friendemail.getText().toString();
-                String emailKey = friendEmail.replaceAll("\\.", ",");
-                mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-                String key = mDatabaseReference.child("friendrequest").push().getKey();
-                FriendRequestObject fro = new FriendRequestObject(friendEmail, false);
-                Map<String, Object> frValues = fro.toMap();
-                Log.d(TAG, "onClick: FRVALUES="+frValues.toString());
-                Map<String, Object> childUpdates = new HashMap<>();
-                Log.d(TAG, "onClick: ADDINGFRIEND");
+                DatabaseReference mDatabaseReference
+                        = FirebaseDatabase.getInstance().getReference().child("tagsaleusers");
+                Query queryRef = mDatabaseReference.orderByChild("email").startAt(friendEmail).endAt(friendEmail);
+                queryRef.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot snapshot, String previousChild) {
+                        Log.d(TAG, "onChildAdded: EMAIL RESULTS:" + snapshot.toString());
+                        TagSaleUserObject u = snapshot.getValue(TagSaleUserObject.class);
+                        Log.d(TAG, "onChildAdded: EMAIL SEARCH:" + u.getDisplayName() + ", " + u.getEmail());
+                        Toast.makeText(AddFriendActivity.this, "Found:" + u.getDisplayName() + "," + u.getEmail(), Toast.LENGTH_SHORT).show();
+//-------------------------------------------------------------------
 
-                childUpdates.put("/friendrequest/" +
-                        CurrentInfo.getCurrentUser().getUserId() +
-                        "/" + emailKey, frValues);
-/*
-                childUpdates.put("/tagsaleusers/" +
-                        CurrentInfo.getCurrentUser().getUserId()
-                        + "/friendrequests/"
-                        + emailKey, frValues);
-*/
-                mDatabaseReference.updateChildren(childUpdates);
-               // childUpdates.put();
-               //ORIGINAL mFriendRequestDatabaseReference.updateChildren(childUpdates);
+                        DatabaseReference mDatabaseReference;
+
+                        // Create new post at /user-posts/$userid/$postid and at
+                        // /posts/$postid simultaneously
+
+                        String friendEmail = te_friendemail.getText().toString();
+                        String emailKey = friendEmail.replaceAll("\\.", ",");
+                        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+                        String key = mDatabaseReference.child("friendrequest").push().getKey();
+                        FriendRequestObject fro =
+                                new FriendRequestObject(
+                                        CurrentInfo.getCurrentUser().getUserId(),
+                                        u.getUserId(),
+                                        friendEmail
+                                );
+                        Map<String, Object> frValues = fro.toMap();
+                        Map<String, Object> childUpdates = new HashMap<>();
+
+                        childUpdates.put("/friendrequest/" +
+                                key, frValues);//NOTE: Key is random. Queries will search using 'fromuserid' and 'touserid'
+                        //FriendRequest is structured:
+                        //  ToBeFriendUserId: {
+                        //     FromUserId
+
+                        childUpdates.put("/tagsaleusers/" +
+                                CurrentInfo.getCurrentUser().getUserId()
+                                + "/friendrequests/"
+                                + u.getUserId(), frValues);
+                        Log.d(TAG, "onChildAdded: CHILDUPDATES:"+childUpdates.toString());
+                        mDatabaseReference.updateChildren(childUpdates);
+                        finish();
+//--------------------------------------------------------------------
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+
+
+                    // childUpdates.put();
+                    //ORIGINAL mFriendRequestDatabaseReference.updateChildren(childUpdates);
 /*
                 mFriendRequestDatabaseReference.child("friendrequest")
-                        .child(CurrentInfo.getCurrentUser().getUserId())
+                        .child(CurrentInfo.getCurrentUser().getFromUserId())
                         .child(emailKey)
                         .setValue(frValues);
                 mFriendRequestDatabaseReference.child("tagsaleusers")
-                        .child(CurrentInfo.getCurrentUser().getUserId())
+                        .child(CurrentInfo.getCurrentUser().getFromUserId())
                         .child("friendrequests")
                         .child(emailKey)
                         .setValue(frValues);
 */
-                Log.d(TAG, "onClick: ADDINGFRIENDREQUEST DONE");
+
 /*
                 Post post = new Post(userId, username, title, body);
                 Map<String, Object> postValues = post.toMap();
@@ -119,7 +140,7 @@ public class AddFriendActivity extends AppCompatActivity {
 
                 mDatabase.updateChildren(childUpdates);
 */
-                finish();
+                }   );
 
             }
         });
@@ -135,12 +156,9 @@ public class AddFriendActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String friendEmail = te_friendemail.getText().toString();
-                Log.d(TAG, "onClick: TESTCLICKED friendemail="+friendEmail);
-                DatabaseReference mDatabaseReference;
-                mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("tagsaleusers");
-                Log.d(TAG, "onClick: TESTCLICKED mDatabaseReference="+mDatabaseReference);
+                DatabaseReference mDatabaseReference
+                 = FirebaseDatabase.getInstance().getReference().child("tagsaleusers");
                 Query queryRef = mDatabaseReference.orderByChild("email").startAt(friendEmail).endAt(friendEmail);
-                Log.d(TAG, "onClick: TESTCLICKED queryRef="+queryRef.toString());
                 queryRef.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot snapshot, String previousChild) {
@@ -148,6 +166,7 @@ public class AddFriendActivity extends AppCompatActivity {
                         TagSaleUserObject u = snapshot.getValue(TagSaleUserObject.class);
                         Log.d(TAG, "onChildAdded: EMAIL SEARCH:"+u.getDisplayName()+", "+u.getEmail());
                         Toast.makeText(AddFriendActivity.this, "Found:"+u.getDisplayName()+","+u.getEmail(), Toast.LENGTH_SHORT).show();
+
                     }
 
                     @Override
@@ -188,6 +207,11 @@ public class AddFriendActivity extends AppCompatActivity {
 */
             }
         });
+        acceptFriendFragment = new AcceptFriendFragment();
+        Log.d(TAG, "Create: TTTTT acceptFriendFragment =" + acceptFriendFragment);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.acceptfriend_container, acceptFriendFragment,getString(R.string.TAG_FRAGMENT_TAGSALELIST))
+                .commit();
 
     }
 }

@@ -32,7 +32,6 @@ public class OneFriendViewModel extends ViewModel {
     // private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(ONEFRIEND_REF);
     private  FirebaseQueryLiveData liveData;
     private final MediatorLiveData<OneFriend> mldOneFriendObjectLiveData = new MediatorLiveData<>();
-
     private   LiveData<List<OneFriend>> onefriendObjectLiveData;//= Transformations.map(liveData, new Deserializer());
 
     public OneFriendViewModel() {

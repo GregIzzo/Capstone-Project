@@ -38,7 +38,7 @@ public class FriendsViewModel extends ViewModel {
     public FriendsViewModel() {
         /*
         if (FRIENDS_REF == null){
-            FRIENDS_REF =  FirebaseDatabase.getInstance().getReference("/friends/"+ CurrentInfo.getCurrentUser().getUserId());
+            FRIENDS_REF =  FirebaseDatabase.getInstance().getReference("/friends/"+ CurrentInfo.getCurrentUser().getFromUserId());
             Log.d(TAG, "FriendsViewModel: FRIENDS_REF=["+FRIENDS_REF+"]");
         }
         if (liveData == null){

@@ -12,6 +12,7 @@
     <string name="act_name_viewtagsale">ViewTagSale</string>
     <string name="act_name_addreview">AddReview</string>
     <string name="act_name_addfriend">AddReview</string>
+    <string name="act_name_acceptfriend">AddReview</string>
 
     <string name="action_settings">Settings</string>
     <string name="fake_place">100 Main St.</string>
@@ -56,6 +57,10 @@
 
     <!-- Friend Entry -->
     <string name="hint_friendemail">Enter Friend Email</string>
+
+    <!-- Friend Request List -->
+    <string name="accept_friend">Accept Friend</string>
+
     <!-- - - - - - - - - - - - - - -
   - Used by SunshineDateUtils  -
   - - - - - - - - - - - - - - -->

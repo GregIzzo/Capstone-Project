@@ -3,6 +3,7 @@ package com.example.android.tagsalenow.utils;
 import android.util.Log;
 
 import com.example.android.tagsalenow.AttendingObject;
+import com.example.android.tagsalenow.FriendRequestObject;
 import com.example.android.tagsalenow.Friends;
 import com.example.android.tagsalenow.OneFriend;
 import com.example.android.tagsalenow.TagSaleEventObject;
@@ -122,6 +123,30 @@ public class Utilities {
         }
         return outlist;
 
+    }
+    public static List<FriendRequestObject> MapToFR(Map<String, Object> map){
+        //expect map to be:  {"userId":{"FromUserId":STRING, "ToUserId":String...}}
+        List<FriendRequestObject> outlist =  new ArrayList<>();
+        Log.d("UTILITIES", "MapToFR: listofkeys:"+map.keySet().toString());
+        List<Object> listOfObjects =  new ArrayList(map.values());//Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
+        Log.d("UTILITIES", "MapToFR: listOfObjects:"+listOfObjects.toString());
+        int count = listOfObjects.size();
+        for (int i =0;i<count ;i++){
+            Map<String, Object> innermap = (Map<String, Object>) listOfObjects.get(i);
+            Log.d("UTILITIES", "MapToFR: innermap="+innermap.toString());
+            try {
+                FriendRequestObject fro = new FriendRequestObject(
+                        innermap.get("fromUserId").toString(),
+                        innermap.get("toUserId").toString(),
+                        innermap.get("friendemail").toString()
+                );
+                outlist.add(fro);
+                Log.d("UTILITIES", "MapToFR: ADDED: fromuserId=" + fro.getFromUserId()+" touserid="+fro.getToUserId() );
+            } catch (Exception ex) {
+                Log.d("UTIL", "MapToFR: error converting to OneFriend:" + ex.getMessage());
+            }
+        }
+        return outlist;
     }
     public static List<TagSaleReviewObject> MapToREVIEWO(Map<String, Object> map){
         //expect map to be: {"key": {"key":value, "key":value...}}

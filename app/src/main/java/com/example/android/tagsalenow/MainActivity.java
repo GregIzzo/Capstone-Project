@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements
         // LISTEN FOR FRIENDS CHANGES
         // NOTE: NEED CURRENT USER ID IN ORDER TO GET FRIEND LIST, SO CREATE FRIENDSDB LINK HERE, AFTER WE
         // KNOW THE USER ID
-        //mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends").child(CurrentInfo.getCurrentUser().getUserId());
+        //mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends").child(CurrentInfo.getCurrentUser().getFromUserId());
         mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends").child(CurrentInfo.getCurrentUser().getUserId());
         if (mFriends_ChildEventListener == null){
             mFriends_ChildEventListener = new ChildEventListener() {

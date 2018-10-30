@@ -13,31 +13,31 @@ import com.example.android.tagsalenow.data.CurrentInfo;
 
 import java.util.List;
 
-public class FriendsListRecyclerAdapter extends RecyclerView.Adapter<FriendsListRecyclerAdapter.FriendsListAdapterViewHolder > {
+public class AcceptFriendListRecyclerAdapter extends RecyclerView.Adapter<AcceptFriendListRecyclerAdapter.AcceptFriendListAdapterViewHolder > {
 
-    private static final String TAG = "ADDAPTER";
+    private static final String TAG = "ACCEPTFRIENDADDAPTER";
 
-    private List<OneFriend> FRObjectList;
+    private List<FriendRequestObject> FRObjectList;
 
-    private final FriendsListAdapterOnClickHandler mClickHandler;
+    private final AcceptFriendListAdapterOnClickHandler mClickHandler;
     private Context viewGroupContext;
 
-    public interface FriendsListAdapterOnClickHandler {
+    public interface AcceptFriendListAdapterOnClickHandler {
         void onClick(int listPosition);//
     }
-    public FriendsListRecyclerAdapter(FriendsListAdapterOnClickHandler mClick) {
+    public AcceptFriendListRecyclerAdapter(AcceptFriendListAdapterOnClickHandler mClick) {
         mClickHandler = mClick;
     }
 
-    public class FriendsListAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class AcceptFriendListAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final TextView fr_name;
 
-        public FriendsListAdapterViewHolder(@NonNull View itemView) {
+        public AcceptFriendListAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
 
             fr_name = itemView.findViewById(R.id.friend_nametv);
-            Log.d(TAG, "FriendsListAdapterViewHolder: *** fr_name["+fr_name+"]  ");
+            Log.d(TAG, "AcceptFriendListAdapterViewHolder: *** fr_name["+fr_name+"]  ");
 
             itemView.setOnClickListener(this);
         }
@@ -52,36 +52,38 @@ public class FriendsListRecyclerAdapter extends RecyclerView.Adapter<FriendsList
 
     @NonNull
     @Override
-    public FriendsListAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public AcceptFriendListAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
         viewGroupContext = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.friendslistitem;
+        int layoutIdForListItem = R.layout.acceptfriendlistitem;
         LayoutInflater inflater = LayoutInflater.from(viewGroupContext);
         View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
         Log.d(TAG, "onCreateViewHolder: xxxx view=" + view);
-        return new FriendsListAdapterViewHolder(view);
+        return new AcceptFriendListAdapterViewHolder(view);
     }
+
+
 
     /**
      * OnBindViewHolder is called by RecyclerView to display the data at the specified
      * position. In this method, update the contents of the ViewHolder using the "position" argument that is conveniently
      * passed into us.
      *
-     * @param FriendsListAdapterViewHolder The FriendsListAdapterViewHolder which should be updated to represent the
+     * @param AcceptFriendListAdapterViewHolder The AcceptFriendListAdapterViewHolder which should be updated to represent the
      *                                  contents of the item at the given position in the data set.
      * @param position                  The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(@NonNull FriendsListAdapterViewHolder FriendsListAdapterViewHolder, int position) {
-        Log.d(TAG, "onBindViewHolder: BBBBBB viewholder=" + FriendsListAdapterViewHolder);
-        OneFriend fr = FRObjectList.get(position);
+    public void onBindViewHolder(@NonNull AcceptFriendListAdapterViewHolder AcceptFriendListAdapterViewHolder, int position) {
+        Log.d(TAG, "onBindViewHolder: ACCEPTFRIEND viewholder=" + AcceptFriendListAdapterViewHolder);
+        FriendRequestObject fr = FRObjectList.get(position);
         if (fr == null) return;
-        TagSaleUserObject tso = CurrentInfo.getUserByKey(fr.getUserId());
+        TagSaleUserObject tso = CurrentInfo.getUserByKey(fr.getFromUserId());
         if (tso == null) return;
-        FriendsListAdapterViewHolder.fr_name
+        AcceptFriendListAdapterViewHolder.fr_name
                 .setText(tso.getDisplayName());
     }
-    public void addItems(List<OneFriend> FRObjectList) {
+    public void addItems(List<FriendRequestObject> FRObjectList) {
         Log.d(TAG, "addItems: ADDING LIST OF ONEFRIEND:" + FRObjectList.toString());
         this.FRObjectList = FRObjectList;
         notifyDataSetChanged();

@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;
+import com.example.android.tagsalenow.data.CurrentInfo;
 import com.example.android.tagsalenow.data.WeatherModel;
 import com.example.android.tagsalenow.data.WeatherViewModel;
 import com.example.android.tagsalenow.utils.NetworkUtils;
@@ -53,11 +54,7 @@ public class WeatherFragment extends Fragment {
         tv_weather_description = rootView.findViewById(R.id.weather_description);
         tv_weather_temp = rootView.findViewById(R.id.weather_temp);
 
-
-
-
         viewModel = ViewModelProviders.of(this).get(WeatherViewModel.class);
-
         viewModel.getweatherDataList().observe(WeatherFragment.this, new Observer<List<WeatherModel>>() {
             @Override
             public void onChanged(@Nullable List<WeatherModel> weatherModels) {
@@ -65,7 +62,7 @@ public class WeatherFragment extends Fragment {
                 Log.d(TAG, "WeatherFragment.onChanged: DATA CHANGED: list count= " + weatherModels.size());
                 if (weatherModels.size() > 0) {
                     WeatherModel weather = weatherModels.get(0);//get first
-                    setWeatherDescription(weather.getDescription());
+                    setWeatherDescription(weather.getDescription() + " (user="+CurrentInfo.getCurrentUser().getDisplayName()+")");
                     setWeatherTemp(
                             String.format("%.2f", weather.getTemperature()) +
                             getString(R.string.wf_temperature_units));
