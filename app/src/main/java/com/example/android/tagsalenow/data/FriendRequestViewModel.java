@@ -71,10 +71,15 @@ public class FriendRequestViewModel extends ViewModel {
     private class Deserializer implements Function<DataSnapshot, List<FriendRequestObject>> {
         @Override
         public List<FriendRequestObject> apply(DataSnapshot dataSnapshot) {
-            Log.d("FRIENDREQUESTVIEWMODEL", "dataSnapShot: " + dataSnapshot.toString());
+            Log.d(TAG,  "FriendReqViewModeldataSnapShot: " + dataSnapshot.toString());
+
+
+
+
+
             List<FriendRequestObject> values = null;
-            String userId = (String) dataSnapshot.getKey();
             Map<String, Object> onf = (Map<String,Object>) dataSnapshot.getValue();
+            if (onf == null) return null;
             try {
                 values = Utilities.MapToFR(onf);
             } catch (Exception ex){

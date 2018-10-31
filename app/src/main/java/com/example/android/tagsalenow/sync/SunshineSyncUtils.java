@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class SunshineSyncUtils {
 
     private static String TAG = "GGG";
-    //  COMPLETED (10) Add constant values to sync Sunshine every 3 - 4 hours
+    // sync Sunshine every 3 - 4 hours
     /*
      * Interval at which to sync with the weather. Use TimeUnit for convenience, rather than
      * writing out a bunch of multiplication ourselves and risk making a silly mistake.

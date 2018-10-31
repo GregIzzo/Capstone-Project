@@ -16,9 +16,7 @@ import java.util.List;
 public class FriendsListRecyclerAdapter extends RecyclerView.Adapter<FriendsListRecyclerAdapter.FriendsListAdapterViewHolder > {
 
     private static final String TAG = "ADDAPTER";
-
     private List<OneFriend> FRObjectList;
-
     private final FriendsListAdapterOnClickHandler mClickHandler;
     private Context viewGroupContext;
 
@@ -78,6 +76,7 @@ public class FriendsListRecyclerAdapter extends RecyclerView.Adapter<FriendsList
         if (fr == null) return;
         TagSaleUserObject tso = CurrentInfo.getUserByKey(fr.getUserId());
         if (tso == null) return;
+        Log.d(TAG, "onBindViewHolder: ADDINGFRIENDTOSCREEN:"+tso.getDisplayName()+" pos="+position);
         FriendsListAdapterViewHolder.fr_name
                 .setText(tso.getDisplayName());
     }

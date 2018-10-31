@@ -169,10 +169,13 @@ public class MainActivity extends AppCompatActivity implements
                     SunshineSyncUtils.initialize(getApplicationContext());
                     showTagSaleList();
                     showFriendsList();
-                    showWeatherDataView();
+                    showWeatherDataFragment();
                 } else {
                     // User is signed out
                     onSignedOutCleanup();
+                    removeTagSaleList();
+                    removeFriendsList();
+                    removeWeatherDataFragment();
                     startActivityForResult(
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder()
@@ -194,22 +197,33 @@ public class MainActivity extends AppCompatActivity implements
         //connect DB
         //TagSaleEventsViewModel viewModel = ViewModelProviders.of(this).get(TagSaleEventsViewModel.class);
         //LiveData<TagSaleEventObject> liveData = viewModel.getTagSaleEventObjectLiveData();
-
+        //Remove old fragment if it exists
+        removeTagSaleList();
         tagSaleListFragment = new TagSaleListFragment();
         Log.d(TAG, "showTagSaleList: TTTTT tagSaleListFragment =" + tagSaleListFragment);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.tagsalelist_container, tagSaleListFragment,getString(R.string.TAG_FRAGMENT_TAGSALELIST))
                 .commit();
     }
+    private void removeTagSaleList(){
+        TagSaleListFragment prevFragment = (TagSaleListFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.TAG_FRAGMENT_TAGSALELIST));
+        if(prevFragment != null)
+            getSupportFragmentManager().beginTransaction().remove(prevFragment).commit();
+    }
     private void showFriendsList() {
-
+        //Remove old fragment if it exists:
+        removeFriendsList();
         friendsListFragment = new FriendsListFragment();
         Log.d(TAG, "showFriendsList: TTTTT friendsListFragment =" + friendsListFragment);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.friendlist_container, friendsListFragment,getString(R.string.TAG_FRAGMENT_FRIENDLIST))
                 .commit();
     }
-
+    private void removeFriendsList(){
+        FriendsListFragment prevFragment = (FriendsListFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.TAG_FRAGMENT_FRIENDLIST));
+        if(prevFragment != null)
+            getSupportFragmentManager().beginTransaction().remove(prevFragment).commit();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -461,15 +475,23 @@ public class MainActivity extends AppCompatActivity implements
          */
        // mForecastAdapter.swapCursor(null);
     }
-    private void showWeatherDataView() {
+    private void showWeatherDataFragment() {
         /* First, hide the loading indicator */
         //mLoadingIndicator.setVisibility(View.INVISIBLE);
         /* Finally, make sure the weather data is visible */
+        //Remove old fragment if it exists:
+        removeWeatherDataFragment();
         weatherFragment = new WeatherFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.weather_container, weatherFragment,getString(R.string.TAG_FRAGMENT_WEATHERPANEL))
                 .commit();
     }
+    private void removeWeatherDataFragment(){
+        WeatherFragment prevFragment = (WeatherFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.TAG_FRAGMENT_WEATHERPANEL));
+        if(prevFragment != null)
+            getSupportFragmentManager().beginTransaction().remove(prevFragment).commit();
+    }
+
     private void updateWeatherData(Cursor data){
         Log.d(TAG, "updateWeatherData: --- WeatherData In MAIN:"+data.toString());
     }

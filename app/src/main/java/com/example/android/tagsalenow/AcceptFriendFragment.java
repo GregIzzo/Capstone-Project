@@ -15,17 +15,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.android.tagsalenow.data.FriendRequestViewModel;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AcceptFriendFragment extends Fragment  implements AcceptFriendListRecyclerAdapter.AcceptFriendListAdapterOnClickHandler {
     private static final String TAG = "ACCEPTFRIENDLISTFRAGMENT";
     private RecyclerView recyclerView;
     private AcceptFriendListRecyclerAdapter acceptFriendListRecyclerAdapter;
     private Context mContext;
-    FriendsListFragment.OnButtonClickListener mCallback;
 
+    private FriendRequestViewModel viewModel;
+    private LiveData<List<FriendRequestObject>> liveData;
+
+    AcceptFriendFragment.OnButtonClickListener mCallback;
     public interface OnButtonClickListener {
         void onAddButtonClicked(String tag);
     }
@@ -49,8 +56,8 @@ public class AcceptFriendFragment extends Fragment  implements AcceptFriendListR
         if (mLayoutManager == null) Log.d(TAG, "onCreate: LAYOUTMANAGER IS NULL");
         recyclerView.setLayoutManager(mLayoutManager);
 
-        FriendRequestViewModel viewModel = ViewModelProviders.of(this).get(FriendRequestViewModel.class);
-        LiveData<List<FriendRequestObject>> liveData = viewModel.getFriendRequestObjectLiveData();
+        viewModel = ViewModelProviders.of(this).get(FriendRequestViewModel.class);
+        liveData = viewModel.getFriendRequestObjectLiveData();
 
         liveData.observe(this, new Observer<List<FriendRequestObject>>() {
             @Override
@@ -73,6 +80,54 @@ public class AcceptFriendFragment extends Fragment  implements AcceptFriendListR
     }
     @Override
     public void onClick(int listPosition) {
+        Log.d(TAG, "onClick: ADD FRIEND position="+listPosition);
+        FriendRequestObject fro = acceptFriendListRecyclerAdapter.getAtOffset(listPosition);
+        if (fro != null) {
+            Log.d(TAG, "onClick: friendreq::" +fro.toString());
+            //Create friend record
+            DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+            String key = mDatabaseReference.child("friends").push().getKey();
+            Map<String, Boolean> fromUserValues;
+            fromUserValues = new HashMap<String, Boolean>();
+            fromUserValues.put(fro.getFromUserId(), true);
+            Map<String, Boolean> toUserValues;
+            toUserValues = new HashMap<String, Boolean>();
+            toUserValues.put(fro.getToUserId(), true);
+
+            Map<String, Object> childUpdates = new HashMap<>();
+
+            childUpdates.put("/friends/" +
+                    fro.getToUserId()+"/"+
+                    fro.getFromUserId(), "true");
+
+            childUpdates.put("/friends/" +
+                    fro.getFromUserId()+"/" +
+                    fro.getToUserId(), "true");
+            //delete the friend request record
+            childUpdates.put("/friendrequest/"+fro.getDbkey(),null);
+
+            Log.d(TAG, "onClick: ACCEPTFRIEND childupdates:"+childUpdates.toString());
+            mDatabaseReference.updateChildren(childUpdates);
+
+
+        } else {
+            Log.d(TAG, "onClick: From Adapter - FriendRequetsObject is null:" );
+
+        }
 
     }
+/*
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+
+        try {
+            mCallback = (AcceptFriendFragment.OnButtonClickListener) context;
+        } catch (ClassCastException e){
+            throw new ClassCastException(context.toString() + " Must implement OnImageClickListener");
+        }
+    }
+    */
+
 }

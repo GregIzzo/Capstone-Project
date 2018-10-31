@@ -74,7 +74,8 @@ public class AddFriendActivity extends AppCompatActivity {
                                 new FriendRequestObject(
                                         CurrentInfo.getCurrentUser().getUserId(),
                                         u.getUserId(),
-                                        friendEmail
+                                        friendEmail,
+                                        key
                                 );
                         Map<String, Object> frValues = fro.toMap();
                         Map<String, Object> childUpdates = new HashMap<>();

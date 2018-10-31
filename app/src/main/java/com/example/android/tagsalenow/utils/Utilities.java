@@ -138,7 +138,8 @@ public class Utilities {
                 FriendRequestObject fro = new FriendRequestObject(
                         innermap.get("fromUserId").toString(),
                         innermap.get("toUserId").toString(),
-                        innermap.get("friendemail").toString()
+                        innermap.get("friendemail").toString(),
+                        innermap.get("dbkey").toString()
                 );
                 outlist.add(fro);
                 Log.d("UTILITIES", "MapToFR: ADDED: fromuserId=" + fro.getFromUserId()+" touserid="+fro.getToUserId() );

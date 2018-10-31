@@ -15,7 +15,6 @@
         android:layout_marginEnd="@dimen/frlist_right_margin"
 
         tools:context="com.example.android.tagsalenow"
-
         tools:listitem="@layout/acceptfriendlistitem" />
 
 </LinearLayout>

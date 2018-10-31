@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.android.tagsalenow.data.CurrentInfo;
@@ -16,11 +17,10 @@ import java.util.List;
 public class AcceptFriendListRecyclerAdapter extends RecyclerView.Adapter<AcceptFriendListRecyclerAdapter.AcceptFriendListAdapterViewHolder > {
 
     private static final String TAG = "ACCEPTFRIENDADDAPTER";
-
     private List<FriendRequestObject> FRObjectList;
-
     private final AcceptFriendListAdapterOnClickHandler mClickHandler;
     private Context viewGroupContext;
+    private Button acceptButton;
 
     public interface AcceptFriendListAdapterOnClickHandler {
         void onClick(int listPosition);//
@@ -28,25 +28,23 @@ public class AcceptFriendListRecyclerAdapter extends RecyclerView.Adapter<Accept
     public AcceptFriendListRecyclerAdapter(AcceptFriendListAdapterOnClickHandler mClick) {
         mClickHandler = mClick;
     }
-
     public class AcceptFriendListAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final TextView fr_name;
-
         public AcceptFriendListAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
-
             fr_name = itemView.findViewById(R.id.friend_nametv);
+            acceptButton = itemView.findViewById(R.id.button_acceptFriend);
             Log.d(TAG, "AcceptFriendListAdapterViewHolder: *** fr_name["+fr_name+"]  ");
-
-            itemView.setOnClickListener(this);
+           // itemView.setOnClickListener(this);
+            acceptButton.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            mClickHandler.onClick(adapterPosition);
 
+            mClickHandler.onClick(adapterPosition);
         }
     }
 
@@ -97,5 +95,9 @@ public class AcceptFriendListRecyclerAdapter extends RecyclerView.Adapter<Accept
 
     public void dataChanged(){
         notifyDataSetChanged();
+    }
+    public FriendRequestObject getAtOffset(int position){
+        if (position >= FRObjectList.size()) return null;
+        return FRObjectList.get(position);
     }
 }

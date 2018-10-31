@@ -11,13 +11,15 @@ public class FriendRequestObject {
     private String fromUserId;
     private String toUserId;
     private String friendemail;
+    private String dbkey;
 
 
     public FriendRequestObject(){}
-    public FriendRequestObject(String fromUserId, String toUserId,String friendemail){
+    public FriendRequestObject(String fromUserId, String toUserId,String friendemail, String dbkey){
         this.fromUserId = fromUserId;
         this.toUserId = toUserId;
         this.friendemail = friendemail;
+        this.dbkey = dbkey;
     }
 
     public String getFromUserId() { return fromUserId;}
@@ -29,6 +31,8 @@ public class FriendRequestObject {
     public String getFriendemail(){return friendemail;}
     public void setFriendemail(String friendemail){this.friendemail = friendemail;}
 
+    public String getDbkey(){ return dbkey;}
+    public void setDbkey(String dbkey){this.dbkey = dbkey;}
 
     @Exclude
     public Map<String, Object> toMap() {
@@ -36,6 +40,7 @@ public class FriendRequestObject {
         result.put("fromUserId", fromUserId);
         result.put("toUserId", toUserId);
         result.put("friendemail", friendemail);
+        result.put("dbkey", dbkey);
 
         return result;
     }
