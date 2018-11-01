@@ -22,7 +22,9 @@ import com.example.android.tagsalenow.data.CurrentInfo;
 import com.example.android.tagsalenow.data.TagSaleEventsViewModel;
 import com.example.android.tagsalenow.utils.Utilities;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
@@ -34,7 +36,10 @@ import java.util.Map;
 
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
-public class TagSaleListFragment extends Fragment implements TagSaleListRecyclerAdapter.TagSaleListAdapterOnClickHandler {
+public class TagSaleListFragment extends Fragment
+        implements TagSaleListRecyclerAdapter.TagSaleListAdapterOnClickHandler,
+         TagSaleListRecyclerAdapter.TagSaleListAdapterOnAttendClickHandler
+{
 
     private static final String TAG = "TAGSALELISTFRAGMENT";
     private RecyclerView recyclerView;
@@ -48,6 +53,7 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
     private Context mContext;
     //Setup Click listener to report the event to anyone listening
     OnButtonClickListener mCallback;
+
 
     public interface OnButtonClickListener {
         void onAddButtonClicked(String tag);
@@ -92,7 +98,8 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
         recyclerView.setAdapter(tsAdapter);
 */
 
-        tagSaleListRecyclerAdapter = new TagSaleListRecyclerAdapter(this);
+        tagSaleListRecyclerAdapter = new TagSaleListRecyclerAdapter(this,this
+        );
         recyclerView.setAdapter(tagSaleListRecyclerAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         if (mLayoutManager == null) Log.d(TAG, "onCreate: LAYOUTMANAGER IS NULL");
@@ -155,6 +162,35 @@ public class TagSaleListFragment extends Fragment implements TagSaleListRecycler
         CurrentInfo.setCurrentTagSaleEventObject(liveData.getValue().get(listPosition));
         Intent intent = new Intent(getActivity(), ViewTagSaleActivity.class);
         startActivity(intent);
+
+    }
+    @Override
+    public void onAttendClick(Map<String,Object> dataMap) {
+        Log.d(TAG, "onAttendClick: ATTENDBUTTON CLICKED");
+        int listPosition = (int) dataMap.get("position");
+        Boolean checkState = (Boolean) dataMap.get("state");
+        Toast.makeText(mContext, "ATTEND BUTTON CLICKED pos:"+listPosition+" state="+checkState, Toast.LENGTH_SHORT).show();
+   //Add Attending record
+
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        String key = mDatabaseReference.child("attending").push().getKey();
+
+        TagSaleEventObject tso = liveData.getValue().get(listPosition);
+        Map<String, Object> childUpdates = new HashMap<>();
+        if (checkState) {
+            //Add Attending Record
+
+            childUpdates.put("/attending/" +
+                    tso.getId() + "/" +
+                    CurrentInfo.getCurrentUser().getUserId(), "true");
+            mDatabaseReference.updateChildren(childUpdates);
+        } else {
+            //Remove Attending Record
+            childUpdates.put("/attending/" +
+                    tso.getId() + "/" +
+                    CurrentInfo.getCurrentUser().getUserId(), null);
+        }
+        mDatabaseReference.updateChildren(childUpdates);
 
     }
 

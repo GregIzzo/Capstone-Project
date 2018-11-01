@@ -43,7 +43,10 @@ public class TagSaleEventsViewModel extends ViewModel {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            TagSaleEventObject to = dataSnapshot.getValue(TagSaleEventObject.class);
+
                             tagSaleEventsObjectLiveData.postValue(dataSnapshot.getValue(TagSaleEventObject.class));
+
                         }
                     }).start();
                 } else {

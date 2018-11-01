@@ -24,15 +24,32 @@ import java.util.Map;
         "Using Android Architecture Components with Firebase Realtime Database (Part 1)
     From: https://firebase.googleblog.com/2017/12/using-android-architecture-components.html
  */
+/*
+Attending DB :
+<TagSaleId> { <userid>:true, <userid>:true, ...}
+AttendingObject is: <userid>
+ */
 public class AttendingViewModel extends ViewModel {
-    private static final DatabaseReference ATTENDING_REF =  FirebaseDatabase.getInstance().getReference("/attending");
     private String TAG = "AttendingViewModel";
-    private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(ATTENDING_REF);
+    //private static final DatabaseReference ATTENDING_REF =  FirebaseDatabase.getInstance().getReference("/attending");
+    private static  DatabaseReference ATTENDING_REF;
+     //private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(ATTENDING_REF);
+    private FirebaseQueryLiveData liveData;
     private final MediatorLiveData<AttendingObject> mldAttendingObjectLiveData = new MediatorLiveData<>();
+
+    //private  final LiveData<List<AttendingObject>> AttendingObjectLiveData = Transformations.map(liveData,  new Deserializer());
+    private  LiveData<List<AttendingObject>> AttendingObjectLiveData;
 
     public AttendingViewModel() {
         // Set up the MediatorLiveData to convert DataSnapshot objects into Attending objects
         Log.d(TAG, "AttendingViewModel: Creator");
+        if (ATTENDING_REF == null){
+            ATTENDING_REF = FirebaseDatabase.getInstance().getReference("/attending");
+        }
+        if (liveData == null){
+            liveData = new FirebaseQueryLiveData(ATTENDING_REF);
+        }
+        AttendingObjectLiveData = Transformations.map(liveData,  new Deserializer());
         mldAttendingObjectLiveData.addSource(liveData, new Observer<DataSnapshot>() {
             @Override
             public void onChanged(@Nullable final DataSnapshot dataSnapshot) {
@@ -50,7 +67,6 @@ public class AttendingViewModel extends ViewModel {
             }
         });
     }
-    private  final LiveData<List<AttendingObject>> AttendingObjectLiveData = Transformations.map(liveData,  new Deserializer());
     //Deserializer class - to serialize the DataSnapshot into AttendingObject
     private class Deserializer implements Function<DataSnapshot, List<AttendingObject>> {
         @Override

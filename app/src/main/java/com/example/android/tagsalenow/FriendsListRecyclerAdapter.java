@@ -2,6 +2,7 @@ package com.example.android.tagsalenow;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,8 +11,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.android.tagsalenow.data.CurrentInfo;
+import com.example.android.tagsalenow.utils.Utilities;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
+import java.util.Map;
 
 public class FriendsListRecyclerAdapter extends RecyclerView.Adapter<FriendsListRecyclerAdapter.FriendsListAdapterViewHolder > {
 
@@ -75,6 +83,7 @@ public class FriendsListRecyclerAdapter extends RecyclerView.Adapter<FriendsList
         OneFriend fr = FRObjectList.get(position);
         if (fr == null) return;
         TagSaleUserObject tso = CurrentInfo.getUserByKey(fr.getUserId());
+
         if (tso == null) return;
         Log.d(TAG, "onBindViewHolder: ADDINGFRIENDTOSCREEN:"+tso.getDisplayName()+" pos="+position);
         FriendsListAdapterViewHolder.fr_name

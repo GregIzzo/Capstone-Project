@@ -7,10 +7,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleListRecyclerAdapter.TagSaleListAdapterViewHolder > {
 
@@ -21,21 +25,32 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
     private final TagSaleListAdapterOnClickHandler mClickHandler;
     private Context viewGroupContext;
 
+    private final TagSaleListAdapterOnAttendClickHandler mAttendClickHandler;
+
+
     public interface TagSaleListAdapterOnClickHandler {
         void onClick(int listPosition);//
     }
-    public TagSaleListRecyclerAdapter(TagSaleListAdapterOnClickHandler mClick) {
+    public interface TagSaleListAdapterOnAttendClickHandler {
+        void onAttendClick(Map<String, Object> dataMap);//
+    }
+    public TagSaleListRecyclerAdapter(TagSaleListAdapterOnClickHandler mClick,
+                                      TagSaleListAdapterOnAttendClickHandler mAttendClick) {
         mClickHandler = mClick;
+        mAttendClickHandler = mAttendClick;
     }
 
+
+
     public class TagSaleListAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
 
         public final ImageView indicator_iv;
         public final TextView ts_placetv;
         public final TextView ts_friendsattendingtv;
         public final TextView ts_datetv;
         public final TextView ts_distancetv;
-        public final TextView ts_planningtoattendcb;
+        public final CheckBox ts_planningtoattendcb;
 
         public TagSaleListAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -46,6 +61,17 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
             ts_datetv = itemView.findViewById(R.id.ts_datetv);
             ts_distancetv = itemView.findViewById(R.id.ts_distancetv);
             ts_planningtoattendcb = itemView.findViewById(R.id.ts_planningtoattendcb);
+            ts_planningtoattendcb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    int adapterPosition = getAdapterPosition();
+                    Map<String, Object> dataMap = new HashMap<String,Object>();
+                    dataMap.put("position", adapterPosition);
+                    dataMap.put("state",b );
+                    mAttendClickHandler.onAttendClick(dataMap);
+
+                }
+            });
             Log.d(TAG, "TagSaleListAdapterViewHolder: *** itemView["+itemView+"] ["+indicator_iv+"]  ["+ts_placetv+"]  ["+ts_friendsattendingtv+"]  ["+ts_datetv+"]   ["+ts_distancetv+"]  ["+ts_planningtoattendcb+"]");
 
             itemView.setOnClickListener(this);

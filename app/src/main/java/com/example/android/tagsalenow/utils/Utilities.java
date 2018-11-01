@@ -8,6 +8,7 @@ import com.example.android.tagsalenow.Friends;
 import com.example.android.tagsalenow.OneFriend;
 import com.example.android.tagsalenow.TagSaleEventObject;
 import com.example.android.tagsalenow.TagSaleReviewObject;
+import com.example.android.tagsalenow.TagSaleUserObject;
 
 import org.w3c.dom.Element;
 
@@ -60,6 +61,31 @@ public class Utilities {
         return outlist;
 
     }
+    public static List<TagSaleUserObject> MapToTU(Map<String, Object> map){
+        //expect map to be: {"key": {"key":value, "key":value...}}
+        List<TagSaleUserObject> outlist =  new ArrayList<>();
+        List<Object> listOfObjects =  new ArrayList(map.values());//Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
+        int count = listOfObjects.size();
+        for (int i =0;i<count ;i++){
+            Map<String, Object> innermap = (Map<String, Object>) listOfObjects.get(i);
+            try {
+                //TagSaleUserObject(String userId, String joinDate, String displayName, String email, String photoUrl)
+                TagSaleUserObject tu = new TagSaleUserObject(
+                        innermap.get("userId").toString(),
+                        innermap.get("joinDate").toString(),
+                        innermap.get("displayName").toString(),
+                        innermap.get("email").toString(),
+                        innermap.get("photoUrl").toString());
+                outlist.add(tu);
+
+            } catch (Exception ex){
+                Log.d("UTIL", "MapToTU: error converting to TagSaleUserObject:" + ex.getMessage());
+            }
+        }
+        return outlist;
+
+    }
+
     public static List<Friends> MapToFRO(Map<String, Object> map){
         //expect map to be:  {"userId":{"FriendID":TRUE, "FriendID":TRUE...}}
         Log.d("UTILITIES", "MapToFRO: INPUT:"+map.toString());
@@ -110,8 +136,6 @@ public class Utilities {
 
         for (int i =0;i<count ;i++){
             String userId = listOfKeys.get(i);
-
-                //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
                 try {
                     OneFriend fro = new OneFriend(userId);
                     outlist.add(fro);
@@ -119,7 +143,6 @@ public class Utilities {
                 } catch (Exception ex) {
                     Log.d("UTIL", "MapToONEF: error converting to OneFriend:" + ex.getMessage());
                 }
-
         }
         return outlist;
 
@@ -185,21 +208,15 @@ public class Utilities {
         //expect map to be: {"key": {"key":value, "key":value...}}
 
         List<AttendingObject> outlist =  new ArrayList<>();
-        List<Object> listOfObjects =  new ArrayList(map.values());//Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
-        int count = listOfObjects.size();
-        Log.d("UTILITIES", "MapToATTENDING: count("+count+") ");
+        List<String> listOfKeys =  new ArrayList<String>(map.keySet());//Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
+        int count = listOfKeys.size();
 
         for (int i =0;i<count ;i++){
-            Map<String, Object> innermap = (Map<String, Object>) listOfObjects.get(i);
-            Log.d("UTILITIES", "MapToATTENDING: DATA IS: "+listOfObjects.get(i).toString());
-            //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
+            String userId = listOfKeys.get(i);
             try {
-                AttendingObject atto = new AttendingObject(
-                        innermap.get("id").toString(),
-                        innermap.get("userId").toString(),
-                        innermap.get("eventId").toString() );
+                AttendingObject atto = new AttendingObject(userId);
                 outlist.add(atto);
-                Log.d("UTILITIES", "MapToATTENDING: ADDED:"+innermap.get("id").toString());
+                Log.d("UTILITIES", "MapToATTENDING: ADDED:"+userId);
             } catch (Exception ex){
                 Log.d("UTILITIES", "MapToATTENDING: error converting to AttendingObject:" + ex.getMessage());
             }
