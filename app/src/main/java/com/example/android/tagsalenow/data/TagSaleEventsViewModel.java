@@ -60,7 +60,6 @@ public class TagSaleEventsViewModel extends ViewModel {
             Log.d("TAGSALEEVENTSVIEWMODEL", "dataSnapShot: " + dataSnapshot.toString());
             List<TagSaleEventObject> values = null;
             Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
-
             try {
                 values = Utilities.MapToTSEO(td);
             } catch (Exception ex){

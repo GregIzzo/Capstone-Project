@@ -19,9 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
-
 /*
     This class was inspired by a similar class from Doug Sevenson in his "The Firebase Blog" :
         "Using Android Architecture Components with Firebase Realtime Database (Part 1)

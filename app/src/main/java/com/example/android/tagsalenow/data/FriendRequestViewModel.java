@@ -17,8 +17,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /*
@@ -64,6 +68,7 @@ public class FriendRequestViewModel extends ViewModel {
                     mldFriendRequestObjectLiveData.setValue(null);
                 }
             }
+
         });
     }
     //private  final LiveData<List<FriendRequestObject>> friendRequestObjectLiveData = Transformations.map(liveData, new Deserializer());
@@ -72,14 +77,9 @@ public class FriendRequestViewModel extends ViewModel {
         @Override
         public List<FriendRequestObject> apply(DataSnapshot dataSnapshot) {
             Log.d(TAG,  "FriendReqViewModeldataSnapShot: " + dataSnapshot.toString());
-
-
-
-
-
-            List<FriendRequestObject> values = null;
+            List<FriendRequestObject> values = new ArrayList<FriendRequestObject>();
             Map<String, Object> onf = (Map<String,Object>) dataSnapshot.getValue();
-            if (onf == null) return null;
+            if (onf == null) return values;
             try {
                 values = Utilities.MapToFR(onf);
             } catch (Exception ex){
