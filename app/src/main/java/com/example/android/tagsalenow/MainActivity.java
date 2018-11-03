@@ -1,13 +1,18 @@
 package com.example.android.tagsalenow;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +27,10 @@ import com.example.android.tagsalenow.sync.SunshineSyncUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -69,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements
     public static final String MAINACTIVITYKEY = "mainactivity";
     public static final int RC_SIGN_IN = 1;
 
+    //LOCATION PERMISSION REQUEST CONSTANT:
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 25;
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessagesDatabaseReference;
@@ -91,6 +102,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+
+    private static FusedLocationProviderClient mFusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,9 +132,40 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 */
-        ///
+        //setup Location Services:
+        // code from Google: https://developer.android.com/training/location/retrieve-current
 
-        Log.d(TAG, "onCreate: ***** CHECK API KEYS: ["+BuildConfig.MY_OPENWEATHERMAPORG_API_KEY+"]");
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+
+        //Snippet below based on code from : https://developer.android.com/training/permissions/requesting
+        // Here, thisActivity is the current activity
+
+/*
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            // Permission has already been granted
+        }
+*/
         Context myContext = this;
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -508,4 +552,61 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions,int[] grantResults) {
+        switch(requestCode){
+            case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION:
+                // If request is cancelled, the result arrays are empty.
+                if(grantResults.length >0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted
+                    // We can now safely use the API we requested access to
+                    getLocationInfo();
+                } else {
+                    // Permission was denied or request was cancelled
+                }
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+    public void getLocationInfo(){
+        if (mFusedLocationClient != null) {
+/*
+        if(checkPermission(Manifest.permission.ACCESS_FINE_LOCATION,Process))
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            // Logic to handle location object
+                            CurrentInfo.setCurrentLocationObject(location);
+                        }
+                    }
+                });
+*/
+        }
+
+    }
+    /*
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        if (mResolvingError) {
+            // Already attempting to resolve an error.
+            return;
+        } else if (result.hasResolution()) {
+            try {
+                mResolvingError = true;
+                result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
+            } catch (SendIntentException e) {
+                // There was an error with the resolution intent. Try again.
+                mGoogleApiClient.connect();
+            }
+        } else {
+            // Show dialog using GooglePlayServicesUtil.getErrorDialog()
+            showErrorDialog(result.getErrorCode());
+            mResolvingError = true;
+        }
+    }
+    */
 }

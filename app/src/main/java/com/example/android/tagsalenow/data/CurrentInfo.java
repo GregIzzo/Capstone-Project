@@ -1,10 +1,12 @@
 package com.example.android.tagsalenow.data;
 
+import android.location.Location;
 import android.util.Log;
 
 import com.example.android.tagsalenow.TagSaleEventObject;
 import com.example.android.tagsalenow.TagSaleReviewObject;
 import com.example.android.tagsalenow.TagSaleUserObject;
+import com.google.android.gms.location.FusedLocationProviderClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +15,8 @@ import java.util.Map;
 * Store static (current) information, such as 'currently selected Tag Sale' or 'Currently selected Friend'
  */
 public  class CurrentInfo {
+    private static Location currentLocationObject;
+
     private static String currentTagSaleID = "";
     private static String currentFriendID = "";
     private static TagSaleEventObject currentTagSaleEventObject;
@@ -22,6 +26,10 @@ public  class CurrentInfo {
     private static Map<String,TagSaleEventObject> tsEventsMap;
     private static Map<String,TagSaleReviewObject> tsReviewsMap;
     //private static Map<String,Friend>
+
+    //Device current location is stored in currentLocationObject
+    public static Location getCurrentLocationObject(){ return currentLocationObject;}
+    public static void setCurrentLocationObject(Location inCurrentLocationObject) { currentLocationObject = inCurrentLocationObject;}
 
     public static String getCurrentTagSaleID(){ return currentTagSaleID;}
     public static void setCurrentTagSaleID(String incomingTagSaleID){ currentTagSaleID = incomingTagSaleID;}
