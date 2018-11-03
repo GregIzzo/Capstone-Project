@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.android.tagsalenow.data.CurrentInfo;
 import com.example.android.tagsalenow.data.WeatherContract;
@@ -28,9 +30,17 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -50,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements
 
     //NOTE : WEATHER DB AND LOADING IS FROM SUNSHINE APP, FROM UDACITY ANDROID NANO DEGREE COURSE
     private static final int ID_FORECAST_LOADER = 47;
+    private static final String REQUEST_LOCATION_UPDATES_KEY= "requestlocationupdateskey";
     /*
      * The columns of data that we are interested in displaying within our MainActivity's list of
      * weather data.
@@ -104,10 +115,13 @@ public class MainActivity extends AppCompatActivity implements
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     private static FusedLocationProviderClient mFusedLocationClient;
+    private LocationCallback mLocationCallback;
+    private boolean mRequestingLocationUpdates=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        updateValuesFromBundle(savedInstanceState);//restore saved
         setContentView(R.layout.activity_main);
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -133,38 +147,56 @@ public class MainActivity extends AppCompatActivity implements
         });
 */
         //setup Location Services:
+
         // code from Google: https://developer.android.com/training/location/retrieve-current
-
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        //Get Periodic updates about location
+        //routine below is from : https://developer.android.com/training/location/receive-location-updates
+        /*
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    Log.d(TAG, "onLocationResult: LOCATIONCALLBACK - time to check location");
+                    reallyGetLocation();
+                }
+            };
 
-
+        };
+        */
         //Snippet below based on code from : https://developer.android.com/training/permissions/requesting
-        // Here, thisActivity is the current activity
+        getLocationInfo();
 
+        //NEWER LOCATION API INITIALIZATION:
 /*
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        } else {
-            // Permission has already been granted
-        }
+        FusedLocationProviderClient client =
+                LocationServices.getFusedLocationProviderClient(this);
+        PendingResult result =
+                LocationServices.FusedLocationApi.requestLocationUpdates(
+                        client, LocationRequest.create(), pendingIntent);
+        client.requestLocationUpdates(LocationRequest.create(), pendingIntent)
+                .addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        Log.d("MainActivity", "LocationRequest complete Result: " + task.getResult());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (e instanceof ApiException) {
+                            //Log.w(TAG, ((ApiException) e).getStatusMessage());
+                            Log.d(TAG, "LocationRequest onFailure: Instance of APIEXCEPTION "+ e.getMessage());
+                        } else {
+                          //  Log.w(TAG, e.getMessage());
+                            Log.d(TAG, "LocationRequest onFailure: not intance of APIEXCEPTION " + e.getMessage());
+                        }
+                    }
+                })
+        ;
 */
         Context myContext = this;
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
@@ -290,6 +322,9 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+        if (mRequestingLocationUpdates) {
+            startLocationUpdates();
+        }
     }
     @Override
     protected void onPause() {
@@ -297,8 +332,16 @@ public class MainActivity extends AppCompatActivity implements
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
+        stopLocationUpdates();
        //TODO mMessageAdapter.clear();
         detachDatabaseReadListener();
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(REQUEST_LOCATION_UPDATES_KEY,
+                mRequestingLocationUpdates);
+        // ...
+        super.onSaveInstanceState(outState);
     }
     private void onSignedInInitialize(TagSaleUserObject userObject) {
         mUsername = userObject.getDisplayName();
@@ -318,6 +361,15 @@ public class MainActivity extends AppCompatActivity implements
         mUsername = ANONYMOUS;
       //TODO  mMessageAdapter.clear();
         detachDatabaseReadListener();
+    }
+    private void startLocationUpdates() {
+        Log.d(TAG, "startLocationUpdates: STARTING");
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(60 * 1000);
+        locationRequest.setFastestInterval(15 * 1000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+        mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, null /* Looper */);
     }
     private void attachDatabaseReadListener() {
         //
@@ -561,32 +613,65 @@ public class MainActivity extends AppCompatActivity implements
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted
                     // We can now safely use the API we requested access to
-                    getLocationInfo();
+                    reallyGetLocation();
                 } else {
                     // Permission was denied or request was cancelled
+                    Toast.makeText(this, "onRequestPermissionResults - denied or cancelled", Toast.LENGTH_LONG).show();
                 }
             // other 'case' lines to check for other
             // permissions this app might request.
         }
     }
     public void getLocationInfo(){
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Toast.makeText(this, "SHOW PERMISSION EXPLANATION", Toast.LENGTH_LONG).show();
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+                // MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            // Permission has already been granted
+            reallyGetLocation();
+        }
+
+    }
+    private void reallyGetLocation(){
         if (mFusedLocationClient != null) {
-/*
-        if(checkPermission(Manifest.permission.ACCESS_FINE_LOCATION,Process))
+
+        if( getBaseContext().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            Log.d(TAG, "reallyGetLocation: PERMISSION GRANTED - getting location");
         mFusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
+                        Log.d(TAG, "reallyGetLocation.onSuccess: ");
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
+                            Log.d(TAG, "reallyGetLocation.onSuccess: Location good:"+location.toString());
                             // Logic to handle location object
                             CurrentInfo.setCurrentLocationObject(location);
                         }
+                        //JUST USING THE 'GETLASTLOCATION'. FUTURE ENHANCEMENT - PERIODIC LOCATION UPDATES
+                       // mRequestingLocationUpdates = true;
+                      //  startLocationUpdates();// start getting location periodically
                     }
                 });
-*/
         }
-
     }
     /*
     @Override
@@ -609,4 +694,21 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
     */
+    private void stopLocationUpdates() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+    }
+    private void updateValuesFromBundle(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            return;
+        }
+
+        // Update the value of mRequestingLocationUpdates from the Bundle.
+        if (savedInstanceState.keySet().contains(REQUEST_LOCATION_UPDATES_KEY)) {
+            mRequestingLocationUpdates = savedInstanceState.getBoolean(REQUEST_LOCATION_UPDATES_KEY);
+        }
+
+        // ...
+
+
+    }
 }
