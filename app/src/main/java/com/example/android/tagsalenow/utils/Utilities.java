@@ -1,5 +1,10 @@
 package com.example.android.tagsalenow.utils;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.android.tagsalenow.AttendingObject;
@@ -9,30 +14,35 @@ import com.example.android.tagsalenow.OneFriend;
 import com.example.android.tagsalenow.TagSaleEventObject;
 import com.example.android.tagsalenow.TagSaleReviewObject;
 import com.example.android.tagsalenow.TagSaleUserObject;
+import com.example.android.tagsalenow.data.LatLng;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Utilities {
 
+    private final static String TAG = "UTILITIES";
     public static List<TagSaleEventObject> MapToTSEO(Map<String, Object> map){
         //expect map to be: {"key": {"key":value, "key":value...}}
-        Log.d("UTILITIES", "MapToTSEO: INPUT:"+map.toString());
+        Log.d(TAG, "MapToTSEO: INPUT:"+map.toString());
 
         List<TagSaleEventObject> outlist =  new ArrayList<>();
-        Log.d("UTILITIES", "MapToTSEO: listofkeys:"+map.keySet().toString());
+        Log.d(TAG, "MapToTSEO: listofkeys:"+map.keySet().toString());
         List<Object> listOfObjects =  new ArrayList(map.values());//Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
-        Log.d("UTILITIES", "MapToTSEO: listOfObjects:"+listOfObjects.toString());
+        Log.d(TAG, "MapToTSEO: listOfObjects:"+listOfObjects.toString());
 
         //Map<String, Object> interm = (Map<String,Object>)SingleValue;
-        //Log.d("UTILITIES", "MapToTSEO: interm:"+interm.toString());
+        //Log.d(TAG, "MapToTSEO: interm:"+interm.toString());
         //List<Object> mapObjects = (List<Object>) interm.values(); //[ {K:V, K:V,..}, {K:V, ...}]
         int count = listOfObjects.size();
-        Log.d("UTILITIES", "MapToTSEO: count("+count+") ");
+        Log.d(TAG, "MapToTSEO: count("+count+") ");
 
         for (int i =0;i<count ;i++){
             Map<String, Object> innermap = (Map<String, Object>) listOfObjects.get(i);
@@ -51,11 +61,14 @@ public class Utilities {
                         innermap.get("startTime").toString(),
                         innermap.get("endTime").toString(),
                         innermap.get("description").toString(),
-                        innermap.get("tags").toString());
+                        innermap.get("tags").toString(),
+                        (double) innermap.get("lat"),
+                        (double) innermap.get("lon")
+                );
                 outlist.add(to);
 
             } catch (Exception ex){
-                Log.d("UTIL", "MapToTSEO: error converting to TagSaleEventObject:" + ex.getMessage());
+                Log.d(TAG, "MapToTSEO: error converting to TagSaleEventObject:" + ex.getMessage());
             }
         }
         return outlist;
@@ -79,7 +92,7 @@ public class Utilities {
                 outlist.add(tu);
 
             } catch (Exception ex){
-                Log.d("UTIL", "MapToTU: error converting to TagSaleUserObject:" + ex.getMessage());
+                Log.d(TAG, "MapToTU: error converting to TagSaleUserObject:" + ex.getMessage());
             }
         }
         return outlist;
@@ -88,7 +101,7 @@ public class Utilities {
 
     public static List<Friends> MapToFRO(Map<String, Object> map){
         //expect map to be:  {"userId":{"FriendID":TRUE, "FriendID":TRUE...}}
-        Log.d("UTILITIES", "MapToFRO: INPUT:"+map.toString());
+        Log.d(TAG, "MapToFRO: INPUT:"+map.toString());
 
         List<Friends> outlist =  new ArrayList<>();
         List<String> listOfKeys = new ArrayList<String>(map.keySet());
@@ -102,14 +115,14 @@ public class Utilities {
             try {
                 keyArray = innermap.keySet().toArray(new String[0]);
             } catch (Exception ex){
-                Log.d("UTILITIES", "MapToFRO: ERROR converting to array:"+ex.getMessage());
+                Log.d(TAG, "MapToFRO: ERROR converting to array:"+ex.getMessage());
             }
            if(innermap != null) {
                ArrayList<String> friendIds =null;
                 try {
                      friendIds = new ArrayList<String>(Arrays.asList(keyArray));//all the friend ids
                 } catch (Exception ex){
-                    Log.d("UTILITIES", "MapToFRO: ERROR2 converting to ArrayList:"+ex.getMessage());
+                    Log.d(TAG, "MapToFRO: ERROR2 converting to ArrayList:"+ex.getMessage());
                 }
 
                //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
@@ -117,9 +130,9 @@ public class Utilities {
                    Friends fro = new Friends(userId,
                            friendIds);
                    outlist.add(fro);
-                   Log.d("UTILITIES", "MapToFRO: ADDED: userId=" + userId + " friends[" + friendIds.toString() + "]");
+                   Log.d(TAG, "MapToFRO: ADDED: userId=" + userId + " friends[" + friendIds.toString() + "]");
                } catch (Exception ex) {
-                   Log.d("UTIL", "MapToFRO: error converting to Friends:" + ex.getMessage());
+                   Log.d(TAG, "MapToFRO: error converting to Friends:" + ex.getMessage());
                }
            }
         }
@@ -128,7 +141,7 @@ public class Utilities {
     }
     public static List<OneFriend> MapToONEF(Map<String, Object> map){
         //expect map to be:  {"userId":{"FriendID":TRUE, "FriendID":TRUE...}}
-        Log.d("UTILITIES", "MapToONEF: INPUT:"+map.toString());
+        Log.d(TAG, "MapToONEF: INPUT:"+map.toString());
 
         List<OneFriend> outlist =  new ArrayList<>();
         List<String> listOfKeys = new ArrayList<String>(map.keySet());
@@ -139,9 +152,9 @@ public class Utilities {
                 try {
                     OneFriend fro = new OneFriend(userId);
                     outlist.add(fro);
-                    Log.d("UTILITIES", "MapToONEF: ADDED: userId=" + userId );
+                    Log.d(TAG, "MapToONEF: ADDED: userId=" + userId );
                 } catch (Exception ex) {
-                    Log.d("UTIL", "MapToONEF: error converting to OneFriend:" + ex.getMessage());
+                    Log.d(TAG, "MapToONEF: error converting to OneFriend:" + ex.getMessage());
                 }
         }
         return outlist;
@@ -150,13 +163,13 @@ public class Utilities {
     public static List<FriendRequestObject> MapToFR(Map<String, Object> map){
         //expect map to be:  {"userId":{"FromUserId":STRING, "ToUserId":String...}}
         List<FriendRequestObject> outlist =  new ArrayList<>();
-        Log.d("UTILITIES", "MapToFR: listofkeys:"+map.keySet().toString());
+        Log.d(TAG, "MapToFR: listofkeys:"+map.keySet().toString());
         List<Object> listOfObjects =  new ArrayList(map.values());//Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
-        Log.d("UTILITIES", "MapToFR: listOfObjects:"+listOfObjects.toString());
+        Log.d(TAG, "MapToFR: listOfObjects:"+listOfObjects.toString());
         int count = listOfObjects.size();
         for (int i =0;i<count ;i++){
             Map<String, Object> innermap = (Map<String, Object>) listOfObjects.get(i);
-            Log.d("UTILITIES", "MapToFR: innermap="+innermap.toString());
+            Log.d(TAG, "MapToFR: innermap="+innermap.toString());
             try {
                 FriendRequestObject fro = new FriendRequestObject(
                         innermap.get("fromUserId").toString(),
@@ -165,9 +178,9 @@ public class Utilities {
                         innermap.get("dbkey").toString()
                 );
                 outlist.add(fro);
-                Log.d("UTILITIES", "MapToFR: ADDED: fromuserId=" + fro.getFromUserId()+" touserid="+fro.getToUserId() );
+                Log.d(TAG, "MapToFR: ADDED: fromuserId=" + fro.getFromUserId()+" touserid="+fro.getToUserId() );
             } catch (Exception ex) {
-                Log.d("UTIL", "MapToFR: error converting to OneFriend:" + ex.getMessage());
+                Log.d(TAG, "MapToFR: error converting to OneFriend:" + ex.getMessage());
             }
         }
         return outlist;
@@ -182,11 +195,11 @@ public class Utilities {
         List<TagSaleReviewObject> outlist =  new ArrayList<>();
         List<Object> listOfObjects =  new ArrayList(map.values());//Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
         int count = listOfObjects.size();
-        Log.d("UTILITIES", "MapToREVIEWO: count("+count+") ");
+        Log.d(TAG, "MapToREVIEWO: count("+count+") ");
 
         for (int i =0;i<count ;i++){
             Map<String, Object> innermap = (Map<String, Object>) listOfObjects.get(i);
-            Log.d("UTILITIES", "MapToREVIEWO: DATA IS: "+listOfObjects.get(i).toString());
+            Log.d(TAG, "MapToREVIEWO: DATA IS: "+listOfObjects.get(i).toString());
             //(String locationId, String ownerId, String date, String startTime, String endTime, String description, String tags)
             try {
                 TagSaleReviewObject to = new TagSaleReviewObject(
@@ -196,9 +209,9 @@ public class Utilities {
                         innermap.get("description").toString(),
                         ((Long) innermap.get("fiveStarRating")).intValue() );
                 outlist.add(to);
-                Log.d("UTILITIES", "MapToREVIEWO: ADDED:"+innermap.get("tagSaleID").toString());
+                Log.d(TAG, "MapToREVIEWO: ADDED:"+innermap.get("tagSaleID").toString());
             } catch (Exception ex){
-                Log.d("UTILITIES", "MapToREVIEWO: error converting to Friends:" + ex.getMessage());
+                Log.d(TAG, "MapToREVIEWO: error converting to Friends:" + ex.getMessage());
             }
         }
         return outlist;
@@ -216,13 +229,82 @@ public class Utilities {
             try {
                 AttendingObject atto = new AttendingObject(userId);
                 outlist.add(atto);
-                Log.d("UTILITIES", "MapToATTENDING: ADDED:"+userId);
+                Log.d(TAG, "MapToATTENDING: ADDED:"+userId);
             } catch (Exception ex){
-                Log.d("UTILITIES", "MapToATTENDING: error converting to AttendingObject:" + ex.getMessage());
+                Log.d(TAG, "MapToATTENDING: error converting to AttendingObject:" + ex.getMessage());
             }
         }
         return outlist;
 
+    }
+    /*
+    The method below came from a post on StackOverflow.com:
+    https://stackoverflow.com/questions/3574644/how-can-i-find-the-latitude-and-longitude-from-address
+     */
+
+    public static LatLng getLocationFromAddress(Context context, String strAddress) {
+        Log.d(TAG, "getLocationFromAddress: INPUT["+strAddress+"]");
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 1);
+            if (address == null) {
+                return null;
+            }
+
+            Address location = address.get(0);
+            Log.d(TAG, "getLocationFromAddress: GOT LOCATION:"+location.toString());
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (Exception ex) {
+
+            Log.d(TAG, "getLocationFromAddress:ERRROR input("+strAddress+") message="+ex.getMessage());
+        }
+
+        return p1;
+    }
+    public static void setTagSaleLocationData(final Context context, final String TagSaleEventId, final String strAddress){
+        new AsyncTask<Void, Void, List<Address>>() {
+            @Override
+            protected List<Address> doInBackground(Void... voids) {
+                Geocoder geo = new Geocoder(context);
+                List<Address> listAddresses = null;
+                try {
+                    listAddresses = geo.getFromLocationName(strAddress, 1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return listAddresses;
+            }
+            public void onPostExecute(List<Address> listAddresses) {
+                Address foundAddress = null;
+                if ((listAddresses != null) && (listAddresses.size() > 0)) {
+                    foundAddress = listAddresses.get(0);
+                   if( foundAddress.hasLatitude()){
+                       double myLat = foundAddress.getLatitude();
+                       if (foundAddress.hasLongitude()){
+                           double myLon = foundAddress.getLongitude();
+                           //GOT BOTH, so Update the TagSaleEvent record with this new info
+                           DatabaseReference mTagSaleEventsDatabaseReference;
+                           mTagSaleEventsDatabaseReference =  FirebaseDatabase.getInstance().getReference();
+
+                           Map<String, Object> childUpdates = new HashMap<>();
+                           childUpdates.put("/tagsaleevents/" +
+                                   TagSaleEventId +"/"+
+                                   "lat", myLat);
+                           childUpdates.put("/tagsaleevents/" +
+                                   TagSaleEventId +"/"+
+                                   "lon", myLon);
+                           Log.d(TAG, "SETGEOPOSITION onPostExecute: Updates="+childUpdates.toString());
+                           mTagSaleEventsDatabaseReference.updateChildren(childUpdates);
+                        }
+                   }
+                }
+            }
+        }.execute();
     }
 
 }

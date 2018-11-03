@@ -31,6 +31,8 @@ public class TagSaleEventObject {
     private String endTime;
     private String description;
     private String tags;
+    private double lat;
+    private double lon;
 
     //private String friendsAttending;
 
@@ -39,7 +41,7 @@ public class TagSaleEventObject {
     public TagSaleEventObject(){
     }
     public TagSaleEventObject(String id, String locationId, String address, String city, String state, String zip, String ownerId, String date, String startTime,
-                              String endTime, String description, String tags){
+                              String endTime, String description, String tags, double lat, double lon){
         this.id = id;
         this.locationId = locationId;
         this.address = address;
@@ -52,6 +54,8 @@ public class TagSaleEventObject {
         this.endTime = endTime;
         this.description = description;
         this.tags = tags;
+        this.lat = lat;
+        this.lon = lon;
         changeCounter = 0;
     }
     public String getId(){ return id;}
@@ -94,6 +98,12 @@ public class TagSaleEventObject {
 
     public String getTags() {   return tags;  }
     public void setTags(String tags) {   this.tags = tags;   }
+
+    public double getLat(){ return lat;}
+    public void setLat(double lat){this.lat = lat;}
+
+    public double getLon(){ return lon;}
+    public void setLon(double lon){this.lon = lon;}
 
     //public String getFriendsAttending() {   return friendsAttending;  }
 

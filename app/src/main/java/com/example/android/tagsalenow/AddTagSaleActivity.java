@@ -2,6 +2,8 @@ package com.example.android.tagsalenow;
 
 import android.icu.text.TimeZoneNames;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +14,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.example.android.tagsalenow.data.CurrentInfo;
+import com.example.android.tagsalenow.data.LatLng;
+
 import com.example.android.tagsalenow.ui.DatePickerFragment;
 import com.example.android.tagsalenow.ui.TimePickerFragment;
+import com.example.android.tagsalenow.utils.Utilities;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -75,6 +81,7 @@ public class AddTagSaleActivity extends AppCompatActivity implements TimePickerF
                 mFirebaseDatabase = FirebaseDatabase.getInstance();
                 mTagSaleEventsDatabaseReference = mFirebaseDatabase.getReference().child("tagsaleevents");
                 Log.d("ADDDD", "onClick: ABOUT TO ADD RECORD");
+
                 StringBuilder location = new StringBuilder();
                 location.append(te_address.getText());
                 location.append(", ");
@@ -86,7 +93,7 @@ public class AddTagSaleActivity extends AppCompatActivity implements TimePickerF
                 String temporaryTags = "";
                 //Step 1: Get Key of new record
                 DatabaseReference opRef =  mTagSaleEventsDatabaseReference.push();
-                String key = opRef.getKey();
+                final String key = opRef.getKey();
 
                 TagSaleEventObject tso = new TagSaleEventObject(key, location.toString(),
                         te_address.getText().toString(),
@@ -98,11 +105,28 @@ public class AddTagSaleActivity extends AppCompatActivity implements TimePickerF
                         te_time_start.getText().toString(),
                         te_time_end.getText().toString(),
                         te_description.getText().toString(),
-                        temporaryTags);
+                        temporaryTags,
+                        0.01,
+                        0.01
+                );
                 //mMessagesDatabaseReference.push().setValue(friendlyMessage);
                 // tso.setLocationId(key);
                //mTagSaleEventsDatabaseReference.push().setValue(tso);
-                opRef.setValue(tso);
+                final String addrString = location.toString();
+                opRef.setValue(tso, new DatabaseReference.CompletionListener() {
+                    //on completion, fetch geolocation
+                            @Override
+                            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                //-----------GET GEOLOCATION
+                                // LatLng whatGeoLatLng = Utilities.getLocationFromAddress(getApplicationContext(), location.toString());
+                                Utilities.setTagSaleLocationData(getApplicationContext(),key,addrString);
+                                //--------------------------------------
+                            }
+                        }
+                );
+                //START LOCATION LOOKUP - IT CAN TAKE ITS TIME IN IT'S OWN THREAD
+
+
                 finish();
             }
         });

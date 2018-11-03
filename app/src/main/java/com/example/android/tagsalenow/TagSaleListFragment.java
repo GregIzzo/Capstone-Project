@@ -53,8 +53,6 @@ public class TagSaleListFragment extends Fragment
     private Context mContext;
     //Setup Click listener to report the event to anyone listening
     OnButtonClickListener mCallback;
-
-
     public interface OnButtonClickListener {
         void onAddButtonClicked(String tag);
     }
@@ -166,10 +164,8 @@ public class TagSaleListFragment extends Fragment
     }
     @Override
     public void onAttendClick(Map<String,Object> dataMap) {
-        Log.d(TAG, "onAttendClick: ATTENDBUTTON CLICKED");
         int listPosition = (int) dataMap.get("position");
         Boolean checkState = (Boolean) dataMap.get("state");
-        Toast.makeText(mContext, "ATTEND BUTTON CLICKED pos:"+listPosition+" state="+checkState, Toast.LENGTH_SHORT).show();
    //Add Attending record
 
         DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -179,7 +175,6 @@ public class TagSaleListFragment extends Fragment
         Map<String, Object> childUpdates = new HashMap<>();
         if (checkState) {
             //Add Attending Record
-
             childUpdates.put("/attending/" +
                     tso.getId() + "/" +
                     CurrentInfo.getCurrentUser().getUserId(), "true");
@@ -191,14 +186,17 @@ public class TagSaleListFragment extends Fragment
                     CurrentInfo.getCurrentUser().getUserId(), null);
         }
         mDatabaseReference.updateChildren(childUpdates);
-
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-
+        try {
+            mCallback = (OnButtonClickListener) context;
+        } catch (ClassCastException e){
+            throw new ClassCastException(context.toString() + " Must implement OnImageClickListener");
+        }
         try {
             mCallback = (OnButtonClickListener) context;
         } catch (ClassCastException e){
