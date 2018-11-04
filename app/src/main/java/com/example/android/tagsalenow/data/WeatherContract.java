@@ -1,5 +1,7 @@
 package com.example.android.tagsalenow.data;
-
+/*
+This class originated from the Sunshine App from the Udacity Advanced Android nano course
+ */
 import android.net.Uri;
 import android.provider.BaseColumns;
 

@@ -91,11 +91,13 @@ public class NetworkUtils {
      */
     public static URL getUrl(Context context) {
         if (TagSalePreferences.isLocationLatLonAvailable(context)) {
+            Log.d(TAG, "getUrl: TagSalePreferences.isLocationLatLonAvailable = true ");
             double[] preferredCoordinates = TagSalePreferences.getLocationCoordinates(context);
             double latitude = preferredCoordinates[0];
             double longitude = preferredCoordinates[1];
             return buildUrlWithLatitudeLongitude(latitude, longitude);
         } else {
+            Log.d(TAG, "getUrl: TagSalePreferences.isLocationLatLonAvailable = false ");
             String locationQuery = TagSalePreferences.getPreferredWeatherLocation(context);
             return buildUrlWithLocationQuery(locationQuery);
         }

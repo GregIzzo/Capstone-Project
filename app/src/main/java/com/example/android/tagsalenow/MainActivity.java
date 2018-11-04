@@ -60,7 +60,10 @@ public class MainActivity extends AppCompatActivity implements
 
     //NOTE : WEATHER DB AND LOADING IS FROM SUNSHINE APP, FROM UDACITY ANDROID NANO DEGREE COURSE
     private static final int ID_FORECAST_LOADER = 47;
+
     private static final String REQUEST_LOCATION_UPDATES_KEY= "requestlocationupdateskey";
+    private static final String PERMISSION_SEQUENCE_GOING= "permissionsequencegoing";
+
     /*
      * The columns of data that we are interested in displaying within our MainActivity's list of
      * weather data.
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements
 
     //LOCATION PERMISSION REQUEST CONSTANT:
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 25;
+    private boolean permissionSequenceGoing = true;
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mMessagesDatabaseReference;
@@ -116,21 +120,26 @@ public class MainActivity extends AppCompatActivity implements
 
     private static FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
-    private boolean mRequestingLocationUpdates=false;
+    //private boolean mRequestingLocationUpdates=false;//check permissions first, then auth
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateValuesFromBundle(savedInstanceState);//restore saved
         setContentView(R.layout.activity_main);
-
+        Log.d(TAG, "onCreate: FirebaseDatabase.getInstance()");
         mFirebaseDatabase = FirebaseDatabase.getInstance();
+        Log.d(TAG, "onCreate: FirebaseAuth.getInstance()");
         mFirebaseAuth = FirebaseAuth.getInstance();
 
+        Log.d(TAG, "onCreate: mFirebaseDatabase.getReference(messages)");
         mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("messages");
+        Log.d(TAG, "onCreate: mFirebaseDatabase.getReference(tagsaleevents)");
         mTagSaleEventsDatabaseReference = mFirebaseDatabase.getReference().child("tagsaleevents");
+        Log.d(TAG, "onCreate: mFirebaseDatabase.getReference(tagsaleusers)");
         mTagSaleUsersDatabaseReference = mFirebaseDatabase.getReference().child("tagsaleusers");
        // mFriendsDatabaseReference= mFirebaseDatabase.getReference().child("friends");
+        Log.d(TAG, "onCreate: mFirebaseDatabase.getReference(reviews)");
         mReviewsDatabaseReference = mFirebaseDatabase.getReference().child("reviews");
 //
 
@@ -149,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements
         //setup Location Services:
 
         // code from Google: https://developer.android.com/training/location/retrieve-current
+        Log.d(TAG, "onCreate: LocationServices.getFusedLocationProviderClient(this)");
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         //Get Periodic updates about location
         //routine below is from : https://developer.android.com/training/location/receive-location-updates
@@ -167,8 +177,9 @@ public class MainActivity extends AppCompatActivity implements
 
         };
         */
+        Context myContext = this;
+
         //Snippet below based on code from : https://developer.android.com/training/permissions/requesting
-        getLocationInfo();
 
         //NEWER LOCATION API INITIALIZATION:
 /*
@@ -198,7 +209,22 @@ public class MainActivity extends AppCompatActivity implements
                 })
         ;
 */
-        Context myContext = this;
+
+     // Create Ad
+        mAdView = findViewById(R.id.adView);
+        Log.d(TAG, "onCreate: new AdRequest.Builder().build();");
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        //GetLocationInfo will check location permissions
+        Log.d(TAG, "onCreate: getLocationInfo();");
+        getLocationInfo();
+
+    }
+    private void startAuth(){
+        Log.d(TAG, " startAuth() start");
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -218,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements
                     // The user's ID, unique to the Firebase project. Do NOT use this value to
                     // authenticate with your backend server, if you have one. Use
                     // FirebaseUser.getToken() instead.
-                   // String uid = user.getUid();
+                    // String uid = user.getUid();
 
                     Log.d(TAG, "onAuthStateChanged: *** name["+name+"] emailverified["+emailVerified+"] email["+email+"] photourl["+photoUrl+"]");
                     String currentDateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
@@ -240,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
 */
 
-                 //   getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, myContext);
+                    //   getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, myContext);
 
                     SunshineSyncUtils.initialize(getApplicationContext());
                     showTagSaleList();
@@ -264,10 +290,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         };
-    // Create Ad
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+
     }
     private void showTagSaleList() {
         //connect DB
@@ -321,10 +344,13 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
-        if (mRequestingLocationUpdates) {
-            startLocationUpdates();
+        Log.d(TAG, " onResume() start");
+        if (mFirebaseAuth != null && mAuthStateListener != null) {
+            mFirebaseAuth.addAuthStateListener(mAuthStateListener);
         }
+        //if (mRequestingLocationUpdates) {
+        //    startLocationUpdates();
+        //}
     }
     @Override
     protected void onPause() {
@@ -338,8 +364,8 @@ public class MainActivity extends AppCompatActivity implements
     }
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(REQUEST_LOCATION_UPDATES_KEY,
-                mRequestingLocationUpdates);
+        //outState.putBoolean(REQUEST_LOCATION_UPDATES_KEY,mRequestingLocationUpdates);
+        outState.putBoolean(PERMISSION_SEQUENCE_GOING,permissionSequenceGoing);
         // ...
         super.onSaveInstanceState(outState);
     }
@@ -362,6 +388,7 @@ public class MainActivity extends AppCompatActivity implements
       //TODO  mMessageAdapter.clear();
         detachDatabaseReadListener();
     }
+    /*
     private void startLocationUpdates() {
         Log.d(TAG, "startLocationUpdates: STARTING");
         LocationRequest locationRequest = new LocationRequest();
@@ -369,12 +396,15 @@ public class MainActivity extends AppCompatActivity implements
         locationRequest.setFastestInterval(15 * 1000);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
-        mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, null /* Looper */);
+        mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
     }
+    */
     private void attachDatabaseReadListener() {
         //
         // LISTEN FOR TAGSALEEVENT CHANGES
         //
+        Log.d(TAG, " attachDatabaseReadListener() start");
+
         if (mTagSaleEvent_ChildEventListener == null) {
              mTagSaleEvent_ChildEventListener = new ChildEventListener() {
                 @Override
@@ -511,6 +541,8 @@ public class MainActivity extends AppCompatActivity implements
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
+        Log.d(TAG, " onCreateLoader() start");
+
         switch (loaderId) {
 
             case ID_FORECAST_LOADER:
@@ -550,7 +582,9 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-       // mForecastAdapter.swapCursor(data);
+        Log.d(TAG, " onLoadFinished() start");
+
+        // mForecastAdapter.swapCursor(data);
        // if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
       //  mRecyclerView.smoothScrollToPosition(mPosition);
        // if (data.getCount() != 0)
@@ -572,6 +606,7 @@ public class MainActivity extends AppCompatActivity implements
        // mForecastAdapter.swapCursor(null);
     }
     private void showWeatherDataFragment() {
+        Log.d(TAG, "showWeatherDataFragment: STARTING permissionSequenceGoing="+permissionSequenceGoing);
         /* First, hide the loading indicator */
         //mLoadingIndicator.setVisibility(View.INVISIBLE);
         /* Finally, make sure the weather data is visible */
@@ -606,6 +641,8 @@ public class MainActivity extends AppCompatActivity implements
     }
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions,int[] grantResults) {
+        Log.d(TAG, " onRequestPermissionsResult() start");
+
         switch(requestCode){
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION:
                 // If request is cancelled, the result arrays are empty.
@@ -613,19 +650,29 @@ public class MainActivity extends AppCompatActivity implements
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted
                     // We can now safely use the API we requested access to
+                    permissionSequenceGoing = false;
+                    startAuth();
+
                     reallyGetLocation();
                 } else {
                     // Permission was denied or request was cancelled
                     Toast.makeText(this, "onRequestPermissionResults - denied or cancelled", Toast.LENGTH_LONG).show();
+                    permissionSequenceGoing = false;
+                    startAuth();
+
                 }
             // other 'case' lines to check for other
             // permissions this app might request.
         }
     }
     public void getLocationInfo(){
+        Log.d(TAG, " getLocationInfo() STARTING");
+
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, " getLocationInfo() permission not granted");
+
             // Permission is not granted
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -634,8 +681,12 @@ public class MainActivity extends AppCompatActivity implements
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
+                permissionSequenceGoing = false;
+                startAuth();
+
             } else {
                 // No explanation needed; request the permission
+                Log.d(TAG, " getLocationInfo() request the permission");
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -646,11 +697,14 @@ public class MainActivity extends AppCompatActivity implements
             }
         } else {
             // Permission has already been granted
+            permissionSequenceGoing = false;
+            startAuth();
             reallyGetLocation();
         }
 
     }
     private void reallyGetLocation(){
+        Log.d(TAG, " reallyGetLocation() start");
         if (mFusedLocationClient != null) {
 
         if( getBaseContext().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
@@ -705,10 +759,14 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         // Update the value of mRequestingLocationUpdates from the Bundle.
-        if (savedInstanceState.keySet().contains(REQUEST_LOCATION_UPDATES_KEY)) {
-            mRequestingLocationUpdates = savedInstanceState.getBoolean(REQUEST_LOCATION_UPDATES_KEY);
-        }
+        //if (savedInstanceState.keySet().contains(REQUEST_LOCATION_UPDATES_KEY)) {
+        //    mRequestingLocationUpdates = savedInstanceState.getBoolean(REQUEST_LOCATION_UPDATES_KEY);
+        //}
+        //permissionSequenceGoing
 
+        if (savedInstanceState.keySet().contains(PERMISSION_SEQUENCE_GOING)) {
+            permissionSequenceGoing = savedInstanceState.getBoolean(PERMISSION_SEQUENCE_GOING);
+        }
         // ...
 
 

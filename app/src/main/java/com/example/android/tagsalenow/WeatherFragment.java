@@ -55,7 +55,7 @@ public class WeatherFragment extends Fragment {
         tv_weather_temp = rootView.findViewById(R.id.weather_temp);
 
         viewModel = ViewModelProviders.of(this).get(WeatherViewModel.class);
-        viewModel.getweatherDataList().observe(WeatherFragment.this, new Observer<List<WeatherModel>>() {
+        viewModel.getweatherDataList().observe(this, new Observer<List<WeatherModel>>() {
             @Override
             public void onChanged(@Nullable List<WeatherModel> weatherModels) {
                 //GOT DATA
