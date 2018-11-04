@@ -1,6 +1,7 @@
 package com.example.android.tagsalenow;
 
 import android.content.Context;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.tagsalenow.data.CurrentInfo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -114,7 +117,39 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
        tagSaleListAdapterViewHolder.ts_placetv.setText(TSEObjectList.get(position).getLocationId());
        tagSaleListAdapterViewHolder.ts_datetv.setText(TSEObjectList.get(position).getFormattedDate());
        tagSaleListAdapterViewHolder.ts_friendsattendingtv.setText(R.string.fake_friendsattending);
-       tagSaleListAdapterViewHolder.ts_distancetv.setText(R.string.fake_distance);
+       //DISTANCE
+        if (CurrentInfo.getCurrentLocationObject() == null){
+            //no location service so show ?
+            tagSaleListAdapterViewHolder.ts_distancetv.setText("?");
+        } else {
+            Location location = CurrentInfo.getCurrentLocationObject();
+            float[] results = new float[1];
+            Double tsLat = TSEObjectList.get(position).getLat();
+            Double tsLon = TSEObjectList.get(position).getLon();
+            if (tsLat == 0.01 && tsLon == 0.01){
+                //fake lat long
+                tagSaleListAdapterViewHolder.ts_distancetv.setText("?");
+            } else {
+                Double fromlat = location.getLatitude();
+                Double fromlong = location.getLongitude();
+                Log.d(TAG, "onBindViewHolder: from:" + fromlat + "," + fromlong + " to:" + TSEObjectList.get(position).getLat() + "," + TSEObjectList.get(position).getLon());
+                Location.distanceBetween(fromlat,
+                        fromlong,
+                        TSEObjectList.get(position).getLat(),
+                        TSEObjectList.get(position).getLon(),
+                        results);
+                if (results.length > 0) {
+                    double distanceMeters = results[0] * 0.00062137;
+                    //distance in meters. Miles= meters * 0.00062137
+                    tagSaleListAdapterViewHolder.ts_distancetv.setText(String.format("%.1f", distanceMeters));
+
+                } else {
+                    tagSaleListAdapterViewHolder.ts_distancetv.setText("?");
+                }
+            }
+
+        }
+
 
     }
     public void addItems(List<TagSaleEventObject> TSEObjectList) {
