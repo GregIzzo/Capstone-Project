@@ -147,10 +147,7 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
                     tagSaleListAdapterViewHolder.ts_distancetv.setText("?");
                 }
             }
-
         }
-
-
     }
     public void addItems(List<TagSaleEventObject> TSEObjectList) {
         this.TSEObjectList = TSEObjectList;

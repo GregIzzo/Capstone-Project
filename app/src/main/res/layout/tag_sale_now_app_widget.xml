@@ -1,0 +1,17 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#09C"
+    android:padding="@dimen/widget_margin">
+
+
+    <ImageView
+        android:id="@+id/appwidget_desktopimage"
+        android:layout_width="@dimen/widget_width"
+        android:layout_height="@dimen/widget_height"
+        android:layout_gravity="center"
+        android:src="@drawable/tag_sale_now_logo"
+        />
+
+</LinearLayout>

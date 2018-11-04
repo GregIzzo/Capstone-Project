@@ -695,7 +695,9 @@ public class MainActivity extends AppCompatActivity implements
     }
     */
     private void stopLocationUpdates() {
-        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        if (mLocationCallback != null && mFusedLocationClient != null) {
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        }
     }
     private void updateValuesFromBundle(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
