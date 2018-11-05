@@ -1,4 +1,7 @@
 package com.example.android.tagsalenow.sync;
+/*
+THIS IS FROM THE SUNSHINE APP FROM UDACITY ANDROID NANO DEGREE COURSE
+ */
 
 import android.app.IntentService;
 import android.content.Intent;

@@ -3,6 +3,7 @@ package com.example.android.tagsalenow.data;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModel;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
@@ -13,17 +14,18 @@ public class WeatherViewModel extends AndroidViewModel {
     private final LiveData<List<WeatherModel>> weatherDataList;
     private AppDatabase appDatabase;
 
-    public WeatherViewModel(Application application) { super(application);
+    public WeatherViewModel(Application application) {
+        super(application);
         appDatabase = AppDatabase.getDatabase(this.getApplication());
         weatherDataList = appDatabase.weatherDaoModel().getWeatherRecords();
     }
 
-    public LiveData<List<WeatherModel>> getweatherDataList() { return
-            weatherDataList;
+    public LiveData<List<WeatherModel>> getweatherDataList() {
+        return weatherDataList;
     }
 
-    public void deleteItem(WeatherModel WeatherModel) { new
-            deleteAsyncTask(appDatabase).execute(WeatherModel);
+    public void deleteItem(WeatherModel WeatherModel) {
+        new deleteAsyncTask(appDatabase).execute(WeatherModel);
     }
 
     private static class deleteAsyncTask extends AsyncTask<WeatherModel, Void, Void> {

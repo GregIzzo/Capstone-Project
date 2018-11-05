@@ -1,4 +1,7 @@
 package com.example.android.tagsalenow.sync;
+/*
+THIS IS FROM THE SUNSHINE APP FROM UDACITY ANDROID NANO DEGREE COURSE
+ */
 
 import android.arch.persistence.room.Room;
 import android.content.ContentResolver;
@@ -16,7 +19,7 @@ import com.example.android.tagsalenow.utils.NetworkUtils;
 import java.net.URL;
 
 public class SunshineSyncTask {
-    private static String TAG = "GGG";
+    private static String TAG = "SUNSHINESYNCTASK";
 
     /**
      * Performs the network request for updated weather, parses the JSON from that request, and
@@ -59,7 +62,7 @@ public class SunshineSyncTask {
              * NullPointerExceptions being thrown. We also have no reason to insert fresh data if
              * there isn't any to insert.
              */
-            /*
+     /*
             if (weatherValues != null ) {
                 Log.d(TAG, "syncWeather GOT DATA: START weatherValues=" + weatherValues.toString());
 

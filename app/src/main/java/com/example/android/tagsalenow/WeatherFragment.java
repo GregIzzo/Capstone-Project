@@ -1,6 +1,7 @@
 package com.example.android.tagsalenow;
 
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -39,7 +40,11 @@ public class WeatherFragment extends Fragment {
     private TextView  tv_weather_description;
     private TextView  tv_weather_temp;
     private WeatherViewModel viewModel;
+    private LiveData<List<WeatherModel>> liveData;
 
+    public WeatherFragment(){
+
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +60,8 @@ public class WeatherFragment extends Fragment {
         tv_weather_temp = rootView.findViewById(R.id.weather_temp);
 
         viewModel = ViewModelProviders.of(this).get(WeatherViewModel.class);
-        viewModel.getweatherDataList().observe(this, new Observer<List<WeatherModel>>() {
+        liveData = viewModel.getweatherDataList();
+        liveData.observe(this, new Observer<List<WeatherModel>>() {
             @Override
             public void onChanged(@Nullable List<WeatherModel> weatherModels) {
                 //GOT DATA
@@ -67,6 +73,8 @@ public class WeatherFragment extends Fragment {
                             String.format("%.2f", weather.getTemperature()) +
                             getString(R.string.wf_temperature_units));
                     setWeatherIcon(weather.getIcon());
+                } else {
+                    //empty weatherModel
                 }
             }
         });

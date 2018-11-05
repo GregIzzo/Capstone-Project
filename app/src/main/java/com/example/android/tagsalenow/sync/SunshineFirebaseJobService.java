@@ -1,4 +1,7 @@
 package com.example.android.tagsalenow.sync;
+/*
+THIS IS FROM THE SUNSHINE APP FROM UDACITY ANDROID NANO DEGREE COURSE
+ */
 
 
 import android.content.Context;
@@ -37,7 +40,7 @@ public class SunshineFirebaseJobService extends JobService {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                //  COMPLETED (6) Once the weather data is sync'd, call jobFinished with the appropriate arguements
+                //  COMPLETED (6) Once the weather data is sync'd, call jobFinished with the appropriate arguments
                 jobFinished(jobParameters, false);
             }
         };
