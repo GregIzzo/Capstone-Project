@@ -10,10 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.tagsalenow.data.CurrentInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,12 +29,9 @@ import java.util.Map;
 public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleListRecyclerAdapter.TagSaleListAdapterViewHolder > {
 
     private static final String TAG = "ADDAPTER";
-
     private List<TagSaleEventObject> TSEObjectList;
-
     private final TagSaleListAdapterOnClickHandler mClickHandler;
     private Context viewGroupContext;
-
     private final TagSaleListAdapterOnAttendClickHandler mAttendClickHandler;
 
 
@@ -54,6 +58,7 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
         public final TextView ts_datetv;
         public final TextView ts_distancetv;
         public final CheckBox ts_planningtoattendcb;
+
 
         public TagSaleListAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -105,14 +110,14 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
      * position. In this method, update the contents of the ViewHolder using the "position" argument that is conveniently
      * passed into us.
      *
-     * @param tagSaleListAdapterViewHolder The tagSaleListAdapterViewHolder which should be updated to represent the
+     * @param incomingtagSaleListAdapterViewHolder The tagSaleListAdapterViewHolder which should be updated to represent the
      *                                  contents of the item at the given position in the data set.
      * @param position                  The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(@NonNull TagSaleListAdapterViewHolder tagSaleListAdapterViewHolder, int position) {
-        Log.d(TAG, "onBindViewHolder: BBBBBB viewholder=" + tagSaleListAdapterViewHolder);
-
+    public void onBindViewHolder(@NonNull TagSaleListAdapterViewHolder incomingtagSaleListAdapterViewHolder, int position) {
+        Log.d(TAG, "onBindViewHolder: BBBBBB viewholder=" + incomingtagSaleListAdapterViewHolder);
+        final TagSaleListAdapterViewHolder tagSaleListAdapterViewHolder = incomingtagSaleListAdapterViewHolder;
        tagSaleListAdapterViewHolder.indicator_iv.setVisibility(View.VISIBLE);
        tagSaleListAdapterViewHolder.ts_placetv.setText(TSEObjectList.get(position).getLocationId());
        tagSaleListAdapterViewHolder.ts_datetv.setText(TSEObjectList.get(position).getFormattedDate());
@@ -148,6 +153,35 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
                 }
             }
         }
+       //Figure out Attending
+        final int whatPosition = position;
+        final String tsid = TSEObjectList.get(whatPosition).getId();
+        final String uid = CurrentInfo.getCurrentUser().getUserId();
+        DatabaseReference mDatabaseReference
+                = FirebaseDatabase.getInstance().getReference("attending/"+tsid+"/"+uid);
+        //Query queryRef = mDatabaseReference.orderByChild(uid).equalTo(true);
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.getValue() != null){
+                    String valuestring = dataSnapshot.getValue().toString();
+                    Log.d(TAG, "onDataChange: checking datasnapshot:["+valuestring+"]");
+                   if (valuestring.equals("true")) {
+                       Log.d(TAG, "onDataChange: SETTING CHECKBOX TO TRUE");
+                       tagSaleListAdapterViewHolder.ts_planningtoattendcb.setChecked(true);
+                   }
+                }
+
+                //Log.d(TAG, "onDataChange: ATTENDING DATA u="+uid+" ts="+tsid+" : "+dataSnapshot.toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                //Log.d(TAG, "onCancelled: ATTENDING DATA DATA u="+uid+" ts="+tsid+" :"+databaseError.getMessage());
+            }
+        });
+
     }
     public void addItems(List<TagSaleEventObject> TSEObjectList) {
         this.TSEObjectList = TSEObjectList;
@@ -171,4 +205,8 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
             return this.TSEObjectList.get(position);
         }
     }
- }
+    private void getData(int position){
+
+    }
+
+}

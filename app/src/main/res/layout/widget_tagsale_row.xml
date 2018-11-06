@@ -1,16 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tagsale"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentTop="true"
-    android:singleLine="true"
-    android:textColor="@color/appwidget_body_text"
-    android:textSize="@dimen/widget_body_text_size"
-    android:textStyle="bold"
+    android:orientation="horizontal"
 
     >
 
-</TextView>
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+
+        android:singleLine="true"
+        android:textColor="@color/appwidget_body_text"
+        android:textSize="@dimen/widget_body_text_size"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+
+        android:singleLine="true"
+        android:textColor="@color/appwidget_body_text"
+        android:textSize="@dimen/widget_body_text_size"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tv_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+
+        android:singleLine="true"
+        android:textColor="@color/appwidget_body_text"
+        android:textSize="@dimen/widget_body_text_size"
+        android:textStyle="bold"/>
+</LinearLayout>

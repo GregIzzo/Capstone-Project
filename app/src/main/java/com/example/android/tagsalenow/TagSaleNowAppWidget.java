@@ -27,7 +27,7 @@ private static String TAG = "TAGSALENOWAPPWIDGET";
         views.setPendingIntentTemplate(R.id.lv_tagsales, appPendingIntent);
         //Handle Empty Ingredient List
         views.setEmptyView(R.id.lv_tagsales, R.id.empty_view);
-        views.setTextViewText(R.id.tagsale, "PLACEHOLDER");///RecipeJSON.getCurrRecipeName());
+        views.setTextViewText(R.id.tv_desc, "PLACEHOLDER");///RecipeJSON.getCurrRecipeName());
         appWidgetManager.updateAppWidget(appWidgetId, views);
 
 

@@ -65,9 +65,6 @@ public class FriendsListFragment extends Fragment implements FriendsListRecycler
 
         // tsAdapter.dataChanged();
 
-        //Listen to data source
-        // Obtain a new or prior instance of HotStockViewModel from the
-        // ViewModelProviders utility class.
         OneFriendViewModel viewModel = ViewModelProviders.of(this).get(OneFriendViewModel.class);
         LiveData<List<OneFriend>> liveData = viewModel.getOneFriendObjectLiveData();
 

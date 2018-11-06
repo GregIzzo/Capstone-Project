@@ -44,8 +44,6 @@ public class TagSaleNowRemoteViewsFactory implements RemoteViewsService.RemoteVi
         JSONArray jarray = null;
         try{
              jarray = new JSONArray(top3String);
-
-
         } catch (Exception ex){
             Log.d(TAG, "onDataSetChanged: ERROR CONVERTING STRING TO JSON:"+ex.getMessage());
             return;
@@ -55,7 +53,30 @@ public class TagSaleNowRemoteViewsFactory implements RemoteViewsService.RemoteVi
         for (int i =0; i< n; i++){
             WidgetListItem wi = new WidgetListItem();
             try {
-                wi.tagSaleEntry = ((JSONObject) jarray.get(i)).getString("locationId");
+                //Data contains 'formattedDate' which looks like 'Nov 17', so use that with start time
+                JSONObject job = (JSONObject) jarray.get(i);
+                //TagSaleEventObject(String id, String locationId, String address, String city, String state,
+                // String zip, String ownerId, String date, String startTime,
+                //                              String endTime, String description, String tags, double lat, double lon)
+                TagSaleEventObject to = new TagSaleEventObject(
+                        job.getString("id"),
+                        job.getString("locationId"),
+                        job.getString("address"),
+                        job.getString("city"),
+                        job.getString("state"),
+                        job.getString("zip"),
+                        job.getString("ownerId"),
+                        job.getString("date"),
+                        job.getString("startTime"),
+                        job.getString("endTime"),
+                        job.getString("description"),
+                        job.getString("tags"),
+                        job.getDouble("lat"),
+                        job.getDouble("lon")
+                        );
+                wi.date = to.getFormattedDate();//job.getString("formattedDate");
+                wi.time = to.getStartTime();// job.getString("startTime");
+                wi.description = to.getLocationId();// job.getString("locationId");
             } catch(Exception ex){
                 Log.d(TAG, "onDataSetChanged: INNERFORLOOP err i=:"+i+" : "+ex.getMessage());
             }
@@ -79,7 +100,9 @@ public class TagSaleNowRemoteViewsFactory implements RemoteViewsService.RemoteVi
     public RemoteViews getViewAt(int i) {
         final RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.widget_tagsale_row);
         WidgetListItem listItem = itemList.get(i);
-        remoteView.setTextViewText(R.id.tagsale, listItem.tagSaleEntry);
+        remoteView.setTextViewText(R.id.tv_date, listItem.date);
+        remoteView.setTextViewText(R.id.tv_time, listItem.time);
+        remoteView.setTextViewText(R.id.tv_desc, listItem.description);
         return remoteView;
     }
 

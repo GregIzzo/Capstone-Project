@@ -51,6 +51,7 @@ public class TagSaleListFragment extends Fragment
     private RecyclerView recyclerView;
     private TagSaleListRecyclerAdapter tagSaleListRecyclerAdapter;
     private Button btn_AddTagSale;
+    private AttendingFragment attendingFragment;
 
     private TagSaleEventsViewModel viewModel ;
     private LiveData<List<TagSaleEventObject>> liveData;
@@ -221,11 +222,13 @@ public class TagSaleListFragment extends Fragment
         } catch (ClassCastException e){
             throw new ClassCastException(context.toString() + " Must implement OnImageClickListener");
         }
+        /*
         try {
             mCallback = (OnButtonClickListener) context;
         } catch (ClassCastException e){
             throw new ClassCastException(context.toString() + " Must implement OnImageClickListener");
         }
+        */
     }
 
     @Override
