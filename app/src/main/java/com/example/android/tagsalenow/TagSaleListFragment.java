@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.android.tagsalenow.data.CurrentInfo;
+import com.example.android.tagsalenow.data.PrefHandler;
 import com.example.android.tagsalenow.data.TagSaleEventsViewModel;
 import com.example.android.tagsalenow.utils.Utilities;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -27,10 +29,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -118,6 +124,24 @@ public class TagSaleListFragment extends Fragment
                     Log.d(TAG, "onChanged: TAGSALELISTFRAGMENT TAGSALEEVENTS Data changed");
                    try{
                        tagSaleListRecyclerAdapter.addItems(tagSaleEventObjects);
+                       //
+                       // FOR WIDGET, SAVE TOP 3
+                       List<TagSaleEventObject> top3List = new ArrayList<TagSaleEventObject>();
+                       TagSaleEventObject ts1 = tagSaleListRecyclerAdapter.getItemAt(0);
+                       if (ts1 != null) top3List.add(ts1);
+                       TagSaleEventObject ts2 = tagSaleListRecyclerAdapter.getItemAt(1);
+                       if (ts2 != null) top3List.add(ts2);
+                       TagSaleEventObject ts3 = tagSaleListRecyclerAdapter.getItemAt(2);
+                       if (ts3 != null) top3List.add(ts3);
+
+                       String outString = "";
+                       Gson gson = new Gson();
+                       outString = gson.toJson(top3List);
+                        PrefHandler.setTop3(mContext,outString);
+                       //Update Widget
+                       Log.d(TAG, "onClick: About to call WidgetUpdateService.startActionUpdateTagSales ");
+                       WidgetUpdateService.startActionUpdateTagSales(mContext);
+
                    } catch (Exception ex){
 
                    }

@@ -81,7 +81,6 @@
     <!-- Label for the location preference -->
     <string name="pref_location_label">Location</string>
 
-
     <!-- Key name for storing location in SharedPreferences -->
     <string name="pref_location_key" translatable="false">location</string>
 
@@ -98,5 +97,11 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
 
+    <!-- Content Descriptions -->
+    <string name="cd_tag_sale_list_screen">Tag Sale List</string>
+    <string name="cd_tag_sale_detail_screen">Tag Sale Details</string>
+    <string name="cd_tag_sale_review_screen">Tag Sale Reviews List</string>
+    <string name="cd_tag_sale_friend_request_screen">Friend Request List</string>
+    <string name="cd_friend_list_screen">Friend List</string>
 
 </resources>

@@ -80,6 +80,8 @@ dependencies {
     //Butterknife
     implementation 'com.jakewharton:butterknife:9.0.0-rc1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc1'
+    //Google Gson
+    implementation 'com.google.code.gson:gson:2.8.5'
 
 }
 apply plugin: 'com.google.gms.google-services'

@@ -28,6 +28,7 @@ import butterknife.ButterKnife;
 
 public class AddTagSaleActivity extends AppCompatActivity implements TimePickerFragment.TimePickedListener, DatePickerFragment.DatePickerListener {
 
+    private static String TAG = "ADDTAGSALEACTIVITY";
     private static String TIMESTARTTAG = "timeStartTag";
     private static String TIMEENDTAG = "timeEndTag";
     private static String DATETAG = "date";
@@ -124,7 +125,6 @@ public class AddTagSaleActivity extends AppCompatActivity implements TimePickerF
                             }
                         }
                 );
-                //START LOCATION LOOKUP - IT CAN TAKE ITS TIME IN IT'S OWN THREAD
 
 
                 finish();

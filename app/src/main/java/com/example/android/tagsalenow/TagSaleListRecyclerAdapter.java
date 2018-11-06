@@ -163,4 +163,12 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
     public void dataChanged(){
         notifyDataSetChanged();
     }
+    public TagSaleEventObject getItemAt(int position){
+        if (this.TSEObjectList.size()< position + 1){
+            return null;
+        } else {
+            //list is large enough for the given position
+            return this.TSEObjectList.get(position);
+        }
+    }
  }

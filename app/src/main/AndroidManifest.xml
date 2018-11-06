@@ -101,6 +101,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/tag_sale_now_app_widget_info" />
         </receiver>
+        <service android:name=".WidgetUpdateService" />
+        <service android:name="com.example.android.tagsalenow.WidgetUpdateService" />
+        <service android:name=".TagSaleNowRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
     </application>
 
 </manifest>
