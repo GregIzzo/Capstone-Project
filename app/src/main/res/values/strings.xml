@@ -95,6 +95,8 @@
 
     <string name="pref_last_notification">last_notification</string>
     <string name="appwidget_text">EXAMPLE</string>
+    <string name="appwidget_heading_text">Tag Sale Now</string>
+    <string name="appwidget_nothing_text">Nothing to show</string>
     <string name="add_widget">Add widget</string>
 
     <!-- Content Descriptions -->
