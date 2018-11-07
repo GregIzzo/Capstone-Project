@@ -19,7 +19,7 @@ public class TagSaleEventViewHolder extends RecyclerView.ViewHolder {
 
     public TagSaleEventViewHolder(@NonNull View itemView) {
         super(itemView);
-        imHereIndicator =  itemView.findViewById(R.id.indicator_iv);
+        imHereIndicator =  itemView.findViewById(R.id.onsite_indicator_iv);
         placeName = itemView.findViewById(R.id.ts_placetv);
         friendsAttending = itemView.findViewById(R.id.ts_friendsattendingtv);
         tagSaleDate = itemView.findViewById(R.id.ts_datetv);

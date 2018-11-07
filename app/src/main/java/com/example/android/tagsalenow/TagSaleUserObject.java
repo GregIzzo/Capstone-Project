@@ -23,15 +23,17 @@ public class TagSaleUserObject {
     private String displayName;
     private String email;
     private String photoUrl;
+    private String onSiteTagSaleId;
 
     public TagSaleUserObject(){    }
-    public TagSaleUserObject(String userId, String joinDate, String displayName, String email, String photoUrl){
+    public TagSaleUserObject(String userId, String joinDate, String displayName, String email, String photoUrl, String onSiteTagSaleId){
         this.userId = userId;
         this.active = true;
         this.joinDate = joinDate;
         this.displayName = displayName;
         this.email = email;
         this.photoUrl = photoUrl;
+        this.onSiteTagSaleId =onSiteTagSaleId;
     }
 
     public String getUserId() { return userId;  }
@@ -52,6 +54,8 @@ public class TagSaleUserObject {
     public String getPhotoUrl(){ return this.photoUrl;}
     public void setPhotoUrl(String photoUrl){ this.photoUrl = photoUrl;   }
 
+    public String getOnSiteTagSaleId(){ return this.onSiteTagSaleId;}
+    public void setOnSiteTagSaleId(String tagSaleId){this.onSiteTagSaleId = tagSaleId;}
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
@@ -61,6 +65,7 @@ public class TagSaleUserObject {
         result.put("displayName", displayName);
         result.put("email", email);
         result.put("photoUrl", photoUrl);
+        result.put("onSiteTagSaleId", onSiteTagSaleId);
 
         return result;
     }

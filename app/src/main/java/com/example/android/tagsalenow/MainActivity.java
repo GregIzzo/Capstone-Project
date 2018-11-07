@@ -237,7 +237,6 @@ public class MainActivity extends AppCompatActivity implements
                     String email = user.getEmail();
                     Uri photoUrl = user.getPhotoUrl();
 
-
                     // Check if user's email is verified
                     boolean emailVerified = user.isEmailVerified();
 
@@ -250,7 +249,8 @@ public class MainActivity extends AppCompatActivity implements
                     String currentDateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
                     String photostring = "";
                     if (photoUrl != null) photostring =  photoUrl.toString();
-                    mCurrentUserObject = new TagSaleUserObject(uid, currentDateString, name, email, photostring);
+                    String onSiteTagSaleId = "";
+                    mCurrentUserObject = new TagSaleUserObject(uid, currentDateString, name, email, photostring,onSiteTagSaleId);
                     onSignedInInitialize(mCurrentUserObject);
 /*
                     DatabaseReference uref = mFirebaseDatabase.getReference().child("tagsaleusers/"+uid);

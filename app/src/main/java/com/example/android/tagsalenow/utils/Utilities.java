@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.android.tagsalenow.AttendingObject;
 import com.example.android.tagsalenow.FriendRequestObject;
 import com.example.android.tagsalenow.Friends;
+import com.example.android.tagsalenow.OnSiteObject;
 import com.example.android.tagsalenow.OneFriend;
 import com.example.android.tagsalenow.TagSaleEventObject;
 import com.example.android.tagsalenow.TagSaleReviewObject;
@@ -88,7 +89,8 @@ public class Utilities {
                         innermap.get("joinDate").toString(),
                         innermap.get("displayName").toString(),
                         innermap.get("email").toString(),
-                        innermap.get("photoUrl").toString());
+                        innermap.get("photoUrl").toString(),
+                        innermap.get("onSiteTagSaleId").toString());
                 outlist.add(tu);
 
             } catch (Exception ex){
@@ -237,6 +239,27 @@ public class Utilities {
         return outlist;
 
     }
+    public static List<OnSiteObject> MapToONSITE(Map<String, Object> map){
+        //expect map to be: {"key": {"key":value, "key":value...}}
+
+        List<OnSiteObject> outlist =  new ArrayList<>();
+        List<String> listOfKeys =  new ArrayList<String>(map.keySet());
+        int count = listOfKeys.size();
+
+        for (int i =0;i<count ;i++){
+            String userId = listOfKeys.get(i);
+            try {
+                OnSiteObject onSiteObject = new OnSiteObject(userId);
+                outlist.add(onSiteObject);
+                Log.d(TAG, "MapToONSITE: ADDED:"+userId);
+            } catch (Exception ex){
+                Log.d(TAG, "MapToONSITE: error converting to OnSiteObject:" + ex.getMessage());
+            }
+        }
+        return outlist;
+
+    }
+
     /*
     The method below came from a post on StackOverflow.com:
     https://stackoverflow.com/questions/3574644/how-can-i-find-the-latitude-and-longitude-from-address

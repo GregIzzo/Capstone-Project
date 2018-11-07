@@ -44,14 +44,14 @@ import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class TagSaleListFragment extends Fragment
         implements TagSaleListRecyclerAdapter.TagSaleListAdapterOnClickHandler,
-         TagSaleListRecyclerAdapter.TagSaleListAdapterOnAttendClickHandler
+         TagSaleListRecyclerAdapter.TagSaleListAdapterOnAttendClickHandler,
+        TagSaleListRecyclerAdapter.TagSaleListAdapterOnOnSiteClickhandler
 {
 
     private static final String TAG = "TAGSALELISTFRAGMENT";
     private RecyclerView recyclerView;
     private TagSaleListRecyclerAdapter tagSaleListRecyclerAdapter;
     private Button btn_AddTagSale;
-    private AttendingFragment attendingFragment;
 
     private TagSaleEventsViewModel viewModel ;
     private LiveData<List<TagSaleEventObject>> liveData;
@@ -60,6 +60,8 @@ public class TagSaleListFragment extends Fragment
     private Context mContext;
     //Setup Click listener to report the event to anyone listening
     OnButtonClickListener mCallback;
+
+
     public interface OnButtonClickListener {
         void onAddButtonClicked(String tag);
     }
@@ -82,7 +84,7 @@ public class TagSaleListFragment extends Fragment
         btn_AddTagSale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //launch add-tag-sale-activity
+
                 mCallback.onAddButtonClicked(getString(R.string.TAG_FRAGMENT_TAGSALELIST));
             }
         });
@@ -103,7 +105,7 @@ public class TagSaleListFragment extends Fragment
         recyclerView.setAdapter(tsAdapter);
 */
 
-        tagSaleListRecyclerAdapter = new TagSaleListRecyclerAdapter(this,this
+        tagSaleListRecyclerAdapter = new TagSaleListRecyclerAdapter(this,this, this
         );
         recyclerView.setAdapter(tagSaleListRecyclerAdapter);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -191,11 +193,10 @@ public class TagSaleListFragment extends Fragment
     public void onAttendClick(Map<String,Object> dataMap) {
         int listPosition = (int) dataMap.get("position");
         Boolean checkState = (Boolean) dataMap.get("state");
+        if (checkState == null) checkState  = false;
    //Add Attending record
-
         DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         String key = mDatabaseReference.child("attending").push().getKey();
-
         TagSaleEventObject tso = liveData.getValue().get(listPosition);
         Map<String, Object> childUpdates = new HashMap<>();
         if (checkState) {
@@ -203,13 +204,62 @@ public class TagSaleListFragment extends Fragment
             childUpdates.put("/attending/" +
                     tso.getId() + "/" +
                     CurrentInfo.getCurrentUser().getUserId(), "true");
-            mDatabaseReference.updateChildren(childUpdates);
+           // mDatabaseReference.updateChildren(childUpdates);
         } else {
             //Remove Attending Record
             childUpdates.put("/attending/" +
                     tso.getId() + "/" +
                     CurrentInfo.getCurrentUser().getUserId(), null);
         }
+        mDatabaseReference.updateChildren(childUpdates);
+    }
+
+    @Override
+    public void onOnSiteClick(Map<String, Object> dataMap) {
+        int listPosition = (int) dataMap.get("position");
+        Boolean checkState = (Boolean) dataMap.get("state");
+        if (checkState == null) checkState  = false;
+//Add OnSite record
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        String key = mDatabaseReference.child("onsite").push().getKey();
+        TagSaleEventObject tso = liveData.getValue().get(listPosition);
+        Map<String, Object> childUpdates = new HashMap<>();
+        //Change 'onSiteTagSaleId' in user record
+
+        if (checkState) {
+            //Add onsite Record
+            Log.d(TAG, "onOnSiteClick: Adding onsite :"+tso.getId()+" : "+CurrentInfo.getCurrentUser().getUserId());
+            childUpdates.put("/onsite/" +
+                    tso.getId() + "/" +
+                    CurrentInfo.getCurrentUser().getUserId(), "true");
+            Log.d(TAG, "onOnSiteClick: CURRENT USER ONSITE:"+CurrentInfo.getCurrentUser().getOnSiteTagSaleId());
+            if (CurrentInfo.getCurrentUser().getOnSiteTagSaleId() != ""){
+                //remove old onsite record from 'onsite' table
+                childUpdates.put("/onsite/" +
+                        CurrentInfo.getCurrentUser().getOnSiteTagSaleId() + "/" +
+                        CurrentInfo.getCurrentUser().getUserId(), null);
+                Log.d(TAG, "onOnSiteClick: Deleting onsite :"+
+                        CurrentInfo.getCurrentUser().getOnSiteTagSaleId()+
+                        " : "+CurrentInfo.getCurrentUser().getUserId());
+
+            }
+            //Change user record
+            childUpdates.put("/tagsaleusers/" +
+                            CurrentInfo.getCurrentUser().getUserId() + "/" +
+                  "onSiteTagSaleId" , tso.getId());
+
+        } else {
+            //Remove onsite Record
+            childUpdates.put("/onsite/" +
+                    tso.getId() + "/" +
+                    CurrentInfo.getCurrentUser().getUserId(), null);
+            //Change user record
+            childUpdates.put("/tagsaleusers/" +
+                    CurrentInfo.getCurrentUser().getUserId() + "/" +
+                    "onSiteTagSaleId" ,"");
+        }
+        Log.d(TAG, "onOnSiteClick: UPDATES::"+
+                childUpdates.toString());
         mDatabaseReference.updateChildren(childUpdates);
     }
 

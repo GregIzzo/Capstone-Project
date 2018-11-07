@@ -6,13 +6,14 @@
 
     android:orientation="horizontal"
     >
-    <ImageView
-        android:id="@+id/indicator_iv"
+    <CheckBox
+        android:id="@+id/onsite_indicator_iv"
         android:layout_width="0dp"
-        android:layout_height="32dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="#80FFFFFF"
-        android:src="@drawable/smiley_off"
+
+        android:button="@drawable/custom_checkbox"
         android:visibility="visible"/>
     <TextView
         android:id="@+id/ts_placetv"
@@ -57,13 +58,5 @@
        android:checked="false"
        android:text=""
        />
-    <FrameLayout
-        android:id="@+id/fr_attending"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-
-        />
-
-
 
 </LinearLayout>

@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.tagsalenow.data.CurrentInfo;
@@ -19,7 +17,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -33,7 +30,12 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
     private final TagSaleListAdapterOnClickHandler mClickHandler;
     private Context viewGroupContext;
     private final TagSaleListAdapterOnAttendClickHandler mAttendClickHandler;
+    private final TagSaleListAdapterOnOnSiteClickhandler mOnSiteClickHandler;
 
+    private String imageOnSite_on = "@drawable/smiley";
+    private String imageOnSite_off = "@drawable/smiley_off";
+    private int imageOnSite_on_id;
+    private int imageOnSite_off_id;
 
     public interface TagSaleListAdapterOnClickHandler {
         void onClick(int listPosition);//
@@ -41,10 +43,15 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
     public interface TagSaleListAdapterOnAttendClickHandler {
         void onAttendClick(Map<String, Object> dataMap);//
     }
+    public interface TagSaleListAdapterOnOnSiteClickhandler {
+        void onOnSiteClick(Map<String, Object> dataMap);
+    }
     public TagSaleListRecyclerAdapter(TagSaleListAdapterOnClickHandler mClick,
-                                      TagSaleListAdapterOnAttendClickHandler mAttendClick) {
+                                      TagSaleListAdapterOnAttendClickHandler mAttendClick,
+                                      TagSaleListAdapterOnOnSiteClickhandler mOnSiteClick) {
         mClickHandler = mClick;
         mAttendClickHandler = mAttendClick;
+        mOnSiteClickHandler = mOnSiteClick;
     }
 
 
@@ -52,18 +59,33 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
     public class TagSaleListAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
-        public final ImageView indicator_iv;
+        public final CheckBox onsite_indicator_iv;
         public final TextView ts_placetv;
         public final TextView ts_friendsattendingtv;
         public final TextView ts_datetv;
         public final TextView ts_distancetv;
         public final CheckBox ts_planningtoattendcb;
 
+        public String prevTagSaleId = "";
+
 
         public TagSaleListAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            indicator_iv = itemView.findViewById(R.id.indicator_iv);
+            onsite_indicator_iv = itemView.findViewById(R.id.onsite_indicator_iv);
+            onsite_indicator_iv.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b)  {
+
+                    int adapterPosition = getAdapterPosition();
+                    TagSaleEventObject teo = getItemAt(adapterPosition);
+                    Map<String, Object> dataMap = new HashMap<String,Object>();
+                    dataMap.put("position", adapterPosition);
+                    dataMap.put("state",b );
+                    dataMap.put("tagsaleid",teo.getId() );
+                   mOnSiteClickHandler.onOnSiteClick(dataMap);
+                }
+            });
             ts_placetv = itemView.findViewById(R.id.ts_placetv);
             ts_friendsattendingtv = itemView.findViewById(R.id.ts_friendsattendingtv);
             ts_datetv = itemView.findViewById(R.id.ts_datetv);
@@ -80,7 +102,7 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
 
                 }
             });
-            Log.d(TAG, "TagSaleListAdapterViewHolder: *** itemView["+itemView+"] ["+indicator_iv+"]  ["+ts_placetv+"]  ["+ts_friendsattendingtv+"]  ["+ts_datetv+"]   ["+ts_distancetv+"]  ["+ts_planningtoattendcb+"]");
+            Log.d(TAG, "TagSaleListAdapterViewHolder: *** itemView["+itemView+"] ["+ onsite_indicator_iv +"]  ["+ts_placetv+"]  ["+ts_friendsattendingtv+"]  ["+ts_datetv+"]   ["+ts_distancetv+"]  ["+ts_planningtoattendcb+"]");
 
             itemView.setOnClickListener(this);
         }
@@ -102,6 +124,7 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
         LayoutInflater inflater = LayoutInflater.from(viewGroupContext);
         View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
         Log.d(TAG, "onCreateViewHolder: xxxx view=" + view);
+
         return new TagSaleListAdapterViewHolder(view);
     }
 
@@ -118,7 +141,7 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
     public void onBindViewHolder(@NonNull TagSaleListAdapterViewHolder incomingtagSaleListAdapterViewHolder, int position) {
         Log.d(TAG, "onBindViewHolder: BBBBBB viewholder=" + incomingtagSaleListAdapterViewHolder);
         final TagSaleListAdapterViewHolder tagSaleListAdapterViewHolder = incomingtagSaleListAdapterViewHolder;
-       tagSaleListAdapterViewHolder.indicator_iv.setVisibility(View.VISIBLE);
+       tagSaleListAdapterViewHolder.onsite_indicator_iv.setVisibility(View.VISIBLE);
        tagSaleListAdapterViewHolder.ts_placetv.setText(TSEObjectList.get(position).getLocationId());
        tagSaleListAdapterViewHolder.ts_datetv.setText(TSEObjectList.get(position).getFormattedDate());
        tagSaleListAdapterViewHolder.ts_friendsattendingtv.setText(R.string.fake_friendsattending);
@@ -167,10 +190,12 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
                 if (dataSnapshot.getValue() != null){
                     String valuestring = dataSnapshot.getValue().toString();
                     Log.d(TAG, "onDataChange: checking datasnapshot:["+valuestring+"]");
+
                    if (valuestring.equals("true")) {
                        Log.d(TAG, "onDataChange: SETTING CHECKBOX TO TRUE");
                        tagSaleListAdapterViewHolder.ts_planningtoattendcb.setChecked(true);
                    }
+
                 }
 
                 //Log.d(TAG, "onDataChange: ATTENDING DATA u="+uid+" ts="+tsid+" : "+dataSnapshot.toString());
@@ -181,7 +206,27 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
                 //Log.d(TAG, "onCancelled: ATTENDING DATA DATA u="+uid+" ts="+tsid+" :"+databaseError.getMessage());
             }
         });
+        //Figure out OnSite
+        final int whatPositionOS = position;
+        DatabaseReference mDatabaseReferenceOS
+                = FirebaseDatabase.getInstance().getReference("onsite/"+tsid+"/"+uid);
+        mDatabaseReferenceOS.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                if (dataSnapshot.getValue() != null){
+                    String valuestring = dataSnapshot.getValue().toString();
+                    Log.d(TAG, "onDataChange: checking datasnapshot:["+valuestring+"]");
+                    if (valuestring.equals("true")) {
+                        Log.d(TAG, "onDataChange: SETTING CHECKBOX TO TRUE");
+                        tagSaleListAdapterViewHolder.onsite_indicator_iv.setChecked(true);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+             }
+        });
     }
     public void addItems(List<TagSaleEventObject> TSEObjectList) {
         this.TSEObjectList = TSEObjectList;
