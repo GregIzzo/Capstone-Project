@@ -437,7 +437,6 @@ public class MainActivity extends AppCompatActivity implements
                     //When first attached, this method is called for every object in the DB
                     Log.d(TAG, "TAGSALEUSER onChildAdded: added:" + dataSnapshot.toString());
                     TagSaleUserObject tagSaleUserObject = dataSnapshot.getValue(TagSaleUserObject.class);
-
                     CurrentInfo.addUser(tagSaleUserObject);
                 }
                 @Override

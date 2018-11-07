@@ -48,8 +48,9 @@
     <string name="hint_review">Enter Review</string>
 
     <string name="button_cancel">Cancel</string>
-    <string name="button_add">Add</string>
+    <string name="button_update">Update</string>
     <string name="button_test">Test</string>
+    <string name="button_add">Add</string>
 
     <!-- Tag Sale Review -->
     <string name="add_review">Add Review</string>

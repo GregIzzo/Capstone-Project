@@ -3,12 +3,14 @@ package com.example.android.tagsalenow;
 Display info about a given Tag sale.
 Tag Sale info is passed in with the Bundle
  */
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.android.tagsalenow.data.CurrentInfo;
@@ -26,8 +28,17 @@ public class TagSaleViewFragment extends Fragment {
     @BindView(R.id.te_date) TextView te_date;
     @BindView(R.id.te_time_start) TextView te_time_start;
     @BindView(R.id.te_time_end) TextView te_time_end;
+    @BindView(R.id.button_update) Button button_update;
 
+    private Context mContext;
     private TagSaleEventObject tagSaleEventObject;
+    //Setup Click listener to report the event to anyone listening
+    TagSaleViewFragment.OnButtonClickListener mCallback;
+
+    public interface OnButtonClickListener {
+        void onUpdateButtonClicked(String tag);
+    }
+
     public TagSaleViewFragment(){
 
     }
@@ -57,6 +68,24 @@ public class TagSaleViewFragment extends Fragment {
             te_time_start.setText(tagSaleEventObject.getStartTime());
             te_time_end.setText(tagSaleEventObject.getEndTime());
         }
+        button_update.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                mCallback.onUpdateButtonClicked(getString(R.string.TAG_FRAGMENT_VIEWTAGSALE));
+            }
+        });
         return rootView;
+    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+
+        try {
+            mCallback = (TagSaleViewFragment.OnButtonClickListener) context;
+        } catch (ClassCastException e){
+            throw new ClassCastException(context.toString() + " Must implement OnButtonClickListener");
+        }
     }
 }

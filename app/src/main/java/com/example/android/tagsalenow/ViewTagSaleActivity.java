@@ -9,7 +9,7 @@ import android.util.Log;
 import com.example.android.tagsalenow.data.CurrentInfo;
 
 public class ViewTagSaleActivity extends AppCompatActivity implements  FriendsListFragment.OnButtonClickListener,
-ReviewListFragment.OnButtonClickListener{
+ReviewListFragment.OnButtonClickListener, TagSaleViewFragment.OnButtonClickListener{
 
     private static final String TAG = "ViewTagSaleActivity";
     TagSaleViewFragment tagSaleViewFragment;
@@ -43,5 +43,17 @@ ReviewListFragment.OnButtonClickListener{
 
          }
 
+    }
+
+    @Override
+    public void onUpdateButtonClicked(String tag) {
+        //launch Update Tag Sale
+        if(tag == getString(R.string.TAG_FRAGMENT_VIEWTAGSALE)){
+            Intent intent = new Intent( this, AddTagSaleActivity.class);
+            intent.putExtra("TAGSALEID", CurrentInfo.getCurrentTagSaleID());
+
+            startActivity(intent);
+
+        }
     }
 }
