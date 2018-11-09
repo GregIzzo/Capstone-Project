@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -11,10 +12,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-
+        android:paddingHorizontal="@dimen/widget_horiz_padding"
         android:singleLine="true"
         android:textColor="@color/appwidget_body_text"
         android:textSize="@dimen/widget_body_text_size"
+        tools:text="OCT 31"
         android:textStyle="bold"/>
 
     <TextView
@@ -22,20 +24,22 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-
+        android:paddingHorizontal="@dimen/widget_horiz_padding"
         android:singleLine="true"
         android:textColor="@color/appwidget_body_text"
         android:textSize="@dimen/widget_body_text_size"
+        tools:text="11:00 am"
         android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/tv_desc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
-
+        android:layout_weight="3"
+        android:paddingHorizontal="@dimen/widget_horiz_padding"
         android:singleLine="true"
         android:textColor="@color/appwidget_body_text"
         android:textSize="@dimen/widget_body_text_size"
+        tools:text="100 Main Street, Hartford, CT 06510"
         android:textStyle="bold"/>
 </LinearLayout>

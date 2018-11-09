@@ -122,6 +122,9 @@
     <string name="appwidget_heading_text">Tag Sale Now</string>
     <string name="appwidget_nothing_text">Nothing to show</string>
     <string name="add_widget">Add widget</string>
+    <string name="appwidget_heading_date">Date</string>
+    <string name="appwidget_heading_time">Time</string>
+    <string name="appwidget_heading_address">Address</string>
 
     <!-- Content Descriptions -->
     <string name="cd_tag_sale_list_screen">Tag Sale List</string>
@@ -129,5 +132,8 @@
     <string name="cd_tag_sale_review_screen">Tag Sale Reviews List</string>
     <string name="cd_tag_sale_friend_request_screen">Friend Request List</string>
     <string name="cd_friend_list_screen">Friend List</string>
+    <string name="no_location_permission_msg">onRequestPermissionResults - denied or cancelled</string>
+    <string name="toast_show_permission_explanation">SHOW PERMISSION EXPLANATION</string>
+    <string name="toast_friend_found">Found:</string>
 
 </resources>

@@ -1,6 +1,8 @@
 package com.example.android.tagsalenow;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +41,12 @@ ReviewListFragment.OnButtonClickListener, TagSaleViewFragment.OnButtonClickListe
         Log.d(TAG, "onAddButtonClicked: TAG=" + tag);
          if(tag == getString(R.string.TAG_FRAGMENT_REVIEWLIST)){
              Intent intent = new Intent( this, AddReviewActivity.class);
-             startActivity(intent);
+             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                 Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
+                 startActivity(intent, bundle);
+             } else {
+                 startActivity(intent);
+             }
 
          }
 
@@ -51,8 +58,13 @@ ReviewListFragment.OnButtonClickListener, TagSaleViewFragment.OnButtonClickListe
         if(tag == getString(R.string.TAG_FRAGMENT_VIEWTAGSALE)){
             Intent intent = new Intent( this, AddTagSaleActivity.class);
             intent.putExtra("TAGSALEID", CurrentInfo.getCurrentTagSaleID());
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
+                startActivity(intent, bundle);
+            } else {
+                startActivity(intent);
+            }
 
-            startActivity(intent);
 
         }
     }

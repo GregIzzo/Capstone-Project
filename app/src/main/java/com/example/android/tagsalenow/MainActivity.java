@@ -1,6 +1,7 @@
 package com.example.android.tagsalenow;
 
 import android.Manifest;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,10 +9,12 @@ import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
@@ -145,16 +148,6 @@ public class MainActivity extends AppCompatActivity implements
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-/*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-*/
         //setup Location Services:
 
         // code from Google: https://developer.android.com/training/location/retrieve-current
@@ -162,53 +155,10 @@ public class MainActivity extends AppCompatActivity implements
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         //Get Periodic updates about location
         //routine below is from : https://developer.android.com/training/location/receive-location-updates
-        /*
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
-                for (Location location : locationResult.getLocations()) {
-                    Log.d(TAG, "onLocationResult: LOCATIONCALLBACK - time to check location");
-                    reallyGetLocation();
-                }
-            };
-
-        };
-        */
         Context myContext = this;
 
         //Snippet below based on code from : https://developer.android.com/training/permissions/requesting
 
-        //NEWER LOCATION API INITIALIZATION:
-/*
-        FusedLocationProviderClient client =
-                LocationServices.getFusedLocationProviderClient(this);
-        PendingResult result =
-                LocationServices.FusedLocationApi.requestLocationUpdates(
-                        client, LocationRequest.create(), pendingIntent);
-        client.requestLocationUpdates(LocationRequest.create(), pendingIntent)
-                .addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        Log.d("MainActivity", "LocationRequest complete Result: " + task.getResult());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        if (e instanceof ApiException) {
-                            //Log.w(TAG, ((ApiException) e).getStatusMessage());
-                            Log.d(TAG, "LocationRequest onFailure: Instance of APIEXCEPTION "+ e.getMessage());
-                        } else {
-                          //  Log.w(TAG, e.getMessage());
-                            Log.d(TAG, "LocationRequest onFailure: not intance of APIEXCEPTION " + e.getMessage());
-                        }
-                    }
-                })
-        ;
-*/
 
      // Create Ad
         mAdView = findViewById(R.id.adView);
@@ -252,19 +202,6 @@ public class MainActivity extends AppCompatActivity implements
                     String onSiteTagSaleId = "";
                     mCurrentUserObject = new TagSaleUserObject(uid, currentDateString, name, email, photostring,onSiteTagSaleId);
                     onSignedInInitialize(mCurrentUserObject);
-/*
-                    DatabaseReference uref = mFirebaseDatabase.getReference().child("tagsaleusers/"+uid);
-                   // var starCountRef = firebase.database().ref('posts/' + postId + '/starCount');
-                    Log.d(TAG, "onAuthStateChanged: user check ref=" + uref);
-
-                    if (uref == null){
-                        String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-                        Log.d(TAG, "onAuthStateChanged: GGG Date="+ date);
-                        TagSaleUserObject to = new TagSaleUserObject(uid, date, name, email, photoUrl.toString());
-                        mTagSaleUsersDatabaseReference.child(uid).setValue(to);
-                        Log.d(TAG, "onAuthStateChanged: GGG to="+ to.toString());
-                    }
-*/
 
                     //   getSupportLoaderManager().initLoader(ID_FORECAST_LOADER, null, myContext);
 
@@ -386,17 +323,6 @@ public class MainActivity extends AppCompatActivity implements
         mUsername = ANONYMOUS;
         detachDatabaseReadListener();
     }
-    /*
-    private void startLocationUpdates() {
-        Log.d(TAG, "startLocationUpdates: STARTING");
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(60 * 1000);
-        locationRequest.setFastestInterval(15 * 1000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-
-        mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
-    }
-    */
     private void attachDatabaseReadListener() {
         //
         // LISTEN FOR TAGSALEEVENT CHANGES
@@ -581,11 +507,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d(TAG, " onLoadFinished() start");
 
-        // mForecastAdapter.swapCursor(data);
-       // if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
-      //  mRecyclerView.smoothScrollToPosition(mPosition);
-       // if (data.getCount() != 0)
-            updateWeatherData(data);
+             updateWeatherData(data);
     }
 
     /**
@@ -626,15 +548,24 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onAddButtonClicked(String fragmentTag) {
+        Intent intent = null;
         if( fragmentTag ==  getString(R.string.TAG_FRAGMENT_TAGSALELIST)){
-            Intent intent = new Intent(this, AddTagSaleActivity.class);
-            startActivity(intent);
+             intent = new Intent(this, AddTagSaleActivity.class);
+
         }
         if( fragmentTag ==  getString(R.string.TAG_FRAGMENT_FRIENDLIST)){
-            //Intent intent = new Intent(this, Add.class);
-            startActivity(new Intent(this, AddFriendActivity.class));
-        }
+            intent =new Intent(this, AddFriendActivity.class);
 
+        }
+        if (intent != null){
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
+                startActivity(intent, bundle);
+            } else {
+                startActivity(intent);
+            }
+
+        }
     }
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions,int[] grantResults) {
@@ -653,7 +584,7 @@ public class MainActivity extends AppCompatActivity implements
                     reallyGetLocation();
                 } else {
                     // Permission was denied or request was cancelled
-                    Toast.makeText(this, "onRequestPermissionResults - denied or cancelled", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.no_location_permission_msg, Toast.LENGTH_LONG).show();
                     permissionSequenceGoing = false;
                     startAuth();
 
@@ -674,7 +605,7 @@ public class MainActivity extends AppCompatActivity implements
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-                Toast.makeText(this, "SHOW PERMISSION EXPLANATION", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.toast_show_permission_explanation, Toast.LENGTH_LONG).show();
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
@@ -724,27 +655,6 @@ public class MainActivity extends AppCompatActivity implements
                 });
         }
     }
-    /*
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        if (mResolvingError) {
-            // Already attempting to resolve an error.
-            return;
-        } else if (result.hasResolution()) {
-            try {
-                mResolvingError = true;
-                result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
-            } catch (SendIntentException e) {
-                // There was an error with the resolution intent. Try again.
-                mGoogleApiClient.connect();
-            }
-        } else {
-            // Show dialog using GooglePlayServicesUtil.getErrorDialog()
-            showErrorDialog(result.getErrorCode());
-            mResolvingError = true;
-        }
-    }
-    */
     private void stopLocationUpdates() {
         if (mLocationCallback != null && mFusedLocationClient != null) {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);

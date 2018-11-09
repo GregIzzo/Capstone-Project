@@ -74,10 +74,6 @@ public class AddReviewActivity extends AppCompatActivity {
                 FirebaseDatabase mFirebaseDatabase;
                 DatabaseReference mTagSaleReviewsDatabaseReference;
                 mFirebaseDatabase = FirebaseDatabase.getInstance();
-                //Step 1: Get Key of new record
-
-
-
                 mTagSaleReviewsDatabaseReference = mFirebaseDatabase.getReference().child("reviews");
 
                 DatabaseReference opRef =  mTagSaleReviewsDatabaseReference.push();

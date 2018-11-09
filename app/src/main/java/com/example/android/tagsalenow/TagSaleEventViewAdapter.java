@@ -59,28 +59,5 @@ public class TagSaleEventViewAdapter extends FirebaseRecyclerAdapter<TagSaleEven
         return new TagSaleEventViewHolder(view);
     }
 
-/*
-    public TagSaleEventViewAdapter(@NonNull FirebaseRecyclerOptions<TagSaleEventObject> options) {
-        super(options);
-    }
-
-    @NonNull
-    @Override
-    public TagSaleEventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.tagsalelistitem, parent, false);
-        return new TagSaleEventViewHolder(view);
-    }
-    @Override
-    protected void onBindViewHolder(@NonNull TagSaleEventViewHolder holder, int position, @NonNull TagSaleEventObject model) {
-
-        holder.imHereIndicator.setVisibility(View.VISIBLE);
-        holder.placeName.setText(R.string.fake_place);
-        holder.tagSaleDistance.setText(R.string.fake_distance);
-        holder.tagSaleDate.setText(R.string.fake_date);
-        holder.friendsAttending.setText(R.string.fake_friendsattending);
-
-    }
-*/
 
 }

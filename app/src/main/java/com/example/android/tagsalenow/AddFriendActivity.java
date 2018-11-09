@@ -58,7 +58,7 @@ public class AddFriendActivity extends AppCompatActivity {
                         Log.d(TAG, "onChildAdded: EMAIL RESULTS:" + snapshot.toString());
                         TagSaleUserObject u = snapshot.getValue(TagSaleUserObject.class);
                         Log.d(TAG, "onChildAdded: EMAIL SEARCH:" + u.getDisplayName() + ", " + u.getEmail());
-                        Toast.makeText(AddFriendActivity.this, "Found:" + u.getDisplayName() + "," + u.getEmail(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddFriendActivity.this, getString(R.string.toast_friend_found) + u.getDisplayName() + "," + u.getEmail(), Toast.LENGTH_SHORT).show();
 //-------------------------------------------------------------------
 
                         DatabaseReference mDatabaseReference;
@@ -119,28 +119,7 @@ public class AddFriendActivity extends AppCompatActivity {
 
                     // childUpdates.put();
                     //ORIGINAL mFriendRequestDatabaseReference.updateChildren(childUpdates);
-/*
-                mFriendRequestDatabaseReference.child("friendrequest")
-                        .child(CurrentInfo.getCurrentUser().getFromUserId())
-                        .child(emailKey)
-                        .setValue(frValues);
-                mFriendRequestDatabaseReference.child("tagsaleusers")
-                        .child(CurrentInfo.getCurrentUser().getFromUserId())
-                        .child("friendrequests")
-                        .child(emailKey)
-                        .setValue(frValues);
-*/
 
-/*
-                Post post = new Post(userId, username, title, body);
-                Map<String, Object> postValues = post.toMap();
-
-                Map<String, Object> childUpdates = new HashMap<>();
-                childUpdates.put("/posts/" + key, postValues);
-                childUpdates.put("/user-posts/" + userId + "/" + key, postValues);
-
-                mDatabase.updateChildren(childUpdates);
-*/
                 }   );
 
             }
@@ -166,7 +145,7 @@ public class AddFriendActivity extends AppCompatActivity {
                         Log.d(TAG, "onChildAdded: EMAIL RESULTS:"+snapshot.toString());
                         TagSaleUserObject u = snapshot.getValue(TagSaleUserObject.class);
                         Log.d(TAG, "onChildAdded: EMAIL SEARCH:"+u.getDisplayName()+", "+u.getEmail());
-                        Toast.makeText(AddFriendActivity.this, "Found:"+u.getDisplayName()+","+u.getEmail(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddFriendActivity.this, getString(R.string.toast_friend_found)+u.getDisplayName()+","+u.getEmail(), Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -191,21 +170,7 @@ public class AddFriendActivity extends AppCompatActivity {
                     }
                     // ....
                 });
-/*
-                mDatabaseReference.child("tagsaleusers")
-                        .child("email")
-                        .child(friendEmail).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot whatData) {
-                        Toast.makeText(AddFriendActivity.this, "GOT"+whatData.toString(), Toast.LENGTH_SHORT).show();
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        // ...
-                    }
-                });
-*/
             }
         });
         acceptFriendFragment = new AcceptFriendFragment();

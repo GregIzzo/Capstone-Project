@@ -1,10 +1,12 @@
 package com.example.android.tagsalenow;
 
+import android.app.ActivityOptions;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -88,22 +90,6 @@ public class TagSaleListFragment extends Fragment
                 mCallback.onAddButtonClicked(getString(R.string.TAG_FRAGMENT_TAGSALELIST));
             }
         });
-/*
-        Query query = FirebaseDatabase.getInstance()
-                .getReference()
-                .child("tagsaleevents")
-                .limitToLast(50);
-
-
-        FirebaseRecyclerOptions<TagSaleEventObject> options =
-                new FirebaseRecyclerOptions.Builder<TagSaleEventObject>()
-                        .setQuery(query, TagSaleEventObject.class)
-                        .build();
-
-
-        TagSaleEventViewAdapter tsAdapter = new TagSaleEventViewAdapter(options);
-        recyclerView.setAdapter(tsAdapter);
-*/
 
         tagSaleListRecyclerAdapter = new TagSaleListRecyclerAdapter(this,this, this
         );
@@ -186,7 +172,13 @@ public class TagSaleListFragment extends Fragment
 
         CurrentInfo.setCurrentTagSaleEventObject(liveData.getValue().get(listPosition));
         Intent intent = new Intent(getActivity(), ViewTagSaleActivity.class);
-        startActivity(intent);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle();
+            startActivity(intent, bundle);
+        } else {
+            startActivity(intent);
+        }
+
 
     }
     @Override
