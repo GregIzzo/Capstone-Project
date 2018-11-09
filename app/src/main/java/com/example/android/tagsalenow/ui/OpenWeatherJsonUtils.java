@@ -88,7 +88,7 @@ public final class OpenWeatherJsonUtils {
         }
         if (forecastJson.has(OWM_MAIN)){
             //expect "main" to be  {temp:nn.nn, pressure:nnn, humidity:nn, temp_min:nn.nn, temp_max:nn.nn}
-            JSONObject wObj = (JSONObject)forecastJson.getJSONObject(OWM_MAIN);
+            JSONObject wObj = forecastJson.getJSONObject(OWM_MAIN);
             if (wObj.has(OWM_MAIN_TEMP)){ temperature = wObj.getDouble(OWM_MAIN_TEMP);}
             if (wObj.has(OWM_MAIN_HUMIDITY)){ humidity = wObj.getInt(OWM_MAIN_HUMIDITY);}
             if (wObj.has(OWM_MAIN_TEMP_MAX)){ temp_max = wObj.getDouble(OWM_MAIN_TEMP_MAX);}
@@ -98,7 +98,7 @@ public final class OpenWeatherJsonUtils {
             visibility = forecastJson.getInt(OWM_VISIBILITY);
         }
         if (forecastJson.has(OWM_WIND)){
-            JSONObject wObj = (JSONObject)forecastJson.getJSONObject(OWM_WIND);
+            JSONObject wObj = forecastJson.getJSONObject(OWM_WIND);
             if (wObj.has(OWM_WIND_SPEED)) wind_speed = wObj.getDouble(OWM_WIND_SPEED);
             if (wObj.has(OWM_WIND_DEGREES)) wind_degrees = wObj.getInt(OWM_WIND_DEGREES);
         }
@@ -106,7 +106,7 @@ public final class OpenWeatherJsonUtils {
             location_name = forecastJson.getString(OWM_LOCATION_NAME);
         }
         if (forecastJson.has(OWM_COORD)){
-            JSONObject wObj = (JSONObject)forecastJson.getJSONObject(OWM_COORD);
+            JSONObject wObj = forecastJson.getJSONObject(OWM_COORD);
             if (wObj.has(OWM_COORD_LON)) longitude = wObj.getDouble(OWM_COORD_LON);
             if (wObj.has(OWM_COORD_LAT)) latitude = wObj.getDouble(OWM_COORD_LAT);
         }

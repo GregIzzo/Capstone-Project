@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements
         mReviewsDatabaseReference = mFirebaseDatabase.getReference().child("reviews");
 //
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -359,7 +359,6 @@ public class MainActivity extends AppCompatActivity implements
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
         stopLocationUpdates();
-       //TODO mMessageAdapter.clear();
         detachDatabaseReadListener();
     }
     @Override
@@ -385,7 +384,6 @@ public class MainActivity extends AppCompatActivity implements
     }
     private void onSignedOutCleanup() {
         mUsername = ANONYMOUS;
-      //TODO  mMessageAdapter.clear();
         detachDatabaseReadListener();
     }
     /*

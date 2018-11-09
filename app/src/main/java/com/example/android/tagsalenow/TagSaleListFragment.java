@@ -80,7 +80,7 @@ public class TagSaleListFragment extends Fragment
         recyclerView = rootView.findViewById(R.id.rv_tagsalelist);
         assert recyclerView != null;
         Log.d(TAG, "onCreateView: ZZZZ recyclerview=" + recyclerView.getId());
-        btn_AddTagSale = (Button) rootView.findViewById(R.id.button_addtagsale);
+        btn_AddTagSale = rootView.findViewById(R.id.button_addtagsale);
         btn_AddTagSale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

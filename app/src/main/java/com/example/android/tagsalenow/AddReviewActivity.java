@@ -53,7 +53,7 @@ public class AddReviewActivity extends AppCompatActivity {
         TagSaleEventObject tagSaleEventObject = CurrentInfo.getCurrentTagSaleEventObject();
         if (tagSaleEventObject != null){
 
-            te_address.setText(tagSaleEventObject.getAddress().toString());
+            te_address.setText(tagSaleEventObject.getAddress());
             te_city.setText(tagSaleEventObject.getCity());
             te_state.setText(tagSaleEventObject.getState());
             te_zip.setText(tagSaleEventObject.getZip());

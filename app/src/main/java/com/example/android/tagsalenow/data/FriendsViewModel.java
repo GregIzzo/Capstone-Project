@@ -76,7 +76,7 @@ public class FriendsViewModel extends ViewModel {
         public List<Friends> apply(DataSnapshot dataSnapshot) {
             Log.d("FRIENDSVIEWMODEL", "dataSnapShot: " + dataSnapshot.toString());
             List<Friends> values = null;
-            String userId = (String) dataSnapshot.getKey();
+            String userId = dataSnapshot.getKey();
             Map<String, Object> td = (Map<String,Object>) dataSnapshot.getValue();//{<userid>:{<friendId>:TRUE, <friendId>:TRUE,...}
             try {
                 values = Utilities.MapToFRO(td);

@@ -28,7 +28,6 @@ import java.util.Map;
  */
 public class TagSaleEventsViewModel extends ViewModel {
     private static final DatabaseReference TAG_SALE_EVENTS_REF = FirebaseDatabase.getInstance().getReference("/tagsaleevents");
-;
 
     private final FirebaseQueryLiveData liveData = new FirebaseQueryLiveData(TAG_SALE_EVENTS_REF);
     private final MediatorLiveData<TagSaleEventObject> tagSaleEventsObjectLiveData = new MediatorLiveData<>();

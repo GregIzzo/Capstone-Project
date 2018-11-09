@@ -48,7 +48,7 @@ public class FriendsListFragment extends Fragment implements FriendsListRecycler
         recyclerView = rootView.findViewById(R.id.rv_friendslist);
         assert recyclerView != null;
         Log.d(TAG, "onCreateView: ZZZZ FriendListFragment.recyclerview=" + recyclerView.getId());
-        btn_AddFriend = (Button) rootView.findViewById(R.id.button_addfriend);
+        btn_AddFriend = rootView.findViewById(R.id.button_addfriend);
         btn_AddFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

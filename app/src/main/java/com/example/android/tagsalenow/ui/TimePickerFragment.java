@@ -24,7 +24,7 @@ public  class TimePickerFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
 
     private TimePickedListener timePickedListener;
-    public static interface TimePickedListener {
+    public interface TimePickedListener {
         void onTimePicked(String time);
     }
     @Override

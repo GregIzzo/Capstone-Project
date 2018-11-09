@@ -59,7 +59,7 @@ public class TagSaleViewFragment extends Fragment {
         Log.d(TAG, "onCreateView: CURRENTTAGSALEOBJECT:" + tagSaleEventObject.getAddress()+" city="+ tagSaleEventObject.getCity());
         if (tagSaleEventObject != null){
 
-            te_address.setText(tagSaleEventObject.getAddress().toString());
+            te_address.setText(tagSaleEventObject.getAddress());
             te_city.setText(tagSaleEventObject.getCity());
             te_state.setText(tagSaleEventObject.getState());
             te_zip.setText(tagSaleEventObject.getZip());

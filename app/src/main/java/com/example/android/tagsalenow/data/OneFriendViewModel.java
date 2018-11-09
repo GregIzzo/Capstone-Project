@@ -73,7 +73,7 @@ public class OneFriendViewModel extends ViewModel {
         public List<OneFriend> apply(DataSnapshot dataSnapshot) {
             Log.d("ONEFRIENDVIEWMODEL", "dataSnapShot: " + dataSnapshot.toString());
             List<OneFriend> values = null;
-            String userId = (String) dataSnapshot.getKey();
+            String userId = dataSnapshot.getKey();
             Map<String, Object> onf = (Map<String,Object>) dataSnapshot.getValue();//{<userid>:{<friendId>:TRUE, <friendId>:TRUE,...}
             try {
                 values = Utilities.MapToONEF(onf);

@@ -47,7 +47,7 @@ public class ReviewListFragment extends Fragment implements ReviewListRecyclerAd
         recyclerView = rootView.findViewById(R.id.rv_reviewlist);
         assert recyclerView != null;
         Log.d(TAG, "onCreateView: ZZZZ ReviewListFragment.recyclerview=" + recyclerView.getId());
-        btn_AddReview = (Button) rootView.findViewById(R.id.button_addreview);
+        btn_AddReview = rootView.findViewById(R.id.button_addreview);
         btn_AddReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
