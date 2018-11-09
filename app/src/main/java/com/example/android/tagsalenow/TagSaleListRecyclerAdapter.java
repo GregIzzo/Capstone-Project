@@ -36,6 +36,7 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
     private String imageOnSite_off = "@drawable/smiley_off";
     private int imageOnSite_on_id;
     private int imageOnSite_off_id;
+    private String distanceUnit = "";
 
     public interface TagSaleListAdapterOnClickHandler {
         void onClick(int listPosition);//
@@ -52,6 +53,8 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
         mClickHandler = mClick;
         mAttendClickHandler = mAttendClick;
         mOnSiteClickHandler = mOnSiteClick;
+
+
     }
 
 
@@ -143,12 +146,15 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
         final TagSaleListAdapterViewHolder tagSaleListAdapterViewHolder = incomingtagSaleListAdapterViewHolder;
        tagSaleListAdapterViewHolder.onsite_indicator_iv.setVisibility(View.VISIBLE);
        tagSaleListAdapterViewHolder.ts_placetv.setText(TSEObjectList.get(position).getLocationId());
-       tagSaleListAdapterViewHolder.ts_datetv.setText(TSEObjectList.get(position).getFormattedDate());
+       tagSaleListAdapterViewHolder.ts_datetv.setText(
+               TSEObjectList.get(position).getFormattedDate() +
+                       "(" +TSEObjectList.get(position).getStartTime()+" - "+TSEObjectList.get(position).getEndTime() +")"
+       );
        tagSaleListAdapterViewHolder.ts_friendsattendingtv.setText(R.string.fake_friendsattending);
        //DISTANCE
         if (CurrentInfo.getCurrentLocationObject() == null){
             //no location service so show ?
-            tagSaleListAdapterViewHolder.ts_distancetv.setText("?");
+            tagSaleListAdapterViewHolder.ts_distancetv.setText(viewGroupContext.getString(R.string.tsl_distance,0.0 ));
         } else {
             Location location = CurrentInfo.getCurrentLocationObject();
             float[] results = new float[1];
@@ -156,11 +162,12 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
             Double tsLon = TSEObjectList.get(position).getLon();
             if (tsLat == 0.01 && tsLon == 0.01){
                 //fake lat long
-                tagSaleListAdapterViewHolder.ts_distancetv.setText("?");
+                tagSaleListAdapterViewHolder.ts_distancetv.setText(viewGroupContext.getString(R.string.tsl_distance,0.0 ));
             } else {
                 Double fromlat = location.getLatitude();
                 Double fromlong = location.getLongitude();
-                Log.d(TAG, "onBindViewHolder: from:" + fromlat + "," + fromlong + " to:" + TSEObjectList.get(position).getLat() + "," + TSEObjectList.get(position).getLon());
+                Log.d(TAG, "onBindViewHolder: from:"
+                        + fromlat + "," + fromlong + " to:" + TSEObjectList.get(position).getLat() + "," + TSEObjectList.get(position).getLon());
                 Location.distanceBetween(fromlat,
                         fromlong,
                         TSEObjectList.get(position).getLat(),
@@ -169,10 +176,10 @@ public class TagSaleListRecyclerAdapter extends RecyclerView.Adapter<TagSaleList
                 if (results.length > 0) {
                     double distanceMeters = results[0] * 0.00062137;
                     //distance in meters. Miles= meters * 0.00062137
-                    tagSaleListAdapterViewHolder.ts_distancetv.setText(String.format("%.1f", distanceMeters));
+                    tagSaleListAdapterViewHolder.ts_distancetv.setText(viewGroupContext.getString(R.string.tsl_distance,distanceMeters ));
 
                 } else {
-                    tagSaleListAdapterViewHolder.ts_distancetv.setText("?");
+                    tagSaleListAdapterViewHolder.ts_distancetv.setText(viewGroupContext.getString(R.string.tsl_distance,0.0 ));
                 }
             }
         }

@@ -4,6 +4,7 @@
     android:id="@+id/cl_weather"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/weather_background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <ImageView
     android:id="@+id/weather_icon"
@@ -12,8 +13,11 @@
     android:contentDescription="@string/cd_weather_icon"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toLeftOf="@id/weather_temp"
     app:layout_constraintTop_toBottomOf="parent"
-    android:background="@color/colorAccent"
+    android:layout_marginStart="@dimen/weather_left_margin"
+    android:layout_marginEnd="@dimen/weather_right_margin"
+
     />
     <TextView
         style="@style/WeatherForecastLarge"
@@ -21,9 +25,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@id/weather_icon"
         app:layout_constraintBottom_toTopOf="@id/weather_description"
-        android:background="@color/colorLightBlue"
+        android:textAppearance="?android:attr/textAppearanceLargeInverse"
         tools:text="19\u00b0"/>
     <TextView
         style="@style/WeatherForecastMed"
@@ -31,9 +36,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toRightOf="@id/weather_icon"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/weather_temp"
         app:layout_constraintBottom_toBottomOf="@id/weather_icon"
-        android:background="@color/colorPrimary"
+        android:textAppearance="?android:attr/textAppearanceLargeInverse"
         tools:text="Sunny"
         />
 

@@ -10,6 +10,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.android.tagsalenow.data.AppDatabase;
+import com.example.android.tagsalenow.data.CurrentInfo;
 import com.example.android.tagsalenow.data.WeatherContract;
 import com.example.android.tagsalenow.data.WeatherModel;
 import com.example.android.tagsalenow.data.WeatherModelDao;
@@ -50,6 +51,8 @@ public class SunshineSyncTask {
 
             WeatherModel weatherModel = OpenWeatherJsonUtils
                     .getWeatherContentValuesFromJson(context, jsonWeatherResponse);
+
+            CurrentInfo.setWeatherModel(weatherModel);
 
 
             mWeatherDAO.addWeather(weatherModel);

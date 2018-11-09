@@ -41,6 +41,7 @@ public class WeatherFragment extends Fragment {
     private TextView  tv_weather_temp;
     private WeatherViewModel viewModel;
     private LiveData<List<WeatherModel>> liveData;
+    private int howManyTries =0;//sometimes the weatherModels.size() == 0 on first run after install. Retry
 
     public WeatherFragment(){
 
@@ -59,6 +60,7 @@ public class WeatherFragment extends Fragment {
         tv_weather_description = rootView.findViewById(R.id.weather_description);
         tv_weather_temp = rootView.findViewById(R.id.weather_temp);
 
+
         viewModel = ViewModelProviders.of(this).get(WeatherViewModel.class);
         liveData = viewModel.getweatherDataList();
         liveData.observe(this, new Observer<List<WeatherModel>>() {
@@ -67,14 +69,18 @@ public class WeatherFragment extends Fragment {
                 //GOT DATA
                 Log.d(TAG, "WeatherFragment.onChanged: DATA CHANGED: list count= " + weatherModels.size());
                 if (weatherModels.size() > 0) {
+
                     WeatherModel weather = weatherModels.get(0);//get first
-                    setWeatherDescription(weather.getDescription() + " (user="+CurrentInfo.getCurrentUser().getDisplayName()+")");
-                    setWeatherTemp(
-                            String.format("%.2f", weather.getTemperature()) +
-                            getString(R.string.wf_temperature_units));
-                    setWeatherIcon(weather.getIcon());
+                    fillInfo(weather);
+                   // setWeatherDescription(weather.getDescription() + " (user="+CurrentInfo.getCurrentUser().getDisplayName()+")");
+                   // setWeatherTemp(
+                   //         String.format("%.2f", weather.getTemperature()) +
+                   //         getString(R.string.wf_temperature_units));
+                   // setWeatherIcon(weather.getIcon());
                 } else {
                     //empty weatherModel
+                    setWeatherDescription("Problem Reading Weather (user="+CurrentInfo.getCurrentUser().getDisplayName()+")");
+                    tryWeatherAgain();
                 }
             }
         });
@@ -89,6 +95,20 @@ public class WeatherFragment extends Fragment {
     }
     public void setWeatherTemp(String temp){
         tv_weather_temp.setText(temp);
+    }
+
+    public void fillInfo(WeatherModel wm){
+        setWeatherDescription(wm.getDescription() + " (user="+CurrentInfo.getCurrentUser().getDisplayName()+")");
+        setWeatherTemp(
+                String.format("%.0f", wm.getTemperature()) +
+                        getString(R.string.wf_temperature_units));
+        setWeatherIcon(wm.getIcon());
+    }
+    public void tryWeatherAgain(){
+        WeatherModel wm = CurrentInfo.getWeatherModel();
+        if (wm != null){
+            fillInfo(wm);
+        }
     }
 
 

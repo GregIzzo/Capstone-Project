@@ -22,6 +22,8 @@ public  class CurrentInfo {
     private static TagSaleEventObject currentTagSaleEventObject;
     private static TagSaleUserObject currentUser;
 
+    private static WeatherModel weatherModel;
+
     private static Map<String,TagSaleUserObject> tsUsersMap;
     private static Map<String,TagSaleEventObject> tsEventsMap;
     private static Map<String,TagSaleReviewObject> tsReviewsMap;
@@ -80,5 +82,11 @@ public  class CurrentInfo {
             tsReviewsMap = new HashMap<String, TagSaleReviewObject>();
         }
         tsReviewsMap.put(reviewObject.getId(), reviewObject);
+    }
+    public static WeatherModel getWeatherModel(){
+        return weatherModel;
+    }
+    public static void setWeatherModel(WeatherModel wm){
+        weatherModel = wm;
     }
 }

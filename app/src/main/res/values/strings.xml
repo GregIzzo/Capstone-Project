@@ -10,14 +10,27 @@
     <string name="act_name_addtagsale">AddTagSale</string>
     <string name="act_name_viewtagsale">ViewTagSale</string>
     <string name="act_name_addreview">AddReview</string>
-    <string name="act_name_addfriend">AddReview</string>
-    <string name="act_name_acceptfriend">AddReview</string>
+    <string name="act_name_addfriend">AddFriend</string>
+    <string name="act_name_acceptfriend">AcceptFriend</string>
 
+    <string name="coming_soon">COMING SOON</string>
     <string name="action_settings">Settings</string>
+
     <string name="fake_place">100 Main St.</string>
     <string name="fake_distance">3.5 m</string>
-    <string name="fake_friendsattending">4</string>
+    <string name="fake_friendsattending">-</string>
     <string name="fake_date">Nov 5</string>
+
+    <string name="header_tsl_onsite">On Site</string>
+    <string name="header_tsl_address">Address</string>
+    <string name="header_tsl_friends_attending">F Att</string>
+    <string name="header_tsl_distance_unit">Miles</string>
+    <string name="header_tsl_date">Date</string>
+    <string name="header_tsl_attending">Attending</string>
+
+    <string name="tsl_distance_unit">mi.</string>
+    <string name="tsl_distance">%.1f%n mi.</string>
+
 
     <string name="sign_out">Sign Out</string>
     <string name="TAG_FRAGMENT_TAGSALELIST">tagsalelist</string>
@@ -25,6 +38,16 @@
     <string name="TAG_FRAGMENT_WEATHERPANEL">weatherpanel</string>
     <string name="TAG_FRAGMENT_VIEWTAGSALE">viewtagsale</string>
     <string name="TAG_FRAGMENT_REVIEWLIST">viewtagsale</string>
+
+    <string name="heading_tag_sale_list">Tag Sales</string>
+    <string name="heading_friend_list">Friends</string>
+    <string name="heading_friend_request_list">Friend Requests</string>
+    <string name="heading_reviews_list">Reviews</string>
+    <string name="heading_tag_sale_details">Tag Sale Details</string>
+
+    <string name="label_where">Where:</string>
+    <string name="label_when">When:</string>
+    <string name="label_description">What:</string>
 
     <string name="wf_temperature_label">Temperature : </string>
     <string name="wf_temperature_units"> &#176; F</string>

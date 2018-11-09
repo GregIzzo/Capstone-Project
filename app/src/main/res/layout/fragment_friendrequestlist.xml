@@ -7,7 +7,18 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:layout_marginStart="@dimen/tsrev_left_margin"
+    android:layout_marginEnd="@dimen/tsrev_right_margin"
+
     >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/heading_friend_request_list"
+        android:textAppearance="?android:attr/textAppearanceLargeInverse"
+        android:background="@color/colorPrimaryDark"
+        android:textAlignment="center"
+        />
     <android.support.v7.widget.RecyclerView
 
         android:id="@+id/rv_friendrequestlist"

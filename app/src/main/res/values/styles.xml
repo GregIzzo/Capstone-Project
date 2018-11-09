@@ -28,5 +28,11 @@
         <item name="android:headerBackground">#ffe082</item>
         <item name="android:timePickerMode">spinner</item>
     </style>
+    <style name="DetailDisplay" parent="AppTheme">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+
+    </style>
+
+
 
 </resources>

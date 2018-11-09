@@ -68,6 +68,7 @@ public class TagSaleViewFragment extends Fragment {
             te_time_start.setText(tagSaleEventObject.getStartTime());
             te_time_end.setText(tagSaleEventObject.getEndTime());
         }
+        button_update.setVisibility(View.VISIBLE);
         button_update.setOnClickListener(new View.OnClickListener() {
 
             @Override

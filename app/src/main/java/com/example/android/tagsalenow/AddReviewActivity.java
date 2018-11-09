@@ -49,6 +49,21 @@ public class AddReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addreview);
         ButterKnife.bind(this);
+
+        TagSaleEventObject tagSaleEventObject = CurrentInfo.getCurrentTagSaleEventObject();
+        if (tagSaleEventObject != null){
+
+            te_address.setText(tagSaleEventObject.getAddress().toString());
+            te_city.setText(tagSaleEventObject.getCity());
+            te_state.setText(tagSaleEventObject.getState());
+            te_zip.setText(tagSaleEventObject.getZip());
+            te_description.setText(tagSaleEventObject.getDescription());
+            te_date.setText(tagSaleEventObject.getFormattedDate());
+            te_time_start.setText(tagSaleEventObject.getStartTime());
+            te_time_end.setText(tagSaleEventObject.getEndTime());
+        }
+
+
         ratingBar.setRating(3.0f);
         button_add.setOnClickListener(new View.OnClickListener() {
             @Override

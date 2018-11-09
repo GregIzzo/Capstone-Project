@@ -7,14 +7,31 @@
     android:animateLayoutChanges="true"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_marginStart="@dimen/tsrev_left_margin"
+    android:layout_marginEnd="@dimen/tsrev_right_margin"
+
     android:orientation="vertical"
     >
-    <Button
-        android:id="@+id/button_addfriend"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/heading_friend_list"
+        android:textAppearance="?android:attr/textAppearanceLargeInverse"
+        android:background="@color/colorPrimaryDark"
+        android:textAlignment="center"
+        />
+    <Button
+        android:id="@+id/button_addfriend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingHorizontal="@dimen/tsadd_horiz_padd"
         android:text="@string/add_friend"
         style="@style/Widget.AppCompat.Button.Colored"/>
+
+
+
+
     <android.support.v7.widget.RecyclerView
 
         android:id="@+id/rv_friendslist"

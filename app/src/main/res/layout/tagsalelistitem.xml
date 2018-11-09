@@ -1,62 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
-    android:orientation="horizontal"
-    >
+    android:padding="@dimen/tslist_vert_padd"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <CheckBox
         android:id="@+id/onsite_indicator_iv"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:background="#80FFFFFF"
-
         android:button="@drawable/custom_checkbox"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
         android:visibility="visible"/>
     <TextView
         android:id="@+id/ts_placetv"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
         android:ellipsize="end"
         android:singleLine="true"
+        app:layout_constraintLeft_toRightOf="@id/onsite_indicator_iv"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/ts_planningtoattendcb"
         tools:text="100 Main St."
         />
     <TextView
-        android:id="@+id/ts_friendsattendingtv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/tslist_fattend_left_margin"
-        android:layout_weight="1"
-        android:singleLine="true"
-        tools:text="4"
-        />
-    <TextView
         android:id="@+id/ts_datetv"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        app:layout_constraintTop_toBottomOf="@id/ts_placetv"
+        app:layout_constraintLeft_toRightOf="@id/onsite_indicator_iv"
+        app:layout_constraintRight_toLeftOf="@id/ts_friendsattendingtv"
         android:singleLine="true"
         tools:text="Oct 30"
         />
     <TextView
-        android:id="@+id/ts_distancetv"
-        android:layout_width="0dp"
+        android:id="@+id/ts_friendsattendingtv"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        app:layout_constraintTop_toBottomOf="@id/ts_placetv"
+        app:layout_constraintLeft_toRightOf="@id/ts_datetv"
+        app:layout_constraintRight_toLeftOf="@id/ts_distancetv"
+        android:paddingStart="@dimen/tslist_fattend_left_margin"
+        android:singleLine="true"
+        tools:text="4"
+        />
+    <TextView
+        android:id="@+id/ts_distancetv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/ts_placetv"
+        app:layout_constraintLeft_toRightOf="@id/ts_friendsattendingtv"
+        app:layout_constraintRight_toLeftOf="@id/ts_planningtoattendcb"
+
         android:singleLine="true"
         tools:text="5 mi."
         />
    <CheckBox
        android:id="@+id/ts_planningtoattendcb"
-       android:layout_width="0dp"
+       android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_weight="1"
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintRight_toRightOf="parent"
+       app:layout_constraintBottom_toBottomOf="parent"
        android:clickable="true"
        android:checked="false"
        android:text=""
        />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

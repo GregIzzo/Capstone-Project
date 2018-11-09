@@ -8,13 +8,30 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:layout_marginStart="@dimen/tsrev_left_margin"
+    android:layout_marginEnd="@dimen/tsrev_right_margin"
+    android:background="@android:color/white"
+
     >
-    <Button
-        android:id="@+id/button_addreview"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/heading_reviews_list"
+        android:textAppearance="?android:attr/textAppearanceLargeInverse"
+        android:background="@color/colorPrimaryDark"
+        android:textAlignment="center"
+        />
+    <Button
+        android:id="@+id/button_addreview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingHorizontal="@dimen/tsadd_horiz_padd"
         android:text="@string/add_review"
         style="@style/Widget.AppCompat.Button.Colored"/>
+
+
+
     <android.support.v7.widget.RecyclerView
 
         android:id="@+id/rv_reviewlist"

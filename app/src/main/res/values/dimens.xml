@@ -2,9 +2,16 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="tslist_left_margin">2dp</dimen>
     <dimen name="tslist_right_margin">2dp</dimen>
+    <dimen name="tslist_vert_padd">8dp</dimen>
     <dimen name="tslist_fattend_left_margin">4dp</dimen>
     <dimen name="tslist_addbutton_top_bottom_margin">4dp</dimen>
     <dimen name="tsadd_horiz_padd">25dp</dimen>
+    <dimen name="tsrev_left_margin">10dp</dimen>
+    <dimen name="tsrev_right_margin">10dp</dimen>
+    <dimen name="tsrev_padd">20dp</dimen>
+
+    <dimen name="weather_left_margin">10dp</dimen>
+    <dimen name="weather_right_margin">10dp</dimen>
 
     <dimen name="frlist_left_margin">2dp</dimen>
     <dimen name="frlist_right_margin">2dp</dimen>
