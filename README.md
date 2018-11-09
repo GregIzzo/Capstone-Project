@@ -6,8 +6,8 @@ Capstone project for the Udacity Android Developer degree program
  
 In order to run this project you will need to add the following lines (and your own ids) to your local 'gradle.properties' file:
 
-MyAdMobAppID="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-MyOpenWeathermapAPIKey="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+`MyAdMobAppID="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"`
+`MyOpenWeathermapAPIKey="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"`
 
 ## Attributions
 
