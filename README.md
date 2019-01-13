@@ -1,6 +1,18 @@
 # Capstone-Project
 Capstone project for the Udacity Android Developer degree program
 
+# TagSaleNow - Android App for Tag Sale Fans
+
+## Description ##
+**Tag Sale Now** helps you keep track of tag sales in your area, list them by distance from you, tell friends when you’ve arrived at a sale, and let you rate the tag sale. When you arrive or rate a tag sale, a push notification will keep your friends up to date. Planning to attend a tag sale this weekend? Check the ‘attending’ box, and your friends will be notified. Get notified when a new tag sale is added in your area.
+
+## Features ##
+  * Track Tag Sale dates/times
+  * Invite friends to attend a Tag Sale
+  * Receive push notifications when your friends select ‘attending’ for an upcoming tag sale
+  * Rate Tag sales (1 to 5 stars)
+  * Handy local Weather forecast on the main screen
+
 # Notes
  You need to add `app/google-services.json` from your Google Firebase at https://console.firebase.google.com
  
