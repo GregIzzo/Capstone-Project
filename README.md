@@ -13,6 +13,10 @@ Capstone project for the Udacity Android Developer degree program
   * Rate Tag sales (1 to 5 stars)
   * Handy local Weather forecast on the main screen
 
+## Design Doc ##
+Detail design information and screen mockups can be found here : [TagSaleNow Project Design doc](TagSaleNow_ProjectDesign.pdf)
+
+
 # Notes
  You need to add `app/google-services.json` from your Google Firebase at https://console.firebase.google.com
  
